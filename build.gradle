@@ -20,9 +20,9 @@ plugins {
     id "net.minecraftforge.gradle.forge" version "2.0.2"
 }
 */
-version = "1.0"
-group= "com.yourname.modid" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "modid"
+version = "1.8.9-1.2.2"
+group= "alexndr.api" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = "simplecore"
 
 minecraft {
     version = "1.8.9-11.15.1.1722"
@@ -58,7 +58,26 @@ dependencies {
     // for more info...
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
+}
 
+configurations {
+	extraLibs
+}
+dependencies {
+	extraLibs 'org.jdom:jdom2:2.0.6'
+	configurations.compile.extendsFrom(configurations.extraLibs)
+}
+jar {
+	from {
+		configurations.extraLibs.collect {
+			 it.isDirectory() ? it : zipTree(it)
+		}
+	}
+	{
+        exclude "META-INF/*.SF"
+        exclude "META-INF/*.DSA"
+        exclude "META-INF/*.RSA"
+    }
 }
 
 processResources
