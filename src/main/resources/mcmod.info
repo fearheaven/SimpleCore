@@ -1,0 +1,17 @@
+[
+{
+"modid": "simplecore",
+"name": "SimpleCore API",
+"description": "An API for easy creation of plugins such as SimpleOres, Fusion and others",
+"version": "${version}",
+"credits": "Created by AleXndrTheGr8st, updated by Sinhika",
+"logoFile": "/assets/simplecore/logos/SimpleCore.png",
+"mcversion": "${mcversion}",
+"url": "http://minecraft.curseforge.com/projects/simplecore-api",
+"updateUrl": "",
+"authorList": [ "AleXndrTheGr8st", "Sinhika" ],
+"parent":"",
+"screenshots": [],
+"dependencies": []
+}
+]

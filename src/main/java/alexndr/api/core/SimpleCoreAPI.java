@@ -57,7 +57,7 @@ public class SimpleCoreAPI {
 		proxy.registerEventHandlers();
 		
 		//Configuration
-		APIInfo.setModInfoProperties(event);
+		// APIInfo.setModInfoProperties(event); // USE mcmod.info file instead -- Sinhika
 		APISettings.createOrLoadSettings(event);
 		LogHelper.loggerSetup();
 		if(APISettings.updateChecker.asBoolean()) {UpdateChecker checker = new UpdateChecker(APIInfo.ID, APIInfo.VERSION, APIInfo.VERSIONURL);}
