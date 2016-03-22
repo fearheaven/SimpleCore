@@ -33,11 +33,12 @@ public class SimpleArmor extends ItemArmor{
 	}
 
 	private final ArmorMaterial material;
-	private Plugin plugin;
-	private ContentCategories.Item category = ContentCategories.Item.ARMOR;
-	private ConfigArmor entry;
-	private Slots slot;
-	private String type, texturePath;
+	protected Plugin plugin;
+	protected ContentCategories.Item category = ContentCategories.Item.ARMOR;
+	protected ConfigArmor entry;
+	protected Slots slot;
+	protected String type, texturePath;
+	@SuppressWarnings("unused")
 	private List<String> toolTipStrings = Lists.newArrayList();
 	
 	/**

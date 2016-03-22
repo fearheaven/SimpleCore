@@ -21,6 +21,7 @@ public class SimplePickaxe extends ItemPickaxe{
 	private Plugin plugin;
 	private ContentCategories.Item category = ContentCategories.Item.TOOL;
 	private ConfigTool entry;
+	@SuppressWarnings("unused")
 	private List<String> toolTipStrings = Lists.newArrayList();
 
 	/**

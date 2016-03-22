@@ -34,6 +34,7 @@ public class SimpleBow extends ItemBow{
 	private Plugin plugin;
 	private ContentCategories.Item category = ContentCategories.Item.WEAPON;
 	private ConfigEntry entry;
+	@SuppressWarnings("unused")
 	private List<String> toolTipStrings = Lists.newArrayList();
 	private HashMap<SimpleBowEffects, Object> effects = new HashMap<SimpleBowEffects, Object>();
 	private ItemStack repairMaterial;

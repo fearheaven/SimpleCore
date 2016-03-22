@@ -12,9 +12,9 @@ import com.google.common.collect.Lists;
  * @author AleXndrTheGr8st
  */
 public class ContentRegistry {
-	public static Class blockDetails = BlockDetails.class;
-	public static Class itemDetails = ItemDetails.class;
-	public static Class tabDetails = TabDetails.class;
+	public static Class<BlockDetails> blockDetails = BlockDetails.class;
+	public static Class<ItemDetails> itemDetails = ItemDetails.class;
+	public static Class<TabDetails> tabDetails = TabDetails.class;
 	
 	private static List<Plugin> pluginList = Lists.newArrayList();
 	private static List<BlockDetails> blockList = Lists.newArrayList();

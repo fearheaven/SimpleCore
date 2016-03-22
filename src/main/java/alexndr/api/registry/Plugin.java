@@ -11,8 +11,8 @@ public class Plugin {
 	private String modId;
 	private String name;
 	
-	private Class mainClass;
-	private Class settingsClass;
+	private Class<?> mainClass;
+	private Class<?> settingsClass;
 	
 	public List<BlockDetails> blocksList = Lists.newArrayList();
 	public List<ItemDetails> itemsList = Lists.newArrayList();
@@ -48,7 +48,7 @@ public class Plugin {
 	 * Returns the main class of the plugin.
 	 * @return Main class
 	 */
-	public Class getMainClass() {
+	public Class<?> getMainClass() {
 		return mainClass;
 	}
 
@@ -56,7 +56,7 @@ public class Plugin {
 	 * Sets the main class of the plugin.
 	 * @param mainClass Main class
 	 */
-	public void setMainClass(Class mainClass) {
+	public void setMainClass(Class<?> mainClass) {
 		this.mainClass = mainClass;
 	}
 
@@ -64,7 +64,7 @@ public class Plugin {
 	 * Returns the settings class of the plugin.
 	 * @return Settings class
 	 */
-	public Class getSettingsClass() {
+	public Class<?> getSettingsClass() {
 		return settingsClass;
 	}
 
@@ -72,7 +72,7 @@ public class Plugin {
 	 * Sets the settings class of the plugin.
 	 * @param settingsClass Setting class
 	 */
-	public void setSettingsClass(Class settingsClass) {
+	public void setSettingsClass(Class<?> settingsClass) {
 		this.settingsClass = settingsClass;
 	}	
 }

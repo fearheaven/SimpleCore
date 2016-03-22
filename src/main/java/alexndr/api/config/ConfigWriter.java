@@ -70,7 +70,7 @@ public class ConfigWriter {
 	 */
 	public void writeConfig() {
 		try {
-			List categoriesList = Lists.newArrayList();
+			List<String> categoriesList = Lists.newArrayList();
 			Element root = new Element("Configuration");
 			Document doc = new Document(root);
 			

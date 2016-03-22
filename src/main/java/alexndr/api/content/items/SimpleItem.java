@@ -19,6 +19,7 @@ public class SimpleItem extends Item {
 	private Plugin plugin;
 	private ContentCategories.Item category;
 	private ConfigItem entry;
+	@SuppressWarnings("unused")
 	private List<String> toolTipStrings = Lists.newArrayList();
 	
 	/**

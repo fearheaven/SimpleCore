@@ -9,7 +9,6 @@ import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.registry.GameData;
 import alexndr.api.logger.LogHelper;
 import alexndr.api.registry.ContentRegistry;
 
@@ -407,7 +406,7 @@ public class ConfigBlock extends ConfigEntry{
 		for(ConfigValue value : valuesList) {
 			if(value.getName().equals(blockMaterial.getName())) {
 				try {
-					Class aClass = Material.class;
+					Class<Material> aClass = Material.class;
 					Field field = aClass.getField(value.getCurrentValue());
 					Material matInst = new Material(null);
 					Object matObj = field.get(matInst);
@@ -440,7 +439,7 @@ public class ConfigBlock extends ConfigEntry{
 			if(value.getName().equals(soundType.getName())) {
 				try {
 					String str = "soundType" + value.getCurrentValue().toUpperCase().charAt(0) + value.getCurrentValue().substring(1);
-					Class aClass = Block.class;
+					Class<Block> aClass = Block.class;
 					Field field = aClass.getField(str);
 					SoundType soundInst = new SoundType(null, 0, 0);
 					Object soundObj = field.get(soundInst);

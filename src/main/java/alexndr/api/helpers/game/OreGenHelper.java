@@ -3,6 +3,7 @@ package alexndr.api.helpers.game;
 import java.util.Random;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.block.state.pattern.BlockHelper;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.BlockPos;
@@ -15,11 +16,15 @@ import com.google.common.base.Predicate;
 /**
  * @author AleXndrTheGr8st
  */
-public class OreGenHelper extends WorldGenerator{
+public class OreGenHelper extends WorldGenerator
+{
+	@SuppressWarnings("unused")
 	private Block blockToGenerate, blockToReplace;
-	private Predicate replaceableOreGenBlock = BlockHelper.forBlock(Blocks.stone);
+	private Predicate<IBlockState> replaceableOreGenBlock = BlockHelper.forBlock(Blocks.stone);
+	@SuppressWarnings("unused")
 	private int blockToGenerateMeta, blockToReplaceMeta;
 	private int veinSize;
+	@SuppressWarnings("unused")
 	private boolean replaceOreGenBlocks = true;
 	
 	/**
@@ -111,17 +116,18 @@ public class OreGenHelper extends WorldGenerator{
 								if(var4 * var4 + var5 * var5 + var6 * var6 < 1.0D) {
 									BlockPos blockpos1 = new BlockPos(chunkX, chunkY, chunkZ);
 									
-									if(worldIn.getBlockState(blockpos1).getBlock().isReplaceableOreGen(worldIn, blockpos1, this.replaceableOreGenBlock)) {
+									if(worldIn.getBlockState(blockpos1).getBlock().isReplaceableOreGen(worldIn, blockpos1, this.replaceableOreGenBlock)) 
+									{
 										worldIn.setBlockState(blockpos1, this.blockToGenerate.getBlockState().getBaseState(), 2);
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
+									} // end if
+								} // end if
+							} // end for
+						} // end if
+					} // end for
+				} // end if
+			} // end for
+		} // end for
 		
 		return true;
-	}
-}
+	} // end generate()
+} // end class

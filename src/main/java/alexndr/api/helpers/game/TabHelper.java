@@ -1,16 +1,13 @@
 package alexndr.api.helpers.game;
 
 import net.minecraft.creativetab.CreativeTabs;
-import alexndr.api.registry.ContentCategories;
+import alexndr.api.registry.ContentCategories.CreativeTab;
 import alexndr.api.registry.ContentRegistry;
 
 /**
  * @author AleXndrTheGr8st
  */
 public class TabHelper {
-	private static ContentRegistry registry;
-	private static ContentCategories.CreativeTab categories;
-	
 	/**
 	 * Returns a CreativeTab with the specified name if it exists in the ContentRegistry.
 	 * If it doesn't exist, returns null.
@@ -18,8 +15,8 @@ public class TabHelper {
 	 * @return CreativeTab
 	 */
 	public static CreativeTabs getTab(String tabName) {
-		if(registry.doesTabExist(tabName))
-			return registry.getTab(tabName);
+		if(ContentRegistry.doesTabExist(tabName))
+			return ContentRegistry.getTab(tabName);
 		else return null;
 	}
 	
@@ -30,9 +27,9 @@ public class TabHelper {
 	 * @return CreativeTab for the item/block to be placed in
 	 */
 	public static CreativeTabs generalTab() {
-		if(registry.getFirstTabInCategory(categories.GENERAL) != null)
-			return registry.getFirstTabInCategory(categories.GENERAL);
-		else return categories.GENERAL.vanillaTab;
+		if(ContentRegistry.getFirstTabInCategory(CreativeTab.GENERAL) != null)
+			return ContentRegistry.getFirstTabInCategory(CreativeTab.GENERAL);
+		else return CreativeTab.GENERAL.vanillaTab;
 	}
 	
 	/**
@@ -42,9 +39,9 @@ public class TabHelper {
 	 * @return CreativeTab for the block to be placed in
 	 */
 	public static CreativeTabs blocksTab() {
-		if(registry.getFirstTabInCategory(categories.BLOCKS) != null)
-			return registry.getFirstTabInCategory(categories.BLOCKS);
-		else return categories.BLOCKS.vanillaTab;
+		if(ContentRegistry.getFirstTabInCategory(CreativeTab.BLOCKS) != null)
+			return ContentRegistry.getFirstTabInCategory(CreativeTab.BLOCKS);
+		else return CreativeTab.BLOCKS.vanillaTab;
 	}
 	
 	/**
@@ -54,9 +51,9 @@ public class TabHelper {
 	 * @return Creative tab for the item/block to be placed in
 	 */
 	public static CreativeTabs decorationsTab() {
-		if(registry.getFirstTabInCategory(categories.DECORATIONS) != null)
-			return registry.getFirstTabInCategory(categories.DECORATIONS);
-		else return categories.DECORATIONS.vanillaTab;
+		if(ContentRegistry.getFirstTabInCategory(CreativeTab.DECORATIONS) != null)
+			return ContentRegistry.getFirstTabInCategory(CreativeTab.DECORATIONS);
+		else return CreativeTab.DECORATIONS.vanillaTab;
 	}
 	
 	/**
@@ -66,9 +63,9 @@ public class TabHelper {
 	 * @return Creative tab for the item to be placed in
 	 */
 	public static CreativeTabs materialsTab() {
-		if(registry.getFirstTabInCategory(categories.MATERIALS) != null)
-			return registry.getFirstTabInCategory(categories.MATERIALS);
-		else return categories.MATERIALS.vanillaTab;
+		if(ContentRegistry.getFirstTabInCategory(CreativeTab.MATERIALS) != null)
+			return ContentRegistry.getFirstTabInCategory(CreativeTab.MATERIALS);
+		else return CreativeTab.MATERIALS.vanillaTab;
 	}
 	
 	/**
@@ -78,9 +75,9 @@ public class TabHelper {
 	 * @return Creative tab for the item to be placed in
 	 */
 	public static CreativeTabs toolsTab() {
-		if(registry.getFirstTabInCategory(categories.TOOLS) != null)
-			return registry.getFirstTabInCategory(categories.TOOLS);
-		else return categories.TOOLS.vanillaTab;
+		if(ContentRegistry.getFirstTabInCategory(CreativeTab.TOOLS) != null)
+			return ContentRegistry.getFirstTabInCategory(CreativeTab.TOOLS);
+		else return CreativeTab.TOOLS.vanillaTab;
 	}
 	
 	/**
@@ -90,9 +87,9 @@ public class TabHelper {
 	 * @return Creative tab for the item to be placed in
 	 */
 	public static CreativeTabs combatTab() {
-		if(registry.getFirstTabInCategory(categories.COMBAT) != null)
-			return registry.getFirstTabInCategory(categories.COMBAT);
-		else return categories.COMBAT.vanillaTab;
+		if(ContentRegistry.getFirstTabInCategory(CreativeTab.COMBAT) != null)
+			return ContentRegistry.getFirstTabInCategory(CreativeTab.COMBAT);
+		else return CreativeTab.COMBAT.vanillaTab;
 	}
 	
 	/**
@@ -102,8 +99,8 @@ public class TabHelper {
 	 * @return Creative tab for the item to be placed in
 	 */
 	public static CreativeTabs otherTab() {
-		if(registry.getFirstTabInCategory(categories.OTHER) != null)
-			return registry.getFirstTabInCategory(categories.OTHER);
-		else return categories.OTHER.vanillaTab;
+		if(ContentRegistry.getFirstTabInCategory(CreativeTab.OTHER) != null)
+			return ContentRegistry.getFirstTabInCategory(CreativeTab.OTHER);
+		else return CreativeTab.OTHER.vanillaTab;
 	}
 }

@@ -22,10 +22,10 @@ import alexndr.api.registry.Plugin;
  * @author AleXndrTheGr8st
  */
 public class SimpleBlock extends Block{
-	private Plugin plugin;
-	private Material material;
-	private ContentCategories.Block category;
-	private ConfigBlock entry;
+	protected Plugin plugin;
+	protected Material material;
+	protected ContentCategories.Block category;
+	protected ConfigBlock entry;
 	
 	/**
 	 * Creates a simple block, such as an ore or a storage block.

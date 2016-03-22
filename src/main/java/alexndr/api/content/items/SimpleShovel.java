@@ -16,11 +16,13 @@ import com.google.common.collect.Lists;
 /**
  * @author AleXndrTheGr8st
  */
-public class SimpleShovel extends ItemSpade{
+public class SimpleShovel extends ItemSpade
+{
 	private final ToolMaterial material;
 	private Plugin plugin;
 	private ContentCategories.Item category = ContentCategories.Item.TOOL;
 	private ConfigTool entry;
+	@SuppressWarnings("unused")
 	private List<String> toolTipStrings = Lists.newArrayList();
 
 	/**

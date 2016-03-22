@@ -31,6 +31,7 @@ public class SimpleBucket extends ItemBucket{
 	private Plugin plugin;
 	private ContentCategories.Item category = ContentCategories.Item.OTHER;
 	private ConfigItem entry;
+	@SuppressWarnings("unused")
 	private List<String> toolTipStrings = Lists.newArrayList();
 	private Block liquid;
 	private SimpleBucketType bucketType;

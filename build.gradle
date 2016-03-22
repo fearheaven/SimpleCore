@@ -13,20 +13,35 @@ buildscript {
     }
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'java'
 
+sourceCompatibility = version_java
+targetCompatibility = version_java
 /*
 // for people who want stable - not yet functional for MC 1.8.8 - we require the forgegradle 2.1 snapshot
 plugins {
     id "net.minecraftforge.gradle.forge" version "2.0.2"
 }
 */
-version = "1.8.9-1.2.2"
+def getVersionAppendage() {
+    if (System.env.BUILD_NUMBER)
+        return System.env.BUILD_NUMBER
+
+    def proc = "git rev-parse --short HEAD".execute()
+    proc.waitFor()
+    return "DEV-" + proc.text.trim()
+}
+
+version = "${version_minecraft}-${version_mod}." + getVersionAppendage()
+
 group= "alexndr.api" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "simplecore"
 
 minecraft {
-    version = "1.8.9-11.15.1.1722"
+    version = "${version_minecraft}-${version_forge}"
     runDir = "run"
+    replaceIn "ModInfo.java"
+    replace "@MODVERSION@", version
     
     // the mappings can be changed at any time, and must be in the following format.
     // snapshot_YYYYMMDD   snapshot are built nightly.
@@ -42,23 +57,7 @@ dependencies {
     // or you may define them like so..
     //compile "some.group:artifact:version:classifier"
     //compile "some.group:artifact:version"
-      
-    // real examples
-    //compile 'com.mod-buildcraft:buildcraft:6.0.8:dev'  // adds buildcraft to the dev env
-    //compile 'com.googlecode.efficient-java-matrix-library:ejml:0.24' // adds ejml to the dev env
-
-    // the 'provided' configuration is for optional dependencies that exist at compile-time but might not at runtime.
-    //provided 'com.mod-buildcraft:buildcraft:6.0.8:dev'
-
-    // the deobf configurations:  'deobfCompile' and 'deobfProvided' are the same as the normal compile and provided,
-    // except that these dependencies get remapped to your current MCP mappings
-    //deobfCompile 'com.mod-buildcraft:buildcraft:6.0.8:dev'
-    //deobfProvided 'com.mod-buildcraft:buildcraft:6.0.8:dev'
-
-    // for more info...
-    // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
-    // http://www.gradle.org/docs/current/userguide/dependency_management.html
-}
+ }
 
 configurations {
 	extraLibs

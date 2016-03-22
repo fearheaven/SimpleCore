@@ -23,7 +23,7 @@ public class ConfigEntry {
 	public ConfigEntry(String name, String category) {
 		this.name = name;
 		this.category = category;
-		this.entryNameMap.put(name, this);
+		ConfigEntry.entryNameMap.put(name, this);
 	}
 
 	/**

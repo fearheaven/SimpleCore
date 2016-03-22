@@ -2,8 +2,6 @@ package alexndr.api.core;
 
 import java.util.List;
 
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-
 import com.google.common.collect.Lists;
 
 /**
