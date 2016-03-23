@@ -40,7 +40,7 @@ archivesBaseName = "simplecore"
 minecraft {
     version = "${version_minecraft}-${version_forge}"
     runDir = "run"
-    replaceIn "ModInfo.java"
+    replaceIn "APIInfo.java"
     replace "@MODVERSION@", version
     
     // the mappings can be changed at any time, and must be in the following format.
