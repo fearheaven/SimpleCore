@@ -18,7 +18,8 @@ public class SimpleTab extends CreativeTabs{
 	 * @param label The name of the tab
 	 * @param category The category the tab belongs to
 	 */
-	public SimpleTab(Plugin plugin, String label, ContentCategories.CreativeTab category) {
+	public SimpleTab(Plugin plugin, String label, ContentCategories.CreativeTab category) 
+	{
 		super(label);
 		ContentRegistry.registerTab(plugin, this, label, category);
 	}

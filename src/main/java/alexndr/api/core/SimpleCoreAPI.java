@@ -59,14 +59,13 @@ public class SimpleCoreAPI {
 		// APIInfo.setModInfoProperties(event); // USE mcmod.info file instead -- Sinhika
 		APISettings.createOrLoadSettings(event);
 		LogHelper.loggerSetup();
-		if(APISettings.updateChecker.asBoolean()) {
-			@SuppressWarnings("unused")
-			UpdateChecker checker = new UpdateChecker(APIInfo.ID, APIInfo.VERSION, APIInfo.VERSIONURL);
-		}
+//		if(APISettings.updateChecker.asBoolean()) {
+//			UpdateChecker checker = new UpdateChecker(APIInfo.ID, APIInfo.VERSION, APIInfo.VERSIONURL);
+//		}
 		
 		//Content
 		addVanillaTabs();
-		tabPreInit();
+		// tabPreInit();  // plugin should call this, not API. 
 	}
 	
 	@EventHandler
@@ -82,7 +81,7 @@ public class SimpleCoreAPI {
 		
 		//World Generator
 		GameRegistry.registerWorldGenerator(new OreGenerator(), 1);
-		LogHelper.verbose("Total number of mods UpdateChecker is checking for = " + UpdateChecker.getNumberOfMods());
+		// LogHelper.verbose("Total number of mods UpdateChecker is checking for = " + UpdateChecker.getNumberOfMods());
 		LogHelper.info("SimpleCore API Loading Complete!");
 	}
 	
@@ -104,18 +103,26 @@ public class SimpleCoreAPI {
 		ContentRegistry.registerTab(vanilla, CreativeTabs.tabTransport, "tabTransport", ContentCategories.CreativeTab.GENERAL);
 	}
 	
-	private void tabPreInit() {
+	/**
+	 * create tab or separate tabs for SimpleCore-based plugins. Note that SimpleCoreAPI itself
+	 * SHOULD NOT CALL THIS, as it will result in crashes if SimpleCoreAPI is loaded stand-alone,
+	 * or with any plugin that does not call setTabIcons -- Sinhika
+	 */
+	public void tabPreInit() 
+	{
 		LogHelper.verbose("Creating tabs");
-		if(APISettings.tabs.asBoolean()) {
+		if(APISettings.tabs.asBoolean()) 
+		{
 			simpleBlocks = new SimpleTab(SimpleCoreAPI.plugin, "SimpleBlocks", ContentCategories.CreativeTab.BLOCKS);
-			if(APISettings.separateTabs.asBoolean()) {
+			if(APISettings.separateTabs.asBoolean()) 
+			{
 				simpleDecorations = new SimpleTab(SimpleCoreAPI.plugin, "SimpleDecorations", ContentCategories.CreativeTab.DECORATIONS);
 				simpleMaterials = new SimpleTab(SimpleCoreAPI.plugin, "SimpleMaterials", ContentCategories.CreativeTab.MATERIALS);
 				simpleTools = new SimpleTab(SimpleCoreAPI.plugin, "SimpleTools", ContentCategories.CreativeTab.TOOLS);
 				simpleCombat = new SimpleTab(SimpleCoreAPI.plugin, "SimpleCombat", ContentCategories.CreativeTab.COMBAT);
 			}
 		}
-	}
+	} // end tabPreInit()
 	
 	/**
 	 * Sets the Icons for the CreativeTabs added by this mod. Call this during Initialisation phase.
@@ -149,7 +156,8 @@ public class SimpleCoreAPI {
 	private void renderItemStuff(FMLPostInitializationEvent event) 
 	{
 		LogHelper.verbose("Creating RenderItem's for all plugins");
-		if(event.getSide() == Side.CLIENT) {
+		if(event.getSide() == Side.CLIENT) 
+		{
 			RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
 			
 			for(RenderDetails details : RenderItemHelper.getRenderList()) {
@@ -162,10 +170,10 @@ public class SimpleCoreAPI {
 				String bowName = ((Item)list.get(1)).getUnlocalizedName().substring(5);
 				
 				List<ModelResourceLocation> variants = new ArrayList<ModelResourceLocation>();
-				variants.add(new ModelResourceLocation(modId + ":" + bowName));
-				variants.add(new ModelResourceLocation(modId + ":" + bowName + "_pulling_0"));
-				variants.add(new ModelResourceLocation(modId + ":" + bowName + "_pulling_1"));
-				variants.add(new ModelResourceLocation(modId + ":" + bowName + "_pulling_2"));
+				variants.add(new ModelResourceLocation(modId + ":" + bowName, "inventory"));
+				variants.add(new ModelResourceLocation(modId + ":" + bowName + "_pulling_0", "inventory"));
+				variants.add(new ModelResourceLocation(modId + ":" + bowName + "_pulling_1", "inventory"));
+				variants.add(new ModelResourceLocation(modId + ":" + bowName + "_pulling_2", "inventory"));
 				for (ModelResourceLocation v : variants) {
 					ModelBakery.registerItemVariants((Item)list.get(1), v);
 				}
@@ -174,7 +182,7 @@ public class SimpleCoreAPI {
 //										  modId + ":" + bowName + "_pulling_1", modId + ":" + bowName + "_pulling_2"});
 			}
 		}
-	}
+	} // end renderItemStuff()
 	
 	/**
 	 * Adds a bow to the list to be rendered.
