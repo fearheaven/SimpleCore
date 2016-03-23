@@ -108,7 +108,7 @@ public class SimpleCoreAPI {
 	 * SHOULD NOT CALL THIS, as it will result in crashes if SimpleCoreAPI is loaded stand-alone,
 	 * or with any plugin that does not call setTabIcons -- Sinhika
 	 */
-	public void tabPreInit() 
+	public static void tabPreInit() 
 	{
 		LogHelper.verbose("Creating tabs");
 		if(APISettings.tabs.asBoolean()) 
