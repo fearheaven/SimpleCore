@@ -37,10 +37,10 @@ group= "alexndr.api" // http://maven.apache.org/guides/mini/guide-naming-convent
 archivesBaseName = "simplecore"
 
 minecraft {
-    version = "1.9-12.16.0.1802-1.9"
+    version = "1.9-12.16.0.1811-1.9"
     runDir = "run"
     replaceIn "APIInfo.java"
-    replace "@MODVERSION@", "${project.version}"
+    replace "@MODVERSION@", "${project.version_mod}." + getVersionAppendage()
     
     // the mappings can be changed at any time, and must be in the following format.
     // snapshot_YYYYMMDD   snapshot are built nightly.
@@ -80,7 +80,7 @@ jar {
 processResources
 {
     // this will ensure that this task is redone when the versions change.
-    inputs.property "version", project.version
+    inputs.property "version", "${project.version_mod}." + getVersionAppendage()
     inputs.property "mcversion", project.minecraft.version
 
     // replace stuff in mcmod.info, nothing else
@@ -88,7 +88,7 @@ processResources
         include 'mcmod.info'
                 
         // replace version and mcversion
-        expand 'version':project.version, 'mcversion':project.minecraft.version
+        expand 'version':"${project.version_mod}." + getVersionAppendage(), 'mcversion':project.minecraft.version
     }
         
     // copy everything else, thats not the mcmod.info

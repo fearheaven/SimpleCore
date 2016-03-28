@@ -1,12 +1,7 @@
 package alexndr.api.core;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.RenderItem;
-import net.minecraft.client.renderer.block.model.ModelBakery;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
@@ -21,8 +16,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import alexndr.api.content.inventory.SimpleTab;
 import alexndr.api.helpers.events.CommonEventHelper;
 import alexndr.api.helpers.game.OreGenerator;
-import alexndr.api.helpers.game.RenderDetails;
-import alexndr.api.helpers.game.RenderItemHelper;
 import alexndr.api.logger.LogHelper;
 import alexndr.api.registry.ContentCategories;
 import alexndr.api.registry.ContentRegistry;
@@ -34,14 +27,15 @@ import com.google.common.collect.Lists;
  * @author AleXndrTheGr8st
  */
 @Mod(modid = APIInfo.ID, name = APIInfo.NAME, version = APIInfo.VERSION)
-public class SimpleCoreAPI {
+public class SimpleCoreAPI 
+{
 	@SidedProxy(clientSide = "alexndr.api.core.ProxyClient", serverSide = "alexndr.api.core.ProxyCommon")
 	public static ProxyCommon proxy;
 	public static Plugin plugin = new Plugin(APIInfo.ID, APIInfo.NAME);
 	public static Plugin vanilla = new Plugin("minecraft", "Minecraft");
 	
 	//Bow Renders
-	private static List<List<Object>> bowRenderList = Lists.newArrayList();
+	public static List<List<Object>> bowRenderList = Lists.newArrayList();
 	
 	//Creative Tabs
 	private static boolean iconsSet = false;
@@ -75,10 +69,13 @@ public class SimpleCoreAPI {
 	}
 	
 	@EventHandler
-	public void postInit(FMLPostInitializationEvent event) {
+	public void postInit(FMLPostInitializationEvent event) 
+	{
 		//Inventory Render Stuff
-		renderItemStuff(event);
-		
+		if(event.getSide() == Side.CLIENT) 
+		{
+			proxy.renderItemStuff(event);
+		}
 		//World Generator
 		GameRegistry.registerWorldGenerator(new OreGenerator(), 1);
 		// LogHelper.verbose("Total number of mods UpdateChecker is checking for = " + UpdateChecker.getNumberOfMods());
@@ -149,37 +146,6 @@ public class SimpleCoreAPI {
 		}
 	}
 	
-	/**
-	 * Sets up the 1.8+ Render Item details for all registered blocks and items.
-	 * @param event FMLPostInitializationEvent
-	 */
-	private void renderItemStuff(FMLPostInitializationEvent event) 
-	{
-		LogHelper.verbose("Creating RenderItem's for all plugins");
-		if(event.getSide() == Side.CLIENT) 
-		{
-			RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
-			
-			for(RenderDetails details : RenderItemHelper.getRenderList()) {
-				renderItem.getItemModelMesher().register(details.getItem(), 0, 
-					new ModelResourceLocation(details.getModId() + ":" + details.getItemName(), "inventory"));
-			}
-			
-			for(List<Object> list : SimpleCoreAPI.bowRenderList) {
-				String modId = ((Plugin)list.get(0)).getModId();
-				String bowName = ((Item)list.get(1)).getUnlocalizedName().substring(5);
-				
-				List<ModelResourceLocation> variants = new ArrayList<ModelResourceLocation>();
-				variants.add(new ModelResourceLocation(modId + ":" + bowName, "inventory"));
-				variants.add(new ModelResourceLocation(modId + ":" + bowName + "_pulling_0", "inventory"));
-				variants.add(new ModelResourceLocation(modId + ":" + bowName + "_pulling_1", "inventory"));
-				variants.add(new ModelResourceLocation(modId + ":" + bowName + "_pulling_2", "inventory"));
-				for (ModelResourceLocation v : variants) {
-					ModelBakery.registerItemVariants((Item)list.get(1), v);
-				}
-			}
-		}
-	} // end renderItemStuff()
 	
 	/**
 	 * Adds a bow to the list to be rendered.
@@ -192,4 +158,4 @@ public class SimpleCoreAPI {
 		list.add(bow);
 		bowRenderList.add(list);
 	}
-}
+} // end class
