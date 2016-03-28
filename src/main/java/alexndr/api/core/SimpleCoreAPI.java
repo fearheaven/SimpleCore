@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.RenderItem;
-import net.minecraft.client.resources.model.ModelBakery;
-import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.client.renderer.RenderItem;
+import net.minecraft.client.renderer.block.model.ModelBakery;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
@@ -177,9 +177,6 @@ public class SimpleCoreAPI {
 				for (ModelResourceLocation v : variants) {
 					ModelBakery.registerItemVariants((Item)list.get(1), v);
 				}
-//				ModelBakery.addVariantName((Item)list.get(1), 
-//							new String[] {modId + ":" + bowName, modId + ":" + bowName + "_pulling_0", 
-//										  modId + ":" + bowName + "_pulling_1", modId + ":" + bowName + "_pulling_2"});
 			}
 		}
 	} // end renderItemStuff()

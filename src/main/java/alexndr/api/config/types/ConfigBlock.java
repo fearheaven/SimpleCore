@@ -4,7 +4,7 @@ import java.lang.reflect.Field;
 import java.util.List;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.Block.SoundType;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -441,7 +441,7 @@ public class ConfigBlock extends ConfigEntry{
 					String str = "soundType" + value.getCurrentValue().toUpperCase().charAt(0) + value.getCurrentValue().substring(1);
 					Class<Block> aClass = Block.class;
 					Field field = aClass.getField(str);
-					SoundType soundInst = new SoundType(null, 0, 0);
+					SoundType soundInst = new SoundType(0.0F, 0.0F, null, null, null, null,null);
 					Object soundObj = field.get(soundInst);
 					return (SoundType)soundObj;
 				}

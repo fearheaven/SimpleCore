@@ -8,7 +8,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
+
 import alexndr.api.logger.LogHelper;
 
 import com.google.common.collect.Lists;
@@ -158,7 +159,7 @@ class UpdateCheckerThread extends Thread {
 			LogHelper.verbose("The mod " + modId + " is out of date. The current version is " + this.VERSION + ", the newest version is " + this.NEWVERSION);
 			String message;
 			if(!this.unlocalised) {
-				message = StatCollector.translateToLocal(modId + ".updateMessage1") + NEWVERSION + StatCollector.translateToLocal(modId + ".updateMessage2");
+				message = I18n.translateToLocal(modId + ".updateMessage1") + NEWVERSION + I18n.translateToLocal(modId + ".updateMessage2");
 			} 
 			else {
 				message = message1 + NEWVERSION + message2;

@@ -4,7 +4,7 @@ import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 
 import com.google.common.collect.Lists;
@@ -63,7 +63,7 @@ public class TooltipHelper {
 		for(ToolTip tooltip : tooltipList) {
 			if(tooltip.item == event.itemStack.getItem()) {
 				if(tooltip.localised)
-					event.toolTip.add(event.toolTip.size() - num, StatCollector.translateToLocal(tooltip.toolTip));
+					event.toolTip.add(event.toolTip.size() - num, I18n.translateToLocal(tooltip.toolTip));
 				else
 					event.toolTip.add(event.toolTip.size() - num, tooltip.toolTip);
 			}

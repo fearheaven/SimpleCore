@@ -3,10 +3,11 @@ package alexndr.api.content.items;
 import java.util.List;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import alexndr.api.config.types.ConfigArmor;
 import alexndr.api.helpers.game.TooltipHelper;
@@ -19,24 +20,25 @@ import com.google.common.collect.Lists;
 /**
  * @author AleXndrTheGr8st
  */
-public class SimpleArmor extends ItemArmor{
-	public static enum Slots{
-		HELM(0),
-		CHEST(1),
-		LEGS(2),
-		BOOTS(3);
-		
-		int slotNumber;
-		private Slots(int slotNumber) {
-			this.slotNumber = slotNumber;
-		}
-	}
+public class SimpleArmor extends ItemArmor
+{
+//	public static enum Slots{
+//		HELM(0),
+//		CHEST(1),
+//		LEGS(2),
+//		BOOTS(3);
+//		
+//		int slotNumber;
+//		private Slots(int slotNumber) {
+//			this.slotNumber = slotNumber;
+//		}
+//	}
 
 	private final ArmorMaterial material;
 	protected Plugin plugin;
 	protected ContentCategories.Item category = ContentCategories.Item.ARMOR;
 	protected ConfigArmor entry;
-	protected Slots slot;
+	protected EntityEquipmentSlot slot;
 	protected String type, texturePath;
 	@SuppressWarnings("unused")
 	private List<String> toolTipStrings = Lists.newArrayList();
@@ -47,8 +49,8 @@ public class SimpleArmor extends ItemArmor{
 	 * @param material The ArmorMaterial of the armor
 	 * @param slot The armor slot the piece fits
 	 */
-	public SimpleArmor(Plugin plugin, ArmorMaterial material, Slots slot) {
-		super(material, 1, slot.slotNumber);
+	public SimpleArmor(Plugin plugin, ArmorMaterial material, EntityEquipmentSlot slot) {
+		super(material, 1, slot);
 		this.plugin = plugin;
 		this.material = material;
 		this.slot = slot;
@@ -88,7 +90,7 @@ public class SimpleArmor extends ItemArmor{
 	 */
 	public SimpleArmor setType(String armorType) {
 		this.type = armorType;
-		this.setArmorTexturePath(this.plugin.getModId(), armorType, this.slot.slotNumber);
+		this.setArmorTexturePath(this.plugin.getModId(), armorType, this.slot.getIndex());
 		return this;
 	}
 	
@@ -108,8 +110,8 @@ public class SimpleArmor extends ItemArmor{
 	 * @param color Color of the tooltip
 	 * @return SimpleArmor
 	 */
-	public SimpleArmor addToolTip(String toolTip, EnumChatFormatting color) {
-		TooltipHelper.addTooltipToItem(this, color + StatCollector.translateToLocal(toolTip));
+	public SimpleArmor addToolTip(String toolTip, TextFormatting color) {
+		TooltipHelper.addTooltipToItem(this, color + I18n.translateToLocal(toolTip));
 		return this;
 	}
 	
@@ -119,25 +121,24 @@ public class SimpleArmor extends ItemArmor{
 	}
 	
 	@Override
-	public String getArmorTexture(ItemStack itemstack, Entity entity, int slot, String layer){
+	public String getArmorTexture(ItemStack itemstack, Entity entity, EntityEquipmentSlot slot, String layer)
+	{
 		return this.texturePath;
 	}
 	
 	public void setArmorTexturePath(String modId, String type, int slotNumber)
 	{
 		switch(slotNumber) {
-		case 0:
+		case 0:  // FEET 1.9
 			this.texturePath = modId + ":textures/models/armor/" + type + "_layer_1.png";
 			break;
-			
-		case 1:
-			this.texturePath = modId + ":textures/models/armor/" + type + "_layer_1.png";
-			break;
-		
-		case 2: 
+		case 1:  // LEGS 1.9
 			this.texturePath = modId + ":textures/models/armor/" + type + "_layer_2.png";
 			break;
-		case 3:
+		case 2:  // CHEST 1.9
+			this.texturePath = modId + ":textures/models/armor/" + type + "_layer_1.png";
+			break;
+		case 3:  // HEAD 1.9
 			this.texturePath = modId + ":textures/models/armor/" + type + "_layer_1.png";
 			break;
 		}

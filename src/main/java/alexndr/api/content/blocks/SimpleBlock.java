@@ -6,9 +6,9 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -130,7 +130,7 @@ public class SimpleBlock extends Block{
 	}
 	
 	@Override
-	public boolean isLeaves(IBlockAccess world, BlockPos pos) {
+	public boolean isLeaves(IBlockState state, IBlockAccess world, BlockPos pos) {
 		if(entry.getValueByName("IsLeaves") != null && entry.getValueByName("IsLeaves").isActive()) {
 			return entry.getFireSource();
 		}

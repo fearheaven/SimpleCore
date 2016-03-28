@@ -10,7 +10,8 @@ import com.google.common.collect.Lists;
 /**
  * @author AleXndrTheGr8st
  */
-public class SimpleBucketType {
+public class SimpleBucketType 
+{
 	private String material;
 	private boolean destroyOnLava = false;
 	private List<BucketVariant> variantList = Lists.newArrayList();

@@ -5,8 +5,9 @@ import java.util.List;
 import java.util.Random;
 
 import net.minecraft.block.Block;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.IChunkGenerator;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraftforge.fml.common.IWorldGenerator;
 import alexndr.api.logger.LogHelper;
@@ -16,7 +17,8 @@ import com.google.common.collect.Lists;
 /**
  * @author AleXndrTheGr8st
  */
-public class OreGenerator implements IWorldGenerator{
+public class OreGenerator implements IWorldGenerator
+{
 	private static HashMap<Integer, List<GenDetails>> genMap = new HashMap<Integer, List<GenDetails>>();
 	
 	/**
@@ -59,13 +61,26 @@ public class OreGenerator implements IWorldGenerator{
 		}
 	}
 
+    /**
+     * Generate some world
+     *
+     * @param random the chunk specific {@link Random}.
+     * @param chunkX the chunk X coordinate of this chunk.
+     * @param chunkZ the chunk Z coordinate of this chunk.
+     * @param world : additionalData[0] The minecraft {@link World} we're generating for.
+     * @param chunkGenerator : additionalData[1] The {@link IChunkProvider} that is generating.
+     * @param chunkProvider : additionalData[2] {@link IChunkProvider} that is requesting the world generation.
+     *
+     */
 	@Override
-	public void generate(Random random, int chunkX, int chunkZ, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider) {
+    public void generate(Random random, int chunkX, int chunkZ, World world, 
+    					 IChunkGenerator chunkGenerator, IChunkProvider chunkProvider)
+	{
 		int xCoord = chunkX * 16;
 		int zCoord = chunkZ * 16;
 		
-		if(genMap.containsKey(world.provider.getDimensionId())) {
-			for(GenDetails details : genMap.get(world.provider.getDimensionId())) {
+		if(genMap.containsKey(world.provider.getDimension())) {
+			for(GenDetails details : genMap.get(world.provider.getDimension())) {
 				if(details.maxHeight <= details.minHeight)
 					LogHelper.warning("WorldGen: Max height is lower than min height! BlockToGenerate: " + details.blockToGenerate.getUnlocalizedName() + ", BlockToReplace: " + details.blockToReplace.getUnlocalizedName());
 				else {

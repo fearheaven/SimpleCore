@@ -4,19 +4,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
-import net.minecraft.client.resources.model.ModelResourceLocation;
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.init.Enchantments;
 import net.minecraft.init.Items;
+import net.minecraft.init.SoundEvents;
+import net.minecraft.item.ItemArrow;
 import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.StatCollector;
+import net.minecraft.stats.StatList;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.player.ArrowLooseEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import alexndr.api.config.types.ConfigEntry;
 import alexndr.api.core.SimpleCoreAPI;
@@ -30,7 +33,8 @@ import com.google.common.collect.Lists;
 /**
  * @author AleXndrTheGr8st
  */
-public class SimpleBow extends ItemBow{
+public class SimpleBow extends ItemBow
+{
 	private Plugin plugin;
 	private ContentCategories.Item category = ContentCategories.Item.WEAPON;
 	private ConfigEntry entry;
@@ -98,8 +102,8 @@ public class SimpleBow extends ItemBow{
 	 * @param toolTip Name of the localisation entry for the tooltip, as a String. Normal format is modId.theitem.info
 	 * @return SimpleBow
 	 */
-	public SimpleBow addToolTip(String toolTip, EnumChatFormatting color) {
-		TooltipHelper.addTooltipToItem(this, color + StatCollector.translateToLocal(toolTip));
+	public SimpleBow addToolTip(String toolTip, TextFormatting color) {
+		TooltipHelper.addTooltipToItem(this, color + I18n.translateToLocal(toolTip));
 		return this;
 	}
 	
@@ -177,72 +181,147 @@ public class SimpleBow extends ItemBow{
 		return this.repairMaterial.getItem() == repair.getItem() ? true : super.getIsRepairable(toRepair, repair);
 	}
 	
+	/**
+     * Called when the player stops using an Item (stops holding the right mouse 
+     * button). This override will have to be re-written everytime the base
+     * ItemBow.onPlayerStoppedUsing() gets re-written.
+     */
 	@Override
-	public void onPlayerStoppedUsing(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer, int par4)
+	public void onPlayerStoppedUsing(ItemStack stack, World worldIn, EntityLivingBase entityLiving, int timeLeft)
 	{
-		int maxUseDuration = getMaxItemUseDuration(par1ItemStack) - par4;
-		ArrowLooseEvent event = new ArrowLooseEvent(par3EntityPlayer, par1ItemStack, maxUseDuration);
-		MinecraftForge.EVENT_BUS.post(event);
-		
-		if(event.isCanceled())
-			return;
-
-		boolean infArrows = (par3EntityPlayer.capabilities.isCreativeMode) || (EnchantmentHelper.getEnchantmentLevel(Enchantment.infinity.effectId, par1ItemStack) > 0 || (this.effects.containsKey(SimpleBowEffects.infiniteArrows)));
-		
-		if((infArrows) || (par3EntityPlayer.inventory.hasItem(Items.arrow)))
+		if (entityLiving instanceof EntityPlayer) 
 		{
-			float f = maxUseDuration / 20.0F;
-			f = (f * f + f * 2.0F) / 3.0F;
-			
-			if(f < 0.1D)
-				return;
-			
-			if(f > 1.0F)
-				f = 1.0F;
-				
-			EntityArrow arrow = new EntityArrow(par2World, par3EntityPlayer, f * 2.0F);
-			int powerLevel = EnchantmentHelper.getEnchantmentLevel(Enchantment.power.effectId, par1ItemStack);
-			int punchLevel = EnchantmentHelper.getEnchantmentLevel(Enchantment.punch.effectId, par1ItemStack);
-			int flameLevel = EnchantmentHelper.getEnchantmentLevel(Enchantment.flame.effectId, par1ItemStack);
+			EntityPlayer entityplayer = (EntityPlayer)entityLiving;
 			boolean efficient = false;
-			
-			if(f == 1.0F)
-				arrow.setIsCritical(true);
-			
-			if(powerLevel > 0)
-				arrow.setDamage(arrow.getDamage() + powerLevel * 0.5D + 0.5D);
-			
-			if(punchLevel > 0)
-				arrow.setKnockbackStrength(punchLevel);
-			
-			if(flameLevel > 0 || effects.containsKey(SimpleBowEffects.flameEffect))
-				arrow.setFire(100);
-			
-			if(f == 1.0F && this.effects.containsKey(SimpleBowEffects.critFlameEffect))
-				arrow.setFire(100);
-			
-			if(effects.containsKey(SimpleBowEffects.damageEffect))
-				arrow.setDamage(arrow.getDamage() *  (Float) effects.get(SimpleBowEffects.damageEffect));
-			
-			if(effects.containsKey(SimpleBowEffects.knockbackEffect))
-				arrow.setKnockbackStrength(punchLevel > 0 ? punchLevel + (Integer) effects.get(SimpleBowEffects.knockbackEffect) : (Integer) effects.get(SimpleBowEffects.knockbackEffect));
-			
-			if(effects.containsKey(SimpleBowEffects.efficiencyEffect))
-				efficient = randomChance((Integer) effects.get(SimpleBowEffects.efficiencyEffect));
-			
-			par1ItemStack.damageItem(1, par3EntityPlayer);
-			par2World.playSoundAtEntity(par3EntityPlayer, "random.bow", 1.0F, 1.0F / (itemRand.nextFloat() * 0.4F + 1.2F) + f * 0.5F);
-			
-			if(infArrows || efficient)
-				arrow.canBePickedUp = 2;
-			
-			else
-				par3EntityPlayer.inventory.consumeInventoryItem(Items.arrow);
-			
-			if(!par2World.isRemote)
-				par2World.spawnEntityInWorld(arrow);
-		}
-	}
+            boolean flag = entityplayer.capabilities.isCreativeMode 
+            				|| EnchantmentHelper.getEnchantmentLevel(Enchantments.infinity, stack) > 0
+            				|| (this.effects.containsKey(SimpleBowEffects.infiniteArrows));
+            ItemStack itemstack = this.findAmmo(entityplayer);
+
+            int i = this.getMaxItemUseDuration(stack) - timeLeft;
+            i = net.minecraftforge.event.ForgeEventFactory.onArrowLoose(stack, worldIn, (EntityPlayer)entityLiving, i, itemstack != null || flag);
+            if (i < 0) return;
+
+            if (itemstack != null || flag)
+            {
+                if (itemstack == null)
+                {
+                    itemstack = new ItemStack(Items.arrow);
+                }
+                // MCP note: getArrowVelocity(i)
+                float f = func_185059_b(i);
+
+                if ((double)f >= 0.1D)
+                {
+                    boolean flag1 = flag && itemstack.getItem() instanceof ItemArrow; //Forge: Fix consuming custom arrows.
+
+                    if (!worldIn.isRemote)
+                    {
+                        ItemArrow itemarrow = (ItemArrow)((ItemArrow)(itemstack.getItem() instanceof ItemArrow ? itemstack.getItem() : Items.arrow));
+                        EntityArrow entityarrow = itemarrow.makeTippedArrow(worldIn, itemstack, entityplayer);
+                        entityarrow.func_184547_a(entityplayer, entityplayer.rotationPitch, entityplayer.rotationYaw, 0.0F, f * 3.0F, 1.0F);
+
+                        if (f == 1.0F)
+                        {
+                            entityarrow.setIsCritical(true);
+                            if (this.effects.containsKey(SimpleBowEffects.critFlameEffect))
+                            {
+                            	entityarrow.setFire(100);
+                            }
+                        }
+
+                        int j = EnchantmentHelper.getEnchantmentLevel(Enchantments.power, stack);
+                        if (j > 0)
+                        {
+                            entityarrow.setDamage(entityarrow.getDamage() + (double)j * 0.5D + 0.5D);
+                        }
+
+                        int k = EnchantmentHelper.getEnchantmentLevel(Enchantments.punch, stack);
+                        if (k > 0)
+                        {
+                            entityarrow.setKnockbackStrength(k);
+                        }
+
+                        if (EnchantmentHelper.getEnchantmentLevel(Enchantments.flame, stack) > 0
+                        	|| effects.containsKey(SimpleBowEffects.flameEffect))
+                        {
+                            entityarrow.setFire(100);
+                        }
+        				if (effects.containsKey(SimpleBowEffects.damageEffect))
+        				{
+        					entityarrow.setDamage(entityarrow.getDamage()
+        							* (Float) effects.get(SimpleBowEffects.damageEffect));
+        				}
+        				if (effects.containsKey(SimpleBowEffects.knockbackEffect)) 
+        				{
+        					entityarrow.setKnockbackStrength(k > 0 ? k
+        							+ (Integer) effects.get(SimpleBowEffects.knockbackEffect)
+        							: (Integer) effects.get(SimpleBowEffects.knockbackEffect));
+        				}
+        				if (effects.containsKey(SimpleBowEffects.efficiencyEffect))
+        				{
+        					efficient = randomChance((Integer) 
+        								effects.get(SimpleBowEffects.efficiencyEffect));
+        				}
+                        stack.damageItem(1, entityplayer);
+
+                        if (flag1 || efficient)
+                        {
+                            entityarrow.canBePickedUp = EntityArrow.PickupStatus.CREATIVE_ONLY;
+                        }
+
+                        worldIn.spawnEntityInWorld(entityarrow);
+                    }
+
+                    worldIn.playSound((EntityPlayer)null, entityplayer.posX, entityplayer.posY, 
+                    				  entityplayer.posZ, SoundEvents.entity_arrow_shoot, 
+                    				  SoundCategory.NEUTRAL, 1.0F, 1.0F / (itemRand.nextFloat() * 0.4F + 1.2F) + f * 0.5F);
+
+                    if (!flag1 && !efficient)
+                    {
+                        --itemstack.stackSize;
+                        if (itemstack.stackSize == 0)
+                        {
+                            entityplayer.inventory.deleteStack(itemstack);
+                        }
+                    }
+
+                    entityplayer.addStat(StatList.func_188057_b(this));
+                }
+            } // end-if
+		} // end-if
+	} // end OnPlayerStoppedUsing()
+
+	/**
+	 * find the right stack of ammo to use.
+	 * @param player
+	 * @return ammo items as ItemStack
+	 */
+    protected ItemStack findAmmo(EntityPlayer player)
+    {
+    	// MCP note: func_185058_h_() == isArrow()
+        if (this.func_185058_h_(player.getHeldItem(EnumHand.OFF_HAND)))
+        {
+            return player.getHeldItem(EnumHand.OFF_HAND);
+        }
+        else if (this.func_185058_h_(player.getHeldItem(EnumHand.MAIN_HAND)))
+        {
+            return player.getHeldItem(EnumHand.MAIN_HAND);
+        }
+        else
+        {
+            for (int i = 0; i < player.inventory.getSizeInventory(); ++i)
+            {
+                ItemStack itemstack = player.inventory.getStackInSlot(i);
+
+                if (this.func_185058_h_(itemstack))
+                {
+                    return itemstack;
+                }
+            }
+            return null;
+        }
+    } // end ()
 
 	public boolean randomChance(int chance)
 	{
@@ -255,30 +334,30 @@ public class SimpleBow extends ItemBow{
 			return false;
 	}
 	
-    @Override
-    public ModelResourceLocation getModel(ItemStack stack, EntityPlayer player, int useRemaining)
-    {
-        ModelResourceLocation modelresourcelocation = new ModelResourceLocation(this.plugin.getModId() + ":" + this.getUnlocalizedName().substring(5), "inventory");
-
-        int var8 = stack.getMaxItemUseDuration() - useRemaining;
-        
-        if(stack.getItem() == this && player.getItemInUse() != null)
-        {
-            if(var8 >= 18)
-            {
-                modelresourcelocation = new ModelResourceLocation(this.plugin.getModId() + ":" + this.getUnlocalizedName().substring(5) + "_pulling_2", "inventory");
-            }
-            else if(var8 > 13)
-            {
-            	modelresourcelocation = new ModelResourceLocation(this.plugin.getModId() + ":" + this.getUnlocalizedName().substring(5) + "_pulling_1", "inventory");
-            }
-            else if(var8 > 0)
-            {
-            	modelresourcelocation = new ModelResourceLocation(this.plugin.getModId() + ":" + this.getUnlocalizedName().substring(5) + "_pulling_0", "inventory");
-            }
-        }
-        return modelresourcelocation;
-    }
+//    @Override
+//    public ModelResourceLocation getModel(ItemStack stack, EntityPlayer player, int useRemaining)
+//    {
+//        ModelResourceLocation modelresourcelocation = new ModelResourceLocation(this.plugin.getModId() + ":" + this.getUnlocalizedName().substring(5), "inventory");
+//
+//        int var8 = stack.getMaxItemUseDuration() - useRemaining;
+//        
+//        if(stack.getItem() == this && player.getItemInUse() != null)
+//        {
+//            if(var8 >= 18)
+//            {
+//                modelresourcelocation = new ModelResourceLocation(this.plugin.getModId() + ":" + this.getUnlocalizedName().substring(5) + "_pulling_2", "inventory");
+//            }
+//            else if(var8 > 13)
+//            {
+//            	modelresourcelocation = new ModelResourceLocation(this.plugin.getModId() + ":" + this.getUnlocalizedName().substring(5) + "_pulling_1", "inventory");
+//            }
+//            else if(var8 > 0)
+//            {
+//            	modelresourcelocation = new ModelResourceLocation(this.plugin.getModId() + ":" + this.getUnlocalizedName().substring(5) + "_pulling_0", "inventory");
+//            }
+//        }
+//        return modelresourcelocation;
+//    }
     
 	public void setAdditionalProperties() {
 		if(entry.getValueByName("CreativeTab") != null && entry.getValueByName("CreativeTab").isActive()) {

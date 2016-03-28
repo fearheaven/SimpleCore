@@ -4,10 +4,10 @@ import java.util.Random;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.block.state.pattern.BlockHelper;
+import net.minecraft.block.state.pattern.BlockMatcher;
 import net.minecraft.init.Blocks;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.WorldGenerator;
 
@@ -20,7 +20,7 @@ public class OreGenHelper extends WorldGenerator
 {
 	@SuppressWarnings("unused")
 	private Block blockToGenerate, blockToReplace;
-	private Predicate<IBlockState> replaceableOreGenBlock = BlockHelper.forBlock(Blocks.stone);
+	private Predicate<IBlockState> replaceableOreGenBlock = BlockMatcher.forBlock(Blocks.stone);
 	@SuppressWarnings("unused")
 	private int blockToGenerateMeta, blockToReplaceMeta;
 	private int veinSize;
@@ -61,7 +61,7 @@ public class OreGenHelper extends WorldGenerator
 	 * @return OreGenHelper
 	 */
 	public OreGenHelper setReplaceableOreGenBlock(Block replaceableOreGenBlock) {
-		this.replaceableOreGenBlock = BlockHelper.forBlock(replaceableOreGenBlock);
+		this.replaceableOreGenBlock = BlockMatcher.forBlock(replaceableOreGenBlock);
 		return this;
 	}
 	
@@ -78,7 +78,8 @@ public class OreGenHelper extends WorldGenerator
 	}
 
 	@Override
-	public boolean generate(World worldIn, Random random, BlockPos blockpos) {
+	public boolean generate(World worldIn, Random random, BlockPos blockpos) 
+	{
 		float randFloat = random.nextFloat() * (float)Math.PI;
 		double randXMax = blockpos.getX() + 8 + MathHelper.sin(randFloat) * this.veinSize / 8.0F;
 		double randXMin = blockpos.getX() + 8 - MathHelper.sin(randFloat) * this.veinSize / 8.0F;
@@ -113,10 +114,11 @@ public class OreGenHelper extends WorldGenerator
 							for(int chunkZ = chunkZMin; chunkZ <= chunkZMax; ++chunkZ) {
 								double var6 = (chunkZ + 0.5D - randZ) / (var2 / 2.0D);
 								
-								if(var4 * var4 + var5 * var5 + var6 * var6 < 1.0D) {
+								if(var4 * var4 + var5 * var5 + var6 * var6 < 1.0D) 
+								{
 									BlockPos blockpos1 = new BlockPos(chunkX, chunkY, chunkZ);
-									
-									if(worldIn.getBlockState(blockpos1).getBlock().isReplaceableOreGen(worldIn, blockpos1, this.replaceableOreGenBlock)) 
+									IBlockState state = worldIn.getBlockState(blockpos1);
+									if(state.getBlock().isReplaceableOreGen(state, worldIn, blockpos1, this.replaceableOreGenBlock)) 
 									{
 										worldIn.setBlockState(blockpos1, this.blockToGenerate.getBlockState().getBaseState(), 2);
 									} // end if
