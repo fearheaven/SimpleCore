@@ -38,7 +38,8 @@ public class SimplePickaxe extends ItemPickaxe{
 	@Override
 	public SimplePickaxe setUnlocalizedName(String pickaxeName) {
 		super.setUnlocalizedName(pickaxeName);
-		GameRegistry.registerItem(this, pickaxeName);
+        setRegistryName(this.plugin.getModId(), pickaxeName);
+        GameRegistry.register(this);
 		ContentRegistry.registerItem(this.plugin, this, pickaxeName, this.category);
 		this.setHarvestLevel("pickaxe", entry.getHarvestLevel());
 		return this;

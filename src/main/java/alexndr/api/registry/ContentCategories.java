@@ -2,11 +2,11 @@ package alexndr.api.registry;
 
 import net.minecraft.creativetab.CreativeTabs;
 
-
 /**
  * @author AleXndrTheGr8st
  */
-public class ContentCategories {
+public class ContentCategories 
+{
 	/**
 	 * @author AleXndrTheGr8st
 	 * Categories of blocks.
@@ -75,51 +75,49 @@ public class ContentCategories {
 	 */
 	public static enum CreativeTab {
 		/**
-		 * Creative tab for general blocks and items.
-		 * Vanilla tab is tabBlock. Used if separate tabs are disabled.
+		 * Creative tab for general blocks and items. Used if separate tabs are disabled.
 		 */
-		GENERAL(CreativeTabs.tabBlock),
+		GENERAL(CreativeTabs.BUILDING_BLOCKS),
 		
 		/**
 		 * Creative tab for blocks.
-		 * Vanilla tab is tabBlock
 		 */
-		BLOCKS(CreativeTabs.tabBlock), 
+		BLOCKS(CreativeTabs.BUILDING_BLOCKS), 
 		
 		/**
 		 * Creative tab for materials such as ingots, etc.
-		 * Vanilla tab is tabMaterials.
 		 */
-		MATERIALS(CreativeTabs.tabMaterials), 
+		MATERIALS(CreativeTabs.MATERIALS), 
 		
 		/**
 		 * Creative tab for decoration blocks/items.
-		 * Vanilla tab is tabDecorations.
 		 */
-		DECORATIONS(CreativeTabs.tabDecorations), 
+		DECORATIONS(CreativeTabs.DECORATIONS), 
 		
 		/**
 		 * Creative tab for tools.
-		 * Vanilla tab is tabTools.
 		 */
-		TOOLS(CreativeTabs.tabTools), 
+		TOOLS(CreativeTabs.TOOLS), 
 		
 		/**
 		 * Creative tab for armor and weapons.
-		 * Vanilla tab is tabCombat.
 		 */
-		COMBAT(CreativeTabs.tabCombat), 
+		COMBAT(CreativeTabs.COMBAT), 
+		
+		/**
+		 * Creative tab for redstone-related or powered items & blocks.
+		 */
+		REDSTONE(CreativeTabs.REDSTONE),
 		
 		/**
 		 * Creative tab for other blocks/items.
-		 * Vanilla tab is tabMisc.
 		 */
-		OTHER(CreativeTabs.tabMisc);
+		OTHER(CreativeTabs.MISC);
 		
 		public final CreativeTabs vanillaTab;
 		
 		private CreativeTab(CreativeTabs vanillaTab) {
 			this.vanillaTab = vanillaTab;
 		}
-	}
-}
+	} // end enum CreativeTab
+} // end class ContentCategories

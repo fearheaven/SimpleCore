@@ -38,7 +38,8 @@ public class SimpleShears extends ItemShears{
 	@Override
 	public SimpleShears setUnlocalizedName(String shearsName) {
 		super.setUnlocalizedName(shearsName);
-		GameRegistry.registerItem(this, shearsName);
+        setRegistryName(this.plugin.getModId(), shearsName);
+        GameRegistry.register(this);
 		ContentRegistry.registerItem(this.plugin, this, shearsName, this.category);
 		this.setMaxDamage(entry.getUses());
 		return this;

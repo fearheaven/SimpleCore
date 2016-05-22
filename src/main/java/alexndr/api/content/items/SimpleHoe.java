@@ -38,7 +38,8 @@ public class SimpleHoe extends ItemHoe{
 	@Override
 	public SimpleHoe setUnlocalizedName(String hoeName) {
 		super.setUnlocalizedName(hoeName);
-		GameRegistry.registerItem(this, hoeName);
+        setRegistryName(this.plugin.getModId(), hoeName);
+        GameRegistry.register(this);
 		ContentRegistry.registerItem(this.plugin, this, hoeName, this.category);
 		this.setHarvestLevel("axe", entry.getHarvestLevel());
 		return this;

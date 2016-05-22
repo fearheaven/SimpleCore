@@ -18,7 +18,7 @@ public class ClientEventHelper
 	public void fovEvent(FOVUpdateEvent event) 
 	{
 		EntityPlayer player = Minecraft.getMinecraft().thePlayer;
-		float baseFOV = event.fov;
+		float baseFOV = event.getFov();
 		if(player.isHandActive() 
 			&& player.getActiveItemStack().getItem() instanceof SimpleBow) 
 		{
@@ -27,9 +27,10 @@ public class ClientEventHelper
 			float fov = baseFOV - (useRemaining * bow.getZoomAmount() / 20.0F);
 			if (fov < baseFOV - bow.getZoomAmount())
 				fov = (baseFOV - bow.getZoomAmount());
-			event.newfov = fov;
-		} else {
-			event.newfov = event.fov;
+			event.setNewfov(fov);
+		} 
+		else {
+			event.setNewfov(event.getFov());
 		}
 	} // end fovEvent
 	

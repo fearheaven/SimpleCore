@@ -39,7 +39,8 @@ public class SimpleShovel extends ItemSpade
 	@Override
 	public SimpleShovel setUnlocalizedName(String shovelName) {
 		super.setUnlocalizedName(shovelName);
-		GameRegistry.registerItem(this, shovelName);
+        setRegistryName(this.plugin.getModId(), shovelName);
+        GameRegistry.register(this);
 		ContentRegistry.registerItem(this.plugin, this, shovelName, this.category);
 		this.setHarvestLevel("shovel", entry.getHarvestLevel());
 		return this;

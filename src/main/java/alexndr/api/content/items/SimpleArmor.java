@@ -59,7 +59,8 @@ public class SimpleArmor extends ItemArmor
 	@Override
 	public SimpleArmor setUnlocalizedName(String armorName) {
 		super.setUnlocalizedName(armorName);
-		GameRegistry.registerItem(this, armorName);
+        setRegistryName(this.plugin.getModId(), armorName);
+        GameRegistry.register(this);
 		ContentRegistry.registerItem(this.plugin, this, armorName, this.category);
 		return this;
 	}

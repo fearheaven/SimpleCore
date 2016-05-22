@@ -38,7 +38,8 @@ public class SimpleSword extends ItemSword{
 	@Override
 	public SimpleSword setUnlocalizedName(String axeName) {
 		super.setUnlocalizedName(axeName);
-		GameRegistry.registerItem(this, axeName);
+        setRegistryName(this.plugin.getModId(), axeName);
+        GameRegistry.register(this);
 		ContentRegistry.registerItem(this.plugin, this, axeName, this.category);
 		this.setHarvestLevel("axe", entry.getHarvestLevel());
 		return this;

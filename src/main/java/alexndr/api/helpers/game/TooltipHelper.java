@@ -57,15 +57,17 @@ public class TooltipHelper {
 	
 	public static void notifyTooltip(ItemTooltipEvent event) {
 		int num = 0;
-		if(event.showAdvancedItemTooltips)
+		if(event.isShowAdvancedItemTooltips())
 			num = 1;
 		
 		for(ToolTip tooltip : tooltipList) {
-			if(tooltip.item == event.itemStack.getItem()) {
+			if(tooltip.item == event.getItemStack().getItem()) {
 				if(tooltip.localised)
-					event.toolTip.add(event.toolTip.size() - num, I18n.translateToLocal(tooltip.toolTip));
+					event.getToolTip().add(event.getToolTip().size() - num, 
+										   I18n.translateToLocal(tooltip.toolTip));
 				else
-					event.toolTip.add(event.toolTip.size() - num, tooltip.toolTip);
+					event.getToolTip().add(event.getToolTip().size() - num, 
+										   tooltip.toolTip);
 			}
 		}
 	}

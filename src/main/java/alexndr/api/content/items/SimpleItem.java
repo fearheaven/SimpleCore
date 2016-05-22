@@ -35,7 +35,8 @@ public class SimpleItem extends Item {
 	@Override
 	public SimpleItem setUnlocalizedName(String itemName) {
 		super.setUnlocalizedName(itemName);
-		GameRegistry.registerItem(this, itemName);
+        setRegistryName(this.plugin.getModId(), itemName);
+        GameRegistry.register(this);
 		ContentRegistry.registerItem(this.plugin, this, itemName, this.category);
 		return this;
 	}

@@ -9,7 +9,9 @@ import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import alexndr.api.helpers.events.ClientEventHelper;
 import alexndr.api.helpers.game.RenderDetails;
@@ -20,15 +22,38 @@ import alexndr.api.registry.Plugin;
 public class ProxyClient extends ProxyCommon 
 {
 	@Override
-	public void registerEventHandlers() {
-		MinecraftForge.EVENT_BUS.register(new ClientEventHelper());
+	public void preInit(FMLPreInitializationEvent event) 
+	{
+		super.preInit(event);
+		registerClientEventHandlers();
 	}
+	
+	@Override
+    public void load(FMLInitializationEvent event)
+    {
+    	super.load(event);
+    } // end load()
+
+	@Override
+    public void postInit(FMLPostInitializationEvent event) 
+    { 
+		super.postInit(event);
+		
+		//Inventory Render Stuff
+		if(event.getSide() == Side.CLIENT) 
+		{
+			renderItemStuff(event);
+		}
+    } // end postInit()
+    
+	public void registerClientEventHandlers() {
+		MinecraftForge.EVENT_BUS.register(new ClientEventHelper());
+	} // end registerEventHandlers()
 	
 	/**
 	 * Sets up the 1.8+ Render Item details for all registered blocks and items.
 	 * @param event FMLPostInitializationEvent
 	 */
-	@Override
 	public void renderItemStuff(FMLPostInitializationEvent event) 
 	{
 		LogHelper.verbose("Creating RenderItem's for all plugins");

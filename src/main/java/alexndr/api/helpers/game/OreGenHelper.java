@@ -20,7 +20,7 @@ public class OreGenHelper extends WorldGenerator
 {
 	@SuppressWarnings("unused")
 	private Block blockToGenerate, blockToReplace;
-	private Predicate<IBlockState> replaceableOreGenBlock = BlockMatcher.forBlock(Blocks.stone);
+	private Predicate<IBlockState> replaceableOreGenBlock = BlockMatcher.forBlock(Blocks.STONE);
 	@SuppressWarnings("unused")
 	private int blockToGenerateMeta, blockToReplaceMeta;
 	private int veinSize;

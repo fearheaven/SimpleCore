@@ -348,7 +348,7 @@ public class ConfigBlock extends ConfigEntry{
 	public Item getItemToDrop() {
 		for(ConfigValue value : valuesList) {
 			if(value.getName().equals(itemToDrop.getName()))
-				return (Item) Item.itemRegistry.getObject(new ResourceLocation(value.getCurrentValue()));
+				return (Item) Item.REGISTRY.getObject(new ResourceLocation(value.getCurrentValue()));
 		}
 		return null;
 	}
@@ -359,7 +359,7 @@ public class ConfigBlock extends ConfigEntry{
 	 * @return ConfigBlock
 	 */
 	public ConfigBlock setItemToDrop(Item itemToDrop) {
-		this.itemToDrop.setActive().setDataType("@S").setCurrentValue("" + Item.itemRegistry.getNameForObject(itemToDrop)).setDefaultValue("" + Item.itemRegistry.getNameForObject(itemToDrop));
+		this.itemToDrop.setActive().setDataType("@S").setCurrentValue("" + Item.REGISTRY.getNameForObject(itemToDrop)).setDefaultValue("" + Item.REGISTRY.getNameForObject(itemToDrop));
 		return this;
 	}
 	
@@ -417,7 +417,7 @@ public class ConfigBlock extends ConfigEntry{
 				}
 			}
 		}
-		return Material.rock;
+		return Material.ROCK;
 	}
 
 	/**
