@@ -36,7 +36,6 @@ public class ProxyCommon
 
     public void postInit(FMLPostInitializationEvent event) 
     { 
-    	
     } // end postInit()    
 
 	/**
