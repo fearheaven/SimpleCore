@@ -32,12 +32,12 @@ def getVersionAppendage() {
     proc.waitFor()
     return "DEV-" + proc.text.trim()
 }
-version = "${version_minecraft}-${version_mod}." + getVersionAppendage()"
+version = "${version_minecraft}-${version_mod}." + getVersionAppendage()
 group= "alexndr.api" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "simplecore"
 
 minecraft {
-    version = "1.9-12.16.0.1811-1.9"
+    version = "1.9-12.16.1.1907"
     runDir = "run"
     replaceIn "APIInfo.java"
     replace "@MODVERSION@", "${project.version_mod}." + getVersionAppendage()
