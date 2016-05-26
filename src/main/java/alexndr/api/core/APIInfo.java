@@ -18,7 +18,7 @@ public class APIInfo {
 	public static final String LOGO = "/assets/simplecore/logos/SimpleCore.png";
 	public static final String PARENT = "";
 	public static final boolean USEDEPENDENCYINFO = true;
-	public static final String DEPENDENCIES = "";
+	public static final String DEPENDENCIES = "required-after:Forge@[12.17.0.1921,)";
 //	public static final String VERSIONURL = "https://dl.dropboxusercontent.com/u/66466201/Mods/SimpleCore%20API/SimpleCore%20Version.txt";
 
 	// use mcmod.info instead, so that tools that look at the jar file such as MultiMC

@@ -16,7 +16,8 @@ import com.google.common.collect.Lists;
 /**
  * @author AleXndrTheGr8st
  */
-public class SimpleAxe extends ItemAxe{
+public class SimpleAxe extends ItemAxe
+{
 	private final ToolMaterial material;
 	private Plugin plugin;
 	private ContentCategories.Item category = ContentCategories.Item.TOOL;
@@ -29,8 +30,9 @@ public class SimpleAxe extends ItemAxe{
 	 * @param plugin The plugin the tool belongs to
 	 * @param material The ToolMaterial of the tool
 	 */
-	public SimpleAxe(Plugin plugin, ToolMaterial material) {
-		super(material);
+	public SimpleAxe(Plugin plugin, ToolMaterial material, float damage, float speed) 
+	{
+		super(material, damage, speed);
 		this.plugin = plugin;
 		this.material = material;
 	}

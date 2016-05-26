@@ -3,10 +3,11 @@ gradle/
 run/
 libs/
 .settings/
-ashenwheat*.launch
 *.log
 *.jar
 *.class
+.classpath
+*.launch
 gradlew
 gradlew.bat
 bin/
