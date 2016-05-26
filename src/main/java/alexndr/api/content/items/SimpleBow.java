@@ -22,7 +22,6 @@ import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import alexndr.api.config.types.ConfigEntry;
-import alexndr.api.core.SimpleCoreAPI;
 import alexndr.api.helpers.game.TooltipHelper;
 import alexndr.api.registry.ContentCategories;
 import alexndr.api.registry.ContentRegistry;
@@ -57,12 +56,13 @@ public class SimpleBow extends ItemBow
 	}
 	
 	@Override
-	public SimpleBow setUnlocalizedName(String bowName) {
+	public SimpleBow setUnlocalizedName(String bowName) 
+	{
 		super.setUnlocalizedName(bowName);
 		
         setRegistryName(this.plugin.getModId(), bowName);
         GameRegistry.register(this);
-		SimpleCoreAPI.addBowRenderDetails(plugin, this);
+//		SimpleCoreAPI.addBowRenderDetails(plugin, this);
 		ContentRegistry.registerItem(this.plugin, this, bowName, this.category);
 		ContentRegistry.registerItem(this.plugin, this, bowName + "_pulling_0", this.category);
 		ContentRegistry.registerItem(this.plugin, this, bowName + "_pulling_1", this.category);

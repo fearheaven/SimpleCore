@@ -15,8 +15,6 @@ import alexndr.api.logger.LogHelper;
 import alexndr.api.registry.ContentCategories;
 import alexndr.api.registry.Plugin;
 
-import com.google.common.collect.Lists;
-
 /**
  * @author AleXndrTheGr8st
  */
@@ -34,9 +32,6 @@ public class SimpleCoreAPI
 	
 	public static Plugin plugin = new Plugin(APIInfo.ID, APIInfo.NAME);
 	public static Plugin vanilla = new Plugin("minecraft", "Minecraft");
-	
-	//Bow Renders
-	public static List<List<Object>> bowRenderList = Lists.newArrayList();
 	
 	//Creative Tabs
 	private static boolean iconsSet = false;
@@ -115,15 +110,5 @@ public class SimpleCoreAPI
 	}
 	
 	
-	/**
-	 * Adds a bow to the list to be rendered.
-	 * @param plugin The plugin the bow belongs to
-	 * @param bow The bow
-	 */
-	public static void addBowRenderDetails(Plugin plugin, Item bow) {
-		List<Object> list = Lists.newArrayList();
-		list.add(plugin);
-		list.add(bow);
-		bowRenderList.add(list);
-	}
+
 } // end class
