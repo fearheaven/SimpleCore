@@ -37,7 +37,7 @@ group= "alexndr.api" // http://maven.apache.org/guides/mini/guide-naming-convent
 archivesBaseName = "simplecore"
 
 minecraft {
-    version = "1.9.4-12.17.0.1936-1.9.4"
+    version = "1.9.4-12.17.0.1950"
     runDir = "run"
     replaceIn "APIInfo.java"
     replace "@MODVERSION@", "${project.version_mod}." + getVersionAppendage()
