@@ -1,7 +1,11 @@
 package alexndr.api.content.items;
 
+import javax.annotation.Nullable;
+
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStackSimple;
 
@@ -65,5 +69,59 @@ public class SimpleBucketFluidHandler extends FluidHandlerItemStackSimple.SwapEm
 
         return 0;
     } // end fill()
+
+	@SuppressWarnings("deprecation")
+	@Override
+	protected void setFluid(FluidStack fluid) 
+	{
+		if (!bucketType.doesVariantExist(fluid.getFluid())) {
+			return;
+		}
+		if (fluid.getFluid() == FluidRegistry.WATER)
+        {
+            container.setItem(bucketType.getBucketFromLiquid(FluidRegistry.WATER));
+            container.setTagCompound(null);
+            container.setItemDamage(0);
+        }
+        else if (fluid.getFluid() == FluidRegistry.LAVA
+        		 && ! bucketType.getDestroyOnLava())
+        {
+            container.setItem(bucketType.getBucketFromLiquid(FluidRegistry.LAVA));
+            container.setTagCompound(null);
+            container.setItemDamage(0);
+        }
+        else if (fluid.getFluid().getName().equals("milk"))
+        {
+            container.setItem(bucketType.getBucketFromLiquid(FluidRegistry.getFluid("milk")));
+            container.setTagCompound(null);
+            container.setItemDamage(0);
+        }
+        else {
+        	super.setFluid(fluid);
+        }
+	} // end setFluid()
+
+	@Override
+	@Nullable
+	public FluidStack getFluid() 
+	{
+		Item item = container.getItem();
+		if (item == bucketType.getBucketFromLiquid(FluidRegistry.WATER))
+		{
+			return new FluidStack(FluidRegistry.WATER, Fluid.BUCKET_VOLUME);
+		}
+		else if (item == bucketType.getBucketFromLiquid(FluidRegistry.LAVA))
+		{
+			return new FluidStack(FluidRegistry.LAVA, Fluid.BUCKET_VOLUME);
+		}
+		else if (item == bucketType.getBucketFromLiquid(FluidRegistry.getFluid("milk")))
+		{
+			return FluidRegistry.getFluidStack("milk", Fluid.BUCKET_VOLUME);
+		}
+		else
+		{
+			return super.getFluid();
+		}
+	} // end getFluid()
 	
 } // end class
