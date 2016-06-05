@@ -20,6 +20,7 @@ import com.google.common.collect.Lists;
 /**
  * @author AleXndrTheGr8st
  */
+@SuppressWarnings("deprecation")
 public class SimpleArmor extends ItemArmor
 {
 //	public static enum Slots{

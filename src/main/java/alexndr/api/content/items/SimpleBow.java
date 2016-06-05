@@ -32,6 +32,7 @@ import com.google.common.collect.Lists;
 /**
  * @author AleXndrTheGr8st
  */
+@SuppressWarnings("deprecation")
 public class SimpleBow extends ItemBow
 {
 	private Plugin plugin;

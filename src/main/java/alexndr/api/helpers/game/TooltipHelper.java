@@ -12,6 +12,7 @@ import com.google.common.collect.Lists;
 /**
  * @author AleXndrTheGr8st
  */
+@SuppressWarnings("deprecation")
 public class TooltipHelper {
 	private static List<ToolTip> tooltipList = Lists.newArrayList();
 	

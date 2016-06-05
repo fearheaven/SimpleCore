@@ -15,7 +15,6 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.event.entity.player.FillBucketEvent;
@@ -42,7 +41,6 @@ import com.google.common.collect.Lists;
  * @author Sinhika
  *
  */
-@SuppressWarnings("deprecation")
 public class SimpleBucket extends ItemFluidContainer 
 {
 	protected Plugin plugin;
@@ -61,10 +59,11 @@ public class SimpleBucket extends ItemFluidContainer
 	public SimpleBucket(Plugin plugin, ItemStack empty, SimpleBucketType type) 
 	{
 		super(Fluid.BUCKET_VOLUME);
-		this.empty = empty;
+		
 		this.bucketType = type;
 		this.plugin = plugin;
         this.setMaxStackSize(1);
+		this.empty = ((empty == null) ? new ItemStack(this) : empty);
 	}
 
 	@Override
@@ -120,7 +119,7 @@ public class SimpleBucket extends ItemFluidContainer
 		return new SimpleBucketFluidHandler(stack, empty, capacity, bucketType);
 	}
 
-    public FluidStack getFluid(ItemStack container)
+    protected FluidStack getFluid(ItemStack container)
     {
 		SimpleBucketFluidHandler handler = 
 				(SimpleBucketFluidHandler) container.getCapability(
@@ -200,29 +199,29 @@ public class SimpleBucket extends ItemFluidContainer
         }
     } // end onFillBucket()
 
-    @Override
-    public String getItemStackDisplayName(ItemStack stack)
-    {
-        FluidStack fluidStack = getFluid(stack);
-        if (fluidStack == null)
-        {
-            if(getEmpty() != null)
-            {
-                return getEmpty().getDisplayName();
-            }
-            return super.getItemStackDisplayName(stack);
-        }
-
-        String unloc = this.getUnlocalizedNameInefficiently(stack);
-
-        if (I18n.canTranslate(unloc + "." + fluidStack.getFluid().getName()))
-        {
-            return I18n.translateToLocal(unloc + "." + fluidStack.getFluid().getName());
-        }
-
-        return I18n.translateToLocalFormatted(unloc + ".name", fluidStack.getLocalizedName());
-    } // end getItemStackDisplayName()
-    
+//    @Override
+//    public String getItemStackDisplayName(ItemStack stack)
+//    {
+//        FluidStack fluidStack = getFluid(stack);
+//        if (fluidStack == null)
+//        {
+//            if(getEmpty() != null)
+//            {
+//                return getEmpty().getDisplayName();
+//            }
+//            return super.getItemStackDisplayName(stack);
+//        }
+//
+//        String unloc = this.getUnlocalizedNameInefficiently(stack);
+//
+//        if (I18n.canTranslate(unloc + "." + fluidStack.getFluid().getName()))
+//        {
+//            return I18n.translateToLocal(unloc + "." + fluidStack.getFluid().getName());
+//        }
+//
+//        return I18n.translateToLocalFormatted(unloc + ".name", fluidStack.getLocalizedName());
+//    } // end getItemStackDisplayName()
+//    
     
     @Override
     public ActionResult<ItemStack> onItemRightClick(ItemStack itemstack, World world, 
