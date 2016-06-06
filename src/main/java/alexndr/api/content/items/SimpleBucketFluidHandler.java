@@ -35,8 +35,8 @@ public class SimpleBucketFluidHandler extends FluidHandlerItemStackSimple.SwapEm
     @Override
     public int fill(FluidStack resource, boolean doFill)
     {
-        if (container.stackSize != 1 || resource == null || resource.amount <= 0
-        	|| !canFillFluidType(resource)) 
+        if (container.stackSize != 1 || resource == null || resource.amount < Fluid.BUCKET_VOLUME
+        		|| getFluid() != null || !canFillFluidType(resource)) 
         {
             return 0;
         }
@@ -52,22 +52,10 @@ public class SimpleBucketFluidHandler extends FluidHandlerItemStackSimple.SwapEm
         	}
         } // if bucket-type will melt
 
-        FluidStack contained = getFluid();
-        if (contained == null)
-        {
-            int fillAmount = Math.min(capacity, resource.amount);
-            if (fillAmount == capacity) {
-                if (doFill) {
-                    FluidStack filled = resource.copy();
-                    filled.amount = fillAmount;
-                    setFluid(filled);
-                }
-
-                return fillAmount;
-            }
+        if (doFill) {
+        	setFluid(resource);
         }
-
-        return 0;
+        return Fluid.BUCKET_VOLUME;
     } // end fill()
 
 	@SuppressWarnings("deprecation")

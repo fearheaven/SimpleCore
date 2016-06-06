@@ -5,20 +5,28 @@ package alexndr.api.content.items;
 
 import java.util.List;
 
+import net.minecraft.block.BlockLiquid;
+import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.stats.StatList;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.entity.player.FillBucketEvent;
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -141,7 +149,7 @@ public class SimpleBucket extends ItemFluidContainer
             return;
         }
 
-        // not for us to handle
+        // not for us to handle, because this isn't an empty bucket.
         ItemStack emptyBucket = event.getEmptyBucket();
         if (emptyBucket == null ||
             !emptyBucket.isItemEqual(getEmpty()))
@@ -228,60 +236,153 @@ public class SimpleBucket extends ItemFluidContainer
     											    EntityPlayer player, EnumHand hand)
     {
         FluidStack fluidStack = getFluid(itemstack);
+        boolean flag = fluidStack == null;
+        RayTraceResult mop = this.rayTrace(world, player, flag);
         
-        // empty bucket shouldn't exist, do nothing since it should be handled by the bucket event
-        if (fluidStack == null)
+        ActionResult<ItemStack> ret = ForgeEventFactory.onBucketUse(player, world, 
+        															itemstack, mop);
+        // if FillBucketEvent is handled, we're done.
+        if (ret != null) return ret;
+        
+        // EVERYTHING BELOW IS PROBABLY UNNECESSARY, but at least handle 
+        // vanilla liquids in case onFillBucket() is AWOL.
+        if (mop == null)
         {
             return ActionResult.newResult(EnumActionResult.PASS, itemstack);
         }
-
-        // clicked on a block?
-        RayTraceResult mop = this.rayTrace(world, player, false);
-
-        if(mop == null || mop.typeOfHit != RayTraceResult.Type.BLOCK)
+        else if(mop == null || mop.typeOfHit != RayTraceResult.Type.BLOCK)
         {
             return ActionResult.newResult(EnumActionResult.PASS, itemstack);
         }
 
         BlockPos clickPos = mop.getBlockPos();
         // can we place liquid there?
-        if (world.isBlockModifiable(player, clickPos))
+        if (!world.isBlockModifiable(player, clickPos))
+        {
+            // couldn't place liquid there2
+            return ActionResult.newResult(EnumActionResult.FAIL, itemstack);
+        }
+        else if (flag) // empty bucket
         {
             // the block adjacent to the side we clicked on
             BlockPos targetPos = clickPos.offset(mop.sideHit);
 
-            // can the player place there?
-            if (player.canPlayerEdit(targetPos, mop.sideHit, itemstack))
+            // can the player change this location?
+            if (!player.canPlayerEdit(targetPos, mop.sideHit, itemstack))
             {
-                // try placing liquid
-                if (FluidUtil.tryPlaceFluid(player, player.getEntityWorld(), fluidStack, targetPos)
-                        && !player.capabilities.isCreativeMode)
+                return ActionResult.newResult(EnumActionResult.FAIL, itemstack);
+            }
+            else 
+            {
+                IBlockState iblockstate = world.getBlockState(clickPos);
+                Material material = iblockstate.getMaterial();
+                
+                if (material == Material.WATER 
+                	&& ((Integer)iblockstate.getValue(BlockLiquid.LEVEL)).intValue() == 0)
                 {
-                    // success!
+                    world.setBlockState(clickPos, Blocks.AIR.getDefaultState(), 11);
                     player.addStat(StatList.getObjectUseStats(this));
-
-                    itemstack.stackSize--;
-                    ItemStack emptyStack = getEmpty() != null ? getEmpty().copy() : new ItemStack(this);
-
-                    // check whether we replace the item or add the empty one to the inventory
-                    if (itemstack.stackSize <= 0)
+                    player.playSound(SoundEvents.ITEM_BUCKET_FILL, 1.0F, 1.0F);
+                    Item water_bucket = bucketType.getBucketFromLiquid(FluidRegistry.WATER);
+                    if (water_bucket == null) 
                     {
-                        return ActionResult.newResult(EnumActionResult.SUCCESS, emptyStack);
+                        return ActionResult.newResult(EnumActionResult.FAIL, itemstack);
                     }
-                    else
+                    return ActionResult.newResult(EnumActionResult.SUCCESS, 
+                    		this.fillBucket(itemstack, player, water_bucket));
+                }
+                else if (material == Material.LAVA 
+                   && ((Integer)iblockstate.getValue(BlockLiquid.LEVEL)).intValue() == 0)
+                {
+                    // did we try to dip a meltable/flammable bucket in something hot?
+                    if (bucketType.getDestroyOnLava())
                     {
-                        // add empty bucket to player inventory
-                        ItemHandlerHelper.giveItemToPlayer(player, emptyStack);
-                        return ActionResult.newResult(EnumActionResult.SUCCESS, itemstack);
+                    	player.playSound(SoundEvents.BLOCK_LAVA_EXTINGUISH, 0.5F,
+                    			2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
+                    	// destroy it
+                    	--itemstack.stackSize;
+                        if (itemstack.stackSize < 0)
+                        {
+                        	itemstack.stackSize = 0;
+                        }
+                        return ActionResult.newResult(EnumActionResult.FAIL, itemstack);
                     }
-                } // end-if tryPlaceFluid
+                    // no, we didn't. But do we do lava?
+                	Item lava_bucket = bucketType.getBucketFromLiquid(FluidRegistry.LAVA);
+                    if (lava_bucket == null) 
+                    {
+                        return ActionResult.newResult(EnumActionResult.FAIL, itemstack);
+                    }
+                    player.playSound(SoundEvents.ITEM_BUCKET_FILL_LAVA, 1.0F, 1.0F);
+                    world.setBlockState(clickPos, Blocks.AIR.getDefaultState(), 11);
+                    player.addStat(StatList.getObjectUseStats(this));
+                    return ActionResult.newResult(EnumActionResult.SUCCESS, 
+                    		this.fillBucket(itemstack, player, lava_bucket));
+                }
+                else
+                {
+                    return ActionResult.newResult(EnumActionResult.FAIL, itemstack);
+                }
             } // end-if canPlayerEdit
-        } // end-if isBlockModifiable
+        } // end-if flag
+        // full bucket of stuff.
+        else {
+            boolean flag1 = world.getBlockState(clickPos).getBlock().isReplaceable(world, clickPos);
+            BlockPos blockpos1 = flag1 && mop.sideHit == EnumFacing.UP 
+            		? clickPos : clickPos.offset(mop.sideHit);
 
-        // couldn't place liquid there2
+            if (!player.canPlayerEdit(blockpos1, mop.sideHit, itemstack))
+            {
+                return ActionResult.newResult(EnumActionResult.FAIL, itemstack);
+            }
+        	// try placing liquid
+            else if (FluidUtil.tryPlaceFluid(player, player.getEntityWorld(), 
+            								 fluidStack, blockpos1)
+                    && !player.capabilities.isCreativeMode)
+            {
+                // success!
+                player.addStat(StatList.getObjectUseStats(this));
+
+                itemstack.stackSize--;
+                ItemStack emptyStack = getEmpty() != null ? getEmpty().copy() : new ItemStack(this);
+
+                // check whether we replace the item or add the empty one to the inventory
+                if (itemstack.stackSize <= 0)
+                {
+                    return ActionResult.newResult(EnumActionResult.SUCCESS, emptyStack);
+                }
+                else
+                {
+                    // add empty bucket to player inventory
+                    ItemHandlerHelper.giveItemToPlayer(player, emptyStack);
+                    return ActionResult.newResult(EnumActionResult.SUCCESS, itemstack);
+                }
+            } // end-if tryPlaceFluid
+        } // end-else !flag
+        
+        // we shouldn't get here, but this shuts compiler up.
         return ActionResult.newResult(EnumActionResult.FAIL, itemstack);
     } // end onItemRightClick()
 
-    
+    protected ItemStack fillBucket(ItemStack emptyBuckets, EntityPlayer player, Item fullBucket)
+    {
+        if (player.capabilities.isCreativeMode)
+        {
+            return emptyBuckets;
+        }
+        else if (--emptyBuckets.stackSize <= 0)
+        {
+            return new ItemStack(fullBucket);
+        }
+        else
+        {
+            if (!player.inventory.addItemStackToInventory(new ItemStack(fullBucket)))
+            {
+                player.dropItem(new ItemStack(fullBucket), false);
+            }
+
+            return emptyBuckets;
+        }
+    } // end fillBucket()
     
 } // end class
