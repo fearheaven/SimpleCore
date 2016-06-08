@@ -33,7 +33,6 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.ItemFluidContainer;
 import net.minecraftforge.fml.common.eventhandler.Event;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -140,7 +139,7 @@ public class SimpleBucket extends ItemFluidContainer
         return empty;
     }
 
-    @SubscribeEvent(priority = EventPriority.LOW) // low priority so other mods can handle their stuff first
+    @SubscribeEvent
     public void onFillBucket(FillBucketEvent event)
     {
         if (event.getResult() != Event.Result.DEFAULT)
@@ -184,7 +183,8 @@ public class SimpleBucket extends ItemFluidContainer
         	Fluid fluid = targetFluidHandler.getTankProperties()[0].getContents().getFluid();
         	
         	// did we??
-        	if (fluid.getTemperature() >= SimpleBucketType.DESTROY_ON_LAVA_TEMP)
+        	if (fluid == FluidRegistry.LAVA 
+        		|| fluid.getTemperature() >= SimpleBucketType.DESTROY_ON_LAVA_TEMP)
         	{
         		event.getEntityPlayer().playSound(
 						SoundEvents.BLOCK_LAVA_EXTINGUISH, 0.5F,
@@ -244,8 +244,6 @@ public class SimpleBucket extends ItemFluidContainer
         // if FillBucketEvent is handled, we're done.
         if (ret != null) return ret;
         
-        // EVERYTHING BELOW IS PROBABLY UNNECESSARY, but at least handle 
-        // vanilla liquids in case onFillBucket() is AWOL.
         if (mop == null)
         {
             return ActionResult.newResult(EnumActionResult.PASS, itemstack);
@@ -262,6 +260,8 @@ public class SimpleBucket extends ItemFluidContainer
             // couldn't place liquid there2
             return ActionResult.newResult(EnumActionResult.FAIL, itemstack);
         }
+        // EVERYTHING BELOW IS PROBABLY UNNECESSARY, but at least handle 
+        // vanilla liquids in case onFillBucket() is AWOL.
         else if (flag) // empty bucket
         {
             // the block adjacent to the side we clicked on
@@ -329,7 +329,7 @@ public class SimpleBucket extends ItemFluidContainer
         else {
             boolean flag1 = world.getBlockState(clickPos).getBlock().isReplaceable(world, clickPos);
             BlockPos blockpos1 = flag1 && mop.sideHit == EnumFacing.UP 
-            		? clickPos : clickPos.offset(mop.sideHit);
+            					? clickPos : clickPos.offset(mop.sideHit);
 
             if (!player.canPlayerEdit(blockpos1, mop.sideHit, itemstack))
             {
@@ -337,26 +337,31 @@ public class SimpleBucket extends ItemFluidContainer
             }
         	// try placing liquid
             else if (FluidUtil.tryPlaceFluid(player, player.getEntityWorld(), 
-            								 fluidStack, blockpos1)
-                    && !player.capabilities.isCreativeMode)
+            								 fluidStack, blockpos1))
             {
                 // success!
                 player.addStat(StatList.getObjectUseStats(this));
 
-                itemstack.stackSize--;
-                ItemStack emptyStack = getEmpty() != null ? getEmpty().copy() : new ItemStack(this);
+                if (player.capabilities.isCreativeMode)
+                {
+            		return ActionResult.newResult(EnumActionResult.SUCCESS, itemstack);
+                }
+                else {
+                	itemstack.stackSize--;
+                	ItemStack emptyStack = getEmpty() != null ? getEmpty().copy() : new ItemStack(this);
 
-                // check whether we replace the item or add the empty one to the inventory
-                if (itemstack.stackSize <= 0)
-                {
-                    return ActionResult.newResult(EnumActionResult.SUCCESS, emptyStack);
-                }
-                else
-                {
-                    // add empty bucket to player inventory
-                    ItemHandlerHelper.giveItemToPlayer(player, emptyStack);
-                    return ActionResult.newResult(EnumActionResult.SUCCESS, itemstack);
-                }
+                	// check whether we replace the item or add the empty one to the inventory
+                	if (itemstack.stackSize <= 0)
+                	{
+                		return ActionResult.newResult(EnumActionResult.SUCCESS, emptyStack);
+                	}
+                	else
+                	{
+                		// add empty bucket to player inventory
+                		ItemHandlerHelper.giveItemToPlayer(player, emptyStack);
+                		return ActionResult.newResult(EnumActionResult.SUCCESS, itemstack);
+                	}
+                } // else !creativeMode
             } // end-if tryPlaceFluid
         } // end-else !flag
         

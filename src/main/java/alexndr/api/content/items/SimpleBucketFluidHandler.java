@@ -7,6 +7,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.FluidTankProperties;
+import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStackSimple;
 
 public class SimpleBucketFluidHandler extends FluidHandlerItemStackSimple.SwapEmpty
@@ -35,8 +37,9 @@ public class SimpleBucketFluidHandler extends FluidHandlerItemStackSimple.SwapEm
     @Override
     public int fill(FluidStack resource, boolean doFill)
     {
-        if (container.stackSize != 1 || resource == null || resource.amount < Fluid.BUCKET_VOLUME
-        		|| getFluid() != null || !canFillFluidType(resource)) 
+        if (container.stackSize != 1 || resource == null 
+        	|| resource.amount < Fluid.BUCKET_VOLUME
+        	|| getFluid() != null || !canFillFluidType(resource)) 
         {
             return 0;
         }
@@ -45,7 +48,8 @@ public class SimpleBucketFluidHandler extends FluidHandlerItemStackSimple.SwapEm
         if (bucketType.getDestroyOnLava())
         {
         	Fluid liquid = resource.getFluid();
-        	if (liquid.getTemperature() >= SimpleBucketType.DESTROY_ON_LAVA_TEMP)
+        	if (liquid == FluidRegistry.LAVA 
+        		|| liquid.getTemperature() >= SimpleBucketType.DESTROY_ON_LAVA_TEMP)
         	{
         		// No, we didn't fill the bucket, because it's melting.
         		return 0;
@@ -94,7 +98,11 @@ public class SimpleBucketFluidHandler extends FluidHandlerItemStackSimple.SwapEm
 	public FluidStack getFluid() 
 	{
 		Item item = container.getItem();
-		if (item == bucketType.getBucketFromLiquid(FluidRegistry.WATER))
+		if (item == emptyContainer.getItem()) 
+		{
+			return null;
+		}
+		else if (item == bucketType.getBucketFromLiquid(FluidRegistry.WATER))
 		{
 			return new FluidStack(FluidRegistry.WATER, Fluid.BUCKET_VOLUME);
 		}
@@ -111,5 +119,11 @@ public class SimpleBucketFluidHandler extends FluidHandlerItemStackSimple.SwapEm
 			return super.getFluid();
 		}
 	} // end getFluid()
+
+	@Override
+	public IFluidTankProperties[] getTankProperties() 
+	{
+        return new FluidTankProperties[] { new FluidTankProperties(getFluid(), Fluid.BUCKET_VOLUME) };
+	}
 	
 } // end class
