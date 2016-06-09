@@ -106,6 +106,7 @@ public class SimpleBucketFluidHandler extends FluidHandlerItemStackSimple.SwapEm
 		if (fluid == null || fluid.getFluid() == null)
 		{
             setContainerToEmpty();
+            return;
 		}
 		else if (fluid.getFluid() == FluidRegistry.WATER)
         {
