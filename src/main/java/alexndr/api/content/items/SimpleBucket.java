@@ -70,8 +70,14 @@ public class SimpleBucket extends ItemFluidContainer
 		this.bucketType = type;
 		this.plugin = plugin;
         this.setMaxStackSize(1);
-		this.empty = ((empty == null) ? new ItemStack(this) : empty);
-	}
+        if (empty == null) {
+        	this.empty = new ItemStack(this);
+        }
+        else {
+        	this.empty = empty;
+        	setContainerItem(empty.getItem());
+        }
+	} // end ctor
 
 	@Override
 	public SimpleBucket setUnlocalizedName(String itemName) 

@@ -13,7 +13,7 @@ import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStackSimpl
 
 public class SimpleBucketFluidHandler extends FluidHandlerItemStackSimple.SwapEmpty
 {
-    protected SimpleBucketType bucketType;
+	protected SimpleBucketType bucketType;
 
 	public SimpleBucketFluidHandler(ItemStack container, ItemStack emptyContainer, 
 									int capacity, SimpleBucketType type) 
@@ -33,12 +33,45 @@ public class SimpleBucketFluidHandler extends FluidHandlerItemStackSimple.SwapEm
 	{
 		return bucketType.doesVariantExist(fluid.getFluid());
 	}
-
+	
     @Override
-    public int fill(FluidStack resource, boolean doFill)
+	public FluidStack drain(FluidStack resource, boolean doDrain) 
     {
         if (container.stackSize != 1 || resource == null 
-        	|| resource.amount < Fluid.BUCKET_VOLUME
+        		|| resource.amount < Fluid.BUCKET_VOLUME)
+        {
+            return null;
+        }
+
+        return drain(resource.amount, doDrain);
+	} // end drain(FluidStack, boolean)
+
+
+    @Override
+	public FluidStack drain(int maxDrain, boolean doDrain) 
+    {
+        if (container.stackSize != 1 || maxDrain < Fluid.BUCKET_VOLUME)
+        {
+            return null;
+        }
+
+        FluidStack fluidStack = getFluid();
+        if (fluidStack != null)
+        {
+            if (doDrain)
+            {
+                setFluid(null);
+            }
+            return fluidStack;
+        }
+
+        return null;
+	} // end drain(int, boolean)
+
+	@Override
+    public int fill(FluidStack resource, boolean doFill)
+    {
+        if ( resource == null || resource.amount < Fluid.BUCKET_VOLUME
         	|| getFluid() != null || !canFillFluidType(resource)) 
         {
             return 0;
@@ -66,10 +99,11 @@ public class SimpleBucketFluidHandler extends FluidHandlerItemStackSimple.SwapEm
 	@Override
 	protected void setFluid(FluidStack fluid) 
 	{
-		if (!bucketType.doesVariantExist(fluid.getFluid())) {
-			return;
+		if (fluid == null || fluid.getFluid() == null)
+		{
+            setContainerToEmpty();
 		}
-		if (fluid.getFluid() == FluidRegistry.WATER)
+		else if (fluid.getFluid() == FluidRegistry.WATER)
         {
             container.setItem(bucketType.getBucketFromLiquid(FluidRegistry.WATER));
             container.setTagCompound(null);
