@@ -22,6 +22,11 @@ public class SimpleBucketFluidHandler extends FluidHandlerItemStackSimple.SwapEm
 		this.bucketType = type;
 	}
 
+	public int getCapacity() 
+	{
+		return capacity;
+	}
+	
 	@Override
 	public boolean canFillFluidType(FluidStack fluid) 
 	{
@@ -37,8 +42,7 @@ public class SimpleBucketFluidHandler extends FluidHandlerItemStackSimple.SwapEm
     @Override
 	public FluidStack drain(FluidStack resource, boolean doDrain) 
     {
-        if (container.stackSize != 1 || resource == null 
-        		|| resource.amount < Fluid.BUCKET_VOLUME)
+        if (resource == null || resource.amount < Fluid.BUCKET_VOLUME)
         {
             return null;
         }
@@ -50,7 +54,7 @@ public class SimpleBucketFluidHandler extends FluidHandlerItemStackSimple.SwapEm
     @Override
 	public FluidStack drain(int maxDrain, boolean doDrain) 
     {
-        if (container.stackSize != 1 || maxDrain < Fluid.BUCKET_VOLUME)
+        if (maxDrain < Fluid.BUCKET_VOLUME)
         {
             return null;
         }
@@ -107,20 +111,17 @@ public class SimpleBucketFluidHandler extends FluidHandlerItemStackSimple.SwapEm
         {
             container.setItem(bucketType.getBucketFromLiquid(FluidRegistry.WATER));
             container.setTagCompound(null);
-            container.setItemDamage(0);
         }
         else if (fluid.getFluid() == FluidRegistry.LAVA
         		 && ! bucketType.getDestroyOnLava())
         {
             container.setItem(bucketType.getBucketFromLiquid(FluidRegistry.LAVA));
             container.setTagCompound(null);
-            container.setItemDamage(0);
         }
         else if (fluid.getFluid().getName().equals("milk"))
         {
             container.setItem(bucketType.getBucketFromLiquid(FluidRegistry.getFluid("milk")));
             container.setTagCompound(null);
-            container.setItemDamage(0);
         }
         else {
         	super.setFluid(fluid);

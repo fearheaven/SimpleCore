@@ -395,5 +395,16 @@ public class SimpleBucket extends ItemFluidContainer
             return emptyBuckets;
         }
     } // end fillBucket()
-    
+
+    public ItemStack getFilledBucket(SimpleBucket item, Fluid fluid)
+    {
+        ItemStack stack = new ItemStack(item);
+ 		SimpleBucketFluidHandler handler = 
+				(SimpleBucketFluidHandler) stack.getCapability(
+						CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
+        handler.fill(new FluidStack(fluid, handler.getCapacity()), true);
+        return stack;
+    }
+
+
 } // end class
