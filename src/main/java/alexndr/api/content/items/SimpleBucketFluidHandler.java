@@ -146,10 +146,6 @@ public class SimpleBucketFluidHandler extends FluidHandlerItemStackSimple.SwapEm
 		{
 			return new FluidStack(FluidRegistry.LAVA, Fluid.BUCKET_VOLUME);
 		}
-		else if (item == bucketType.getBucketFromLiquid(FluidRegistry.getFluid("milk")))
-		{
-			return FluidRegistry.getFluidStack("milk", Fluid.BUCKET_VOLUME);
-		}
 		else
 		{
 			return super.getFluid();

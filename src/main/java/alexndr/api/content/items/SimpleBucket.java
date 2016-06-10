@@ -345,6 +345,10 @@ public class SimpleBucket extends ItemFluidContainer
             else if (FluidUtil.tryPlaceFluid(player, player.getEntityWorld(), 
             								 fluidStack, blockpos1))
             {
+            	// force another block update, to make liquids flow...
+            	player.getEntityWorld().setBlockState(blockpos1, 
+            							fluidStack.getFluid().getBlock().getDefaultState());
+            	
                 // success!
                 player.addStat(StatList.getObjectUseStats(this));
 
@@ -396,15 +400,15 @@ public class SimpleBucket extends ItemFluidContainer
         }
     } // end fillBucket()
 
-    public ItemStack getFilledBucket(SimpleBucket item, Fluid fluid)
-    {
-        ItemStack stack = new ItemStack(item);
- 		SimpleBucketFluidHandler handler = 
-				(SimpleBucketFluidHandler) stack.getCapability(
-						CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
-        handler.fill(new FluidStack(fluid, handler.getCapacity()), true);
-        return stack;
-    }
+//    public ItemStack getFilledBucket(SimpleBucket item, Fluid fluid)
+//    {
+//        ItemStack stack = new ItemStack(item);
+// 		SimpleBucketFluidHandler handler = 
+//				(SimpleBucketFluidHandler) stack.getCapability(
+//						CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
+//        handler.fill(new FluidStack(fluid, handler.getCapacity()), true);
+//        return stack;
+//    }
 
 
 } // end class
