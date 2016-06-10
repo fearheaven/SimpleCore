@@ -119,13 +119,9 @@ public class SimpleBucketFluidHandler extends FluidHandlerItemStackSimple.SwapEm
             container.setItem(bucketType.getBucketFromLiquid(FluidRegistry.LAVA));
             container.setTagCompound(null);
         }
-        else if (fluid.getFluid().getName().equals("milk"))
-        {
-            container.setItem(bucketType.getBucketFromLiquid(FluidRegistry.getFluid("milk")));
-            container.setTagCompound(null);
-        }
         else {
-        	super.setFluid(fluid);
+            container.setItem(bucketType.getBucketFromLiquid(fluid.getFluid()));
+            super.setFluid(fluid);
         }
 	} // end setFluid()
 

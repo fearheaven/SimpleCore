@@ -5,6 +5,9 @@ package alexndr.api.content.items;
 
 import java.util.List;
 
+import javax.annotation.Nullable;
+
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -19,6 +22,9 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
@@ -60,7 +66,7 @@ public class SimpleBucket extends ItemFluidContainer
 
 	/**
 	 * It's a bucket; it has a fixed volume.
-	 * @param empty empty bucket item.
+	 * @param empty empty bucket item; null if *this* is the empty bucket item.
 	 * @param type SimpleBucketType object describing this bucket.
 	 */
 	public SimpleBucket(Plugin plugin, ItemStack empty, SimpleBucketType type) 
@@ -213,29 +219,6 @@ public class SimpleBucket extends ItemFluidContainer
         }
     } // end onFillBucket()
 
-//    @Override
-//    public String getItemStackDisplayName(ItemStack stack)
-//    {
-//        FluidStack fluidStack = getFluid(stack);
-//        if (fluidStack == null)
-//        {
-//            if(getEmpty() != null)
-//            {
-//                return getEmpty().getDisplayName();
-//            }
-//            return super.getItemStackDisplayName(stack);
-//        }
-//
-//        String unloc = this.getUnlocalizedNameInefficiently(stack);
-//
-//        if (I18n.canTranslate(unloc + "." + fluidStack.getFluid().getName()))
-//        {
-//            return I18n.translateToLocal(unloc + "." + fluidStack.getFluid().getName());
-//        }
-//
-//        return I18n.translateToLocalFormatted(unloc + ".name", fluidStack.getLocalizedName());
-//    } // end getItemStackDisplayName()
-//    
     
     @Override
     public ActionResult<ItemStack> onItemRightClick(ItemStack itemstack, World world, 
@@ -266,8 +249,8 @@ public class SimpleBucket extends ItemFluidContainer
             // couldn't place liquid there2
             return ActionResult.newResult(EnumActionResult.FAIL, itemstack);
         }
-        // EVERYTHING BELOW IS PROBABLY UNNECESSARY, but at least handle 
-        // vanilla liquids in case onFillBucket() is AWOL.
+        // for some reason, onFillBucket did not cover this...
+        // probably because puddle of lava or water.
         else if (flag) // empty bucket
         {
             // the block adjacent to the side we clicked on
@@ -342,14 +325,10 @@ public class SimpleBucket extends ItemFluidContainer
                 return ActionResult.newResult(EnumActionResult.FAIL, itemstack);
             }
         	// try placing liquid
-            else if (FluidUtil.tryPlaceFluid(player, player.getEntityWorld(), 
-            								 fluidStack, blockpos1))
-            {
-            	// force another block update, to make liquids flow...
-            	player.getEntityWorld().setBlockState(blockpos1, 
-            							fluidStack.getFluid().getBlock().getDefaultState());
-            	
-                // success!
+           else if (tryPlaceContainedLiquid(player, player.getEntityWorld(), blockpos1, 
+        		   							fluidStack))
+           {
+                 // success!
                 player.addStat(StatList.getObjectUseStats(this));
 
                 if (player.capabilities.isCreativeMode)
@@ -379,6 +358,86 @@ public class SimpleBucket extends ItemFluidContainer
         return ActionResult.newResult(EnumActionResult.FAIL, itemstack);
     } // end onItemRightClick()
 
+    /**
+     * Couldn't use FluidUtil.tryPlaceLiquid(), because it places the wrong block
+     * for water & lava.
+     * 
+     * @param player
+     * @param world
+     * @param posIn
+     * @param fluidStack fluid being placed
+     * @return true if successful, false if failed.
+     */
+    public boolean tryPlaceContainedLiquid(@Nullable EntityPlayer player, World world, 
+    										BlockPos posIn,  FluidStack fluidStack)
+    {
+        Block fluidBlock;
+
+    	if (this == getEmpty().getItem()) {
+    		return false;
+    	}
+    	else
+    	{
+            IBlockState iblockstate = world.getBlockState(posIn);
+            Material material = iblockstate.getMaterial();
+            boolean flag = !material.isSolid();
+            boolean flag1 = iblockstate.getBlock().isReplaceable(world, posIn);
+
+            if (!world.isAirBlock(posIn) && !flag && !flag1)
+            {
+                return false;
+            }
+            else
+            {
+                if (world.provider.doesWaterVaporize() 
+                	&& fluidStack.getFluid() == FluidRegistry.WATER)
+                	// Blocks.FLOWING_WATER)
+                {
+                    int l = posIn.getX();
+                    int i = posIn.getY();
+                    int j = posIn.getZ();
+                    world.playSound(player, posIn, SoundEvents.BLOCK_FIRE_EXTINGUISH, 
+                    				SoundCategory.BLOCKS, 0.5F, 2.6F + 
+                    				(world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
+
+                    for (int k = 0; k < 8; ++k)
+                    {
+                    	world.spawnParticle(EnumParticleTypes.SMOKE_LARGE, 
+                    			(double)l + Math.random(), (double)i + Math.random(), 
+                    			(double)j + Math.random(), 0.0D, 0.0D, 0.0D, new int[0]);
+                    }
+                }
+                else
+                {
+                    if (!world.isRemote && (flag || flag1) && !material.isLiquid())
+                    {
+                    	world.destroyBlock(posIn, true);
+                    }
+                   
+                    SoundEvent soundevent = fluidStack.getFluid() == FluidRegistry.LAVA  
+                    		? SoundEvents.ITEM_BUCKET_EMPTY_LAVA 
+                    		: SoundEvents.ITEM_BUCKET_EMPTY;
+                    world.playSound(player, posIn, soundevent, SoundCategory.BLOCKS, 
+                    				1.0F, 1.0F);
+                    
+                    if (fluidStack.getFluid() == FluidRegistry.LAVA) {
+                    	fluidBlock = Blocks.FLOWING_LAVA;
+                    }
+                    else if (fluidStack.getFluid() == FluidRegistry.WATER) {
+                    	fluidBlock = Blocks.FLOWING_WATER;
+                    }
+                    else {
+                    	fluidBlock = fluidStack.getFluid().getBlock();
+                    }
+                    world.setBlockState(posIn, fluidBlock.getDefaultState(), 11);
+                }
+
+                return true;
+            	
+            } // end-else    		
+    	} // end-else
+    } // end tryPlaceContainedLiquid()
+    
     protected ItemStack fillBucket(ItemStack emptyBuckets, EntityPlayer player, Item fullBucket)
     {
         if (player.capabilities.isCreativeMode)
@@ -399,16 +458,6 @@ public class SimpleBucket extends ItemFluidContainer
             return emptyBuckets;
         }
     } // end fillBucket()
-
-//    public ItemStack getFilledBucket(SimpleBucket item, Fluid fluid)
-//    {
-//        ItemStack stack = new ItemStack(item);
-// 		SimpleBucketFluidHandler handler = 
-//				(SimpleBucketFluidHandler) stack.getCapability(
-//						CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
-//        handler.fill(new FluidStack(fluid, handler.getCapacity()), true);
-//        return stack;
-//    }
 
 
 } // end class
