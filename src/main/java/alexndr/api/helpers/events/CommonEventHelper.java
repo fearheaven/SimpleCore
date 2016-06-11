@@ -11,26 +11,6 @@ import alexndr.api.helpers.game.StatTriggersHelper;
  */
 public class CommonEventHelper {
 	
-	/**
-	 * Called whenever the client logs into a world, so that we can send them the update messages.
-	 * @param event PlayerLoggedInEvent
-	 */
-//	@SubscribeEvent
-//	public void playerLoggedIn(PlayerLoggedInEvent event) {
-//		List<String> messages = UpdateChecker.getUpdateMessageList();
-//		if(messages != null && messages.size() > 0) {
-//			try {
-//				for(String message : messages)
-//					event.player.addChatMessage(new ChatComponentText(message));
-//			}
-//			
-//			catch(Exception e) {
-//				LogHelper.warning("Update checking failed for some reason. Enable verbose logging and retry to see a stack-trace.");
-//				if(APISettings.verboseLogging.asBoolean())
-//					e.printStackTrace();
-//			}
-//		}
-//	}
 	
 	@SubscribeEvent
 	public void onItemCrafted(ItemCraftedEvent event) {
