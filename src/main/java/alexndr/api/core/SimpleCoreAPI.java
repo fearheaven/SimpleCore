@@ -11,6 +11,7 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import alexndr.api.content.inventory.SimpleTab;
 import alexndr.api.helpers.events.CommonEventHelper;
+import alexndr.api.helpers.game.TabHelper;
 import alexndr.api.logger.LogHelper;
 import alexndr.api.registry.ContentCategories;
 import alexndr.api.registry.Plugin;
@@ -82,6 +83,7 @@ public class SimpleCoreAPI
 				simpleCombat = new SimpleTab(SimpleCoreAPI.plugin, "SimpleCombat", ContentCategories.CreativeTab.COMBAT);
 			}
 		}
+		TabHelper.setTabInitDone(true);
 	} // end tabPreInit()
 	
 	/**

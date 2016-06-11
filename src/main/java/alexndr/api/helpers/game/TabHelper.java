@@ -7,7 +7,13 @@ import alexndr.api.registry.ContentRegistry;
 /**
  * @author AleXndrTheGr8st
  */
-public class TabHelper {
+public class TabHelper 
+{
+	protected static boolean tabInitDone = false;
+	
+	public static boolean wereTabsInitialized() { return tabInitDone; }
+	public static void setTabInitDone(boolean done) { tabInitDone = done; }
+	
 	/**
 	 * Returns a CreativeTab with the specified name if it exists in the ContentRegistry.
 	 * If it doesn't exist, returns null.
