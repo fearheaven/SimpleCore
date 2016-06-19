@@ -3,6 +3,8 @@
  */
 package alexndr.api.content.tiles;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,6 +15,7 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ContainerFurnace;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
+import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.inventory.SlotFurnaceFuel;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -100,25 +103,7 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
 	 */
 	@Override
 	public ItemStack decrStackSize(int index, int count) {
-		if (this.furnaceItemStacks[index] != null) {
-			if (this.furnaceItemStacks[index].stackSize <= count) {
-				ItemStack itemstack1 = this.furnaceItemStacks[index];
-				this.furnaceItemStacks[index] = null;
-				return itemstack1;
-			} 
-			else {
-				ItemStack itemstack = this.furnaceItemStacks[index].splitStack(count);
-
-				if (this.furnaceItemStacks[index].stackSize == 0) {
-					this.furnaceItemStacks[index] = null;
-				}
-
-				return itemstack;
-			}
-		} 
-		else {
-			return null;
-		}
+        return ItemStackHelper.getAndSplit(this.furnaceItemStacks, index, count);
 	} // end decrStackSize()
 
 	/* (non-Javadoc)
@@ -126,23 +111,14 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
 	 */
 	@Override
 	public ItemStack removeStackFromSlot(int index) {
-        if (this.furnaceItemStacks[index] != null)
-        {
-            ItemStack itemstack = this.furnaceItemStacks[index];
-            this.furnaceItemStacks[index] = null;
-            return itemstack;
-        }
-        else
-        {
-            return null;
-        }
+	       return ItemStackHelper.getAndRemove(this.furnaceItemStacks, index);
 	}
 
 	/* (non-Javadoc)
 	 * @see net.minecraft.inventory.IInventory#setInventorySlotContents(int, net.minecraft.item.ItemStack)
 	 */
 	@Override
-	public void setInventorySlotContents(int index, ItemStack stack) 
+	public void setInventorySlotContents(int index, @Nullable ItemStack stack) 
 	{
         boolean flag = stack != null && stack.isItemEqual(this.furnaceItemStacks[index]) 
         				&& ItemStack.areItemStackTagsEqual(stack, this.furnaceItemStacks[index]);
@@ -480,9 +456,9 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
     }
 
     @SideOnly(Side.CLIENT)
-    public static boolean isBurning(IInventory p_174903_0_)
+    public static boolean isBurning(IInventory inventory)
     {
-        return p_174903_0_.getField(0) > 0;
+        return inventory.getField(0) > 0;
     }
 
     // override this as necessary in custom furnace classes.
