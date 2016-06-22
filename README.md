@@ -7,15 +7,16 @@ Repository for the SimpleCore API by AleXndrTheGr8st
 Roadmap of Future releases
 --------------------------
 
-Soonish:
+### Soonish:
 
 - port SimpleCoreAPI & SimpleOres2 to 1.9.4 - BETA released
 - port Fusion to 1.9.4 - ALPHA released
+- add copy of LGPL 3.0 license to all repositories.
 - port Netherrocks to 1.9.4
 - port Machines to 1.9.4
 - port Aesthetics to 1.9.4
 
-Later/other:
+### Later/other:
 
 - add support for config GUI to all 4
 - copy this roadmap to GitHub README
