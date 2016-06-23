@@ -31,7 +31,7 @@ group= "alexndr.api"
 archivesBaseName = "simplecore"
 
 minecraft {
-    version = "1.9.4-12.17.0.1968"
+    version = "1.10-12.18.0.1984-1.10.0"
     runDir = "run"
     replaceIn "APIInfo.java"
     replace "@MODVERSION@", "${project.version_mod}." + getVersionAppendage()
