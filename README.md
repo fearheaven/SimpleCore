@@ -15,11 +15,12 @@ Roadmap of Future releases
 - port Netherrocks to 1.9.4
 - port Machines to 1.9.4
 - port Aesthetics to 1.9.4
+- recompile for 1.10 - doing as I port.
 
 ### Later/other:
 
 - add support for config GUI to all 4
-- copy this roadmap to GitHub README
+- ~~copy this roadmap to GitHub README~~ DONE
 - add copies of software license to GitHub repos.
 - port akkkamaddi's Additions (see that thread later on)
 - ~~re-write SimpleBucket code to make use of Forge fluid handling API~~ DONE
