@@ -109,7 +109,7 @@ public abstract class SimpleFurnace extends BlockContainer
 		this.entry = entry;
 		this.setHardness(entry.getHardness());
 		this.setResistance(entry.getResistance());
-		this.setLightLevel(entry.getLightValue());
+		if(this.isBurning) this.setLightLevel(entry.getLightValue());
 		this.setHarvestLevel(entry.getHarvestTool(), entry.getHarvestLevel());
 		this.setCreativeTab(entry.getCreativeTab());
 		this.setAdditionalProperties();
