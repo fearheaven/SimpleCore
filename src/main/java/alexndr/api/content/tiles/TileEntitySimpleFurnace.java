@@ -331,7 +331,8 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
 
         if (!this.worldObj.isRemote)
         {
-            if (this.isBurning() || this.furnaceItemStacks[1] != null && this.furnaceItemStacks[0] != null)
+            if (this.isBurning() 
+            	|| this.furnaceItemStacks[1] != null && this.furnaceItemStacks[0] != null)
             {
                 if (!this.isBurning() && this.canSmelt())
                 {

@@ -16,7 +16,8 @@ import com.google.common.collect.Lists;
 /**
  * @author AleXndrTheGr8st
  */
-public class SimpleShears extends ItemShears{
+public class SimpleShears extends ItemShears
+{
 	private final ToolMaterial material;
 	private Plugin plugin;
 	private ContentCategories.Item category = ContentCategories.Item.TOOL;
