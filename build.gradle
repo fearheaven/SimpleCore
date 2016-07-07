@@ -52,19 +52,19 @@ dependencies {
     //compile "some.group:artifact:version"
 }
 configurations {
-	extraLibs
+        extraLibs
 }
 dependencies {
-	extraLibs 'org.jdom:jdom2:2.0.6'
-	configurations.compile.extendsFrom(configurations.extraLibs)
+        extraLibs 'org.jdom:jdom2:2.0.6'
+        configurations.compile.extendsFrom(configurations.extraLibs)
 }
 jar {
-	from {
-		configurations.extraLibs.collect {
-			 it.isDirectory() ? it : zipTree(it)
-		}
-	}
-	{
+        from {
+                configurations.extraLibs.collect {
+                         it.isDirectory() ? it : zipTree(it)
+                }
+        }
+        {
         exclude "META-INF/*.SF"
         exclude "META-INF/*.DSA"
         exclude "META-INF/*.RSA"
