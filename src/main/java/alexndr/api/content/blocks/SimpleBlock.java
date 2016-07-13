@@ -170,9 +170,6 @@ public class SimpleBlock extends Block
 		if(entry.getValueByName("CreativeTab") != null && entry.getValueByName("CreativeTab").isActive()) {
 			this.setCreativeTab(entry.getCreativeTab());
 		}
-		if(entry.getValueByName("SoundType") != null && entry.getValueByName("SoundType").isActive()) {
-			this.setSoundType(entry.getSoundType());
-		}
 		if(entry.getValueByName("Unbreakable") != null && entry.getValueByName("Unbreakable").isActive()) {
 			this.setBlockUnbreakable();
 		}

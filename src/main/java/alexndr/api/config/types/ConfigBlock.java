@@ -1,15 +1,10 @@
 package alexndr.api.config.types;
 
-import java.lang.reflect.Field;
 import java.util.List;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
-import alexndr.api.logger.LogHelper;
 import alexndr.api.registry.ContentRegistry;
 
 import com.google.common.collect.Lists;
@@ -38,8 +33,6 @@ public class ConfigBlock extends ConfigEntry{
 	private ConfigValue dropItem = new ConfigValue("DropItem").setCurrentValue("false");
 	private ConfigValue itemToDrop = new ConfigValue("ItemToDrop");
 	private ConfigValue quantityToDrop = new ConfigValue("QuantityToDrop");
-	private ConfigValue blockMaterial = new ConfigValue("BlockMaterial").setCurrentValue("rock");
-	private ConfigValue soundType = new ConfigValue("SoundType").setCurrentValue("soundTypeStone");
 	private ConfigValue unbreakable = new ConfigValue("Unbreakable").setCurrentValue("false");
 	private ConfigValue fireSource = new ConfigValue("FireSource").setCurrentValue("false");
 	private ConfigValue isLeaves = new ConfigValue("IsLeaves").setCurrentValue("false");
@@ -54,7 +47,7 @@ public class ConfigBlock extends ConfigEntry{
 	public ConfigBlock(String name, String category) {
 		super(name, category);
 		this.valuesList.addAll(Lists.newArrayList(hardness, resistance, lightValue, harvestLevel, harvestTool, creativeTab, spawnRate, veinSize, minHeight, maxHeight,
-				dropItem, itemToDrop, quantityToDrop, blockMaterial, soundType, unbreakable, fireSource, isLeaves, isWood, beaconBase));
+				dropItem, itemToDrop, quantityToDrop,unbreakable, fireSource, isLeaves, isWood, beaconBase));
 		super.setValuesList(valuesList);
 	}
 	
@@ -398,70 +391,6 @@ public class ConfigBlock extends ConfigEntry{
 		return this;
 	}
 
-	/**
-	 * Returns the material of the block.
-	 * @return Block material
-	 */
-	public Material getBlockMaterial() {
-		for(ConfigValue value : valuesList) {
-			if(value.getName().equals(blockMaterial.getName())) {
-				try {
-					Class<Material> aClass = Material.class;
-					Field field = aClass.getField(value.getCurrentValue());
-					Material matInst = new Material(null);
-					Object matObj = field.get(matInst);
-					return (Material)matObj;
-				}
-				catch(Exception e) {
-					LogHelper.verbose("Material entered for block " + this.getName() + " is invalid. \"" + value.getCurrentValue() + "\" is not a valid material");
-				}
-			}
-		}
-		return Material.ROCK;
-	}
-
-	/**
-	 * Sets the material of the block.
-	 * @param materialName Name of the block material
-	 * @return ConfigBlock
-	 */
-	public ConfigBlock setBlockMaterial(String materialName) {
-		this.blockMaterial.setActive().setDataType("@S").setCurrentValue(materialName).setDefaultValue(materialName);
-		return this;
-	}
-
-	/**
-	 * Returns the sound type of the block.
-	 * @return Block sound type
-	 */
-	public SoundType getSoundType() {
-		for(ConfigValue value : valuesList) {
-			if(value.getName().equals(soundType.getName())) {
-				try {
-					String str = "soundType" + value.getCurrentValue().toUpperCase().charAt(0) + value.getCurrentValue().substring(1);
-					Class<Block> aClass = Block.class;
-					Field field = aClass.getField(str);
-					SoundType soundInst = new SoundType(0.0F, 0.0F, null, null, null, null,null);
-					Object soundObj = field.get(soundInst);
-					return (SoundType)soundObj;
-				}
-				catch(Exception e) {
-					LogHelper.verbose("SoundType entered for block " + this.getName() + " is invalid. \"" + value.getCurrentValue() + "\" is not a valid soundtype");
-				}
-			}
-		}
-		return null;
-	}
-
-	/**
-	 * Sets the SoundType of the block.
-	 * @param soundType SoundType string
-	 * @return ConfigBlock
-	 */
-	public ConfigBlock setSoundType(String soundType) {
-		this.soundType.setActive().setDataType("@S").setCurrentValue(soundType).setDefaultValue(soundType);
-		return this;
-	}
 
 	/**
 	 * Returns whether or not the block is unbreakable.

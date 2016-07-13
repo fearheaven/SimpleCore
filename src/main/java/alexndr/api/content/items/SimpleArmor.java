@@ -3,6 +3,7 @@ package alexndr.api.content.items;
 import java.util.List;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
@@ -23,17 +24,8 @@ import com.google.common.collect.Lists;
 @SuppressWarnings("deprecation")
 public class SimpleArmor extends ItemArmor
 {
-//	public static enum Slots{
-//		HELM(0),
-//		CHEST(1),
-//		LEGS(2),
-//		BOOTS(3);
-//		
-//		int slotNumber;
-//		private Slots(int slotNumber) {
-//			this.slotNumber = slotNumber;
-//		}
-//	}
+	// { FEET, LEGS, CHEST, HEAD }
+	protected ItemArmor[] armor = { null, null, null, null };
 
 	private final ArmorMaterial material;
 	protected Plugin plugin;
@@ -50,7 +42,8 @@ public class SimpleArmor extends ItemArmor
 	 * @param material The ArmorMaterial of the armor
 	 * @param slot The armor slot the piece fits
 	 */
-	public SimpleArmor(Plugin plugin, ArmorMaterial material, EntityEquipmentSlot slot) {
+	public SimpleArmor(Plugin plugin, ArmorMaterial material, EntityEquipmentSlot slot) 
+	{
 		super(material, 1, slot);
 		this.plugin = plugin;
 		this.material = material;
@@ -92,7 +85,7 @@ public class SimpleArmor extends ItemArmor
 	 */
 	public SimpleArmor setType(String armorType) {
 		this.type = armorType;
-		this.setArmorTexturePath(this.plugin.getModId(), armorType, this.slot.getIndex());
+		this.setArmorTexturePath(this.plugin.getModId(), armorType, this.slot);
 		return this;
 	}
 	
@@ -128,21 +121,65 @@ public class SimpleArmor extends ItemArmor
 		return this.texturePath;
 	}
 	
-	public void setArmorTexturePath(String modId, String type, int slotNumber)
+	public void setArmorTexturePath(String modId, String type, EntityEquipmentSlot slot)
 	{
-		switch(slotNumber) {
-		case 0:  // FEET 1.9
+		switch(slot) {
+		case FEET:  // FEET 1.9
 			this.texturePath = modId + ":textures/models/armor/" + type + "_layer_1.png";
 			break;
-		case 1:  // LEGS 1.9
+		case LEGS:  // LEGS 1.9
 			this.texturePath = modId + ":textures/models/armor/" + type + "_layer_2.png";
 			break;
-		case 2:  // CHEST 1.9
+		case CHEST:  // CHEST 1.9
 			this.texturePath = modId + ":textures/models/armor/" + type + "_layer_1.png";
 			break;
-		case 3:  // HEAD 1.9
+		case HEAD:  // HEAD 1.9
 			this.texturePath = modId + ":textures/models/armor/" + type + "_layer_1.png";
+			break;
+		default:
 			break;
 		}
-	}
-}
+	} // end setArmorTexturePath
+	
+	/**
+	 * Helper method to sift through player's armor and figure out which piece
+	 * is helm, chest, legs, boots, etc.
+	 * 
+	 * @param player
+	 */
+	public static void getArmorSet(EntityPlayer player, ItemArmor[] ar)
+	{
+		for (int ii = 0; ii < ar.length; ii++)	{ 
+			ar[ii] = null; 
+		}
+		Iterable<ItemStack> armorList = player.getArmorInventoryList();
+		for (ItemStack stack : armorList)
+		{
+			if (stack == null) { continue; }
+			ItemArmor piece = (ItemArmor) stack.getItem();
+			ar[piece.armorType.getIndex()] = piece;
+		} // end-for
+	} // end getArmorSet()
+	
+	public void getArmorPieces(EntityPlayer player) 
+	{
+		SimpleArmor.getArmorSet(player, this.armor);
+	} // end getArmorPieces()
+
+	/**
+	 * Is player wearing a full set of this armor type?
+	 * @param player
+	 * @return true if wearing a full set of this armor, false if not.
+	 */
+	public boolean isFullSet(EntityPlayer player)
+	{
+		this.getArmorPieces(player);
+		for (ItemArmor ar0 : this.armor)
+		{
+			if (! (ar0 instanceof SimpleArmor)) return false;
+			SimpleArmor ar = (SimpleArmor) ar0;
+			if (ar.material != this.material) return false;
+		}
+		return true;
+	} // end isFullSet()
+} // end class
