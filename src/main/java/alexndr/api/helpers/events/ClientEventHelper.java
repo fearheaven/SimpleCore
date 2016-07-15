@@ -19,8 +19,8 @@ public class ClientEventHelper
 	{
 		EntityPlayer player = Minecraft.getMinecraft().thePlayer;
 		float baseFOV = event.getFov();
-		if(player.isHandActive() 
-			&& player.getActiveItemStack().getItem() instanceof SimpleBow) 
+		if(player.isHandActive() && (player.getHeldItem(player.getActiveHand()) != null)
+			&& (player.getHeldItem(player.getActiveHand()).getItem() instanceof SimpleBow)) 
 		{
 			SimpleBow bow = (SimpleBow)player.getActiveItemStack().getItem();
 			int useRemaining = new ItemStack(bow).getMaxItemUseDuration() - player.getItemInUseCount();
