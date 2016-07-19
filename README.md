@@ -12,7 +12,7 @@ Roadmap of Future releases
 - port SimpleCoreAPI & SimpleOres2 to 1.9.4 - BETA released
 - port Fusion to 1.9.4 - BETA released
 - ~~add copy of LGPL 3.0 license to all repositories.~~ DONE
-- port Netherrocks to 1.9.4
+- port Netherrocks to 1.9.4 - BETA released
 - port Machines to 1.9.4
 - port Aesthetics to 1.9.4
 - recompile for 1.10 - doing as I port.
@@ -24,12 +24,17 @@ Roadmap of Future releases
 - ~~add copies of software license to GitHub repos.~~ DONE
 - port akkkamaddi's Additions (see that thread later on)
 - ~~re-write SimpleBucket code to make use of Forge fluid handling API~~ DONE
+- add a Zinc plugin (Sinhika's Simple Zinc?) with Brass alloy for use with
+TiC, among others.
 - add more language files (depends on contributors)
   + try to add Spanish
   + try to add Japanese
 - add other new features
   + metal tanks
   + metal shields
+- restructure dependencies so that alloy blocks/items can be added without
+requiring Fusion installed (because other industrial mods have alloy furnaces)
+- add optional recipes for other mods' alloy furnaces.
 
 License
 -------
