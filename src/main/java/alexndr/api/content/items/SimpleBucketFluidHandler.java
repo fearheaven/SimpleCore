@@ -153,5 +153,18 @@ public class SimpleBucketFluidHandler extends FluidHandlerItemStackSimple.SwapEm
 	{
         return new FluidTankProperties[] { new FluidTankProperties(getFluid(), Fluid.BUCKET_VOLUME) };
 	}
+
+	@Override
+	protected void setContainerToEmpty() 
+	{
+		// we don't want to mess with the tagcompound if it doesn't exist...
+		if (container.hasTagCompound()) {
+			super.setContainerToEmpty();
+		}
+		// but we still want to update other nbt tags if they exist.
+		else {
+            container.deserializeNBT(emptyContainer.serializeNBT());
+		}
+	} // end setContainerToEmpty()
 	
 } // end class
