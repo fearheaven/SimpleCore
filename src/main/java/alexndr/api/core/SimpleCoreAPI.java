@@ -37,7 +37,7 @@ public class SimpleCoreAPI
 	//Creative Tabs
 	private static boolean iconsSet = false;
 	private static SimpleTab simpleBlocks, simpleDecorations, simpleMaterials, 
-							 simpleTools, simpleCombat;
+							 simpleTools, simpleCombat, simpleMachines;
 	
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event) 
@@ -81,6 +81,8 @@ public class SimpleCoreAPI
 				simpleMaterials = new SimpleTab(SimpleCoreAPI.plugin, "SimpleMaterials", ContentCategories.CreativeTab.MATERIALS);
 				simpleTools = new SimpleTab(SimpleCoreAPI.plugin, "SimpleTools", ContentCategories.CreativeTab.TOOLS);
 				simpleCombat = new SimpleTab(SimpleCoreAPI.plugin, "SimpleCombat", ContentCategories.CreativeTab.COMBAT);
+				simpleMachines = new SimpleTab(SimpleCoreAPI.plugin, "SimpleMachines", 
+						   ContentCategories.CreativeTab.OTHER);
 			}
 		}
 		TabHelper.setTabInitDone(true);
@@ -94,6 +96,7 @@ public class SimpleCoreAPI
 	 * 3. SimpleMaterials.
 	 * 4. SimpleTools.
 	 * 5. SimpleCombat.
+	 * 6. SimpleMachines
 	 * @param iconItemsList List of Items with which to set the tab icons
 	 */
 	public static void setTabIcons(List<Item> iconItemsList) {
@@ -101,11 +104,13 @@ public class SimpleCoreAPI
 			iconsSet = true;
 			if(APISettings.tabs.asBoolean()) {
 				simpleBlocks.setIcon(iconItemsList.get(0));
-				if(APISettings.separateTabs.asBoolean()) {
+				if(APISettings.separateTabs.asBoolean()) 
+				{
 					simpleDecorations.setIcon(iconItemsList.get(1));
 					simpleMaterials.setIcon(iconItemsList.get(2));
 					simpleTools.setIcon(iconItemsList.get(3));
 					simpleCombat.setIcon(iconItemsList.get(4));
+					simpleMachines.setIcon(iconItemsList.get(5));
 				}
 			}
 		}
