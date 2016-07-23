@@ -19,7 +19,9 @@ Roadmap of Future releases
 
 ### Later/other:
 
+- re-implement/port custom fusion furnace recipes configuration.
 - add support for config GUI to all 4
+- add support for JEI to Fusion Furnace.
 - ~~copy this roadmap to GitHub README~~ DONE
 - ~~add copies of software license to GitHub repos.~~ DONE
 - port akkkamaddi's Additions (see that thread later on)
@@ -27,7 +29,6 @@ Roadmap of Future releases
 requiring Fusion installed (because other industrial mods have alloy furnaces)
 - add optional recipes for other mods' alloy furnaces.
 - re-write config system to use JSON instead of XML
-- re-implement/port custom fusion furnace recipes configuration.
 - ~~re-write SimpleBucket code to make use of Forge fluid handling API~~ DONE
 - ~~add a Zinc plugin (Sinhika's Simple Zinc?) with Brass alloy for use with
 TiC, among others~~ BEING DONE BY THEOLDONE.

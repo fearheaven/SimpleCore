@@ -132,6 +132,16 @@ public class ConfigEntry {
 	}
 	
 	/**
+	 * converts the ConfigEntry to a ConfigFusionRecipe.
+	 * @return ConfigFusionRecipe version of this ConfigEntry.
+	 */
+	public ConfigFusionRecipe asConfigFusionRecipe() {
+		ConfigFusionRecipe recipe = new ConfigFusionRecipe(this.name, this.category);
+		recipe.setValuesList(this.valuesList);
+		return recipe;
+	}
+	
+	/**
 	 * Converts the ConfigEntry to a ConfigItem.
 	 * @return ConfigItem version of this ConfigEntry
 	 */
