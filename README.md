@@ -23,18 +23,20 @@ Roadmap of Future releases
 - ~~copy this roadmap to GitHub README~~ DONE
 - ~~add copies of software license to GitHub repos.~~ DONE
 - port akkkamaddi's Additions (see that thread later on)
+- restructure dependencies so that alloy blocks/items can be added without
+requiring Fusion installed (because other industrial mods have alloy furnaces)
+- add optional recipes for other mods' alloy furnaces.
+- re-write config system to use JSON instead of XML
+- re-implement/port custom fusion furnace recipes configuration.
 - ~~re-write SimpleBucket code to make use of Forge fluid handling API~~ DONE
-- add a Zinc plugin (Sinhika's Simple Zinc?) with Brass alloy for use with
-TiC, among others.
+- ~~add a Zinc plugin (Sinhika's Simple Zinc?) with Brass alloy for use with
+TiC, among others~~ BEING DONE BY THEOLDONE.
 - add more language files (depends on contributors)
   + try to add Spanish
   + try to add Japanese
 - add other new features
   + metal tanks
   + metal shields
-- restructure dependencies so that alloy blocks/items can be added without
-requiring Fusion installed (because other industrial mods have alloy furnaces)
-- add optional recipes for other mods' alloy furnaces.
 
 License
 -------
