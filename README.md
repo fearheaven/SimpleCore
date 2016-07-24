@@ -16,10 +16,11 @@ Roadmap of Future releases
 - port Machines to 1.9.4
 - port Aesthetics to 1.9.4
 - recompile for 1.10 - doing as I port.
+- make 1.9.4 & 1.10.2 versions one build.
 
 ### Later/other:
 
-- re-implement/port custom fusion furnace recipes configuration.
+- ~~re-implement/port custom fusion furnace recipes configuration~~ DONE
 - add support for config GUI to all 4
 - add support for JEI to Fusion Furnace.
 - ~~copy this roadmap to GitHub README~~ DONE
@@ -29,6 +30,7 @@ Roadmap of Future releases
 requiring Fusion installed (because other industrial mods have alloy furnaces)
 - add optional recipes for other mods' alloy furnaces.
 - re-write config system to use JSON instead of XML
+- explore non-consumed catalyst option
 - ~~re-write SimpleBucket code to make use of Forge fluid handling API~~ DONE
 - ~~add a Zinc plugin (Sinhika's Simple Zinc?) with Brass alloy for use with
 TiC, among others~~ BEING DONE BY THEOLDONE.
