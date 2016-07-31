@@ -20,7 +20,7 @@ import alexndr.api.registry.Plugin;
  * @author AleXndrTheGr8st
  */
 @Mod(modid = APIInfo.ID, name = APIInfo.NAME, version = APIInfo.VERSION,
-	dependencies=APIInfo.DEPENDENCIES, 
+	dependencies=APIInfo.DEPENDENCIES, acceptedMinecraftVersions=APIInfo.ACCEPTED_VERSIONS,
 	updateJSON="https://raw.githubusercontent.com/Sinhika/SimpleCoreAPI/1.9.4/update.json")
 public class SimpleCoreAPI 
 {
