@@ -9,14 +9,16 @@ Roadmap of Future releases
 
 ### Soonish:
 
-- port SimpleCoreAPI & SimpleOres2 to 1.9.4 - BETA released
-- port Fusion to 1.9.4 - BETA released
+- ~~port SimpleCoreAPI & SimpleOres2 to 1.9.4~~ BETA released
+- ~~port Fusion to 1.9.4~~  BETA released
 - ~~add copy of LGPL 3.0 license to all repositories.~~ DONE
-- port Netherrocks to 1.9.4 - BETA released
-- port Machines to 1.9.4
-- port Aesthetics to 1.9.4
-- recompile for 1.10 - doing as I port.
-- make 1.9.4 & 1.10.2 versions one build.
+- ~~port Netherrocks to 1.9.4~~  BETA released
+- port Machines to 1.10.2
+- port Aesthetics to 1.10.2
+- ~~recompile for 1.10~~ DONE via build unification.
+- ~~make 1.9.4 & 1.10.2 versions one build.~~ DONE
+- re-write Fusion furnace to use IItemHandler
+- re-factor IItemHandler-based stuff to be useful in Machines, too.
 
 ### Later/other:
 
@@ -30,7 +32,7 @@ Roadmap of Future releases
 requiring Fusion installed (because other industrial mods have alloy furnaces)
 - add optional recipes for other mods' alloy furnaces.
 - re-write config system to use JSON instead of XML
-- explore non-consumed catalyst option
+- ~~explore non-consumed catalyst option~~ Explored on Forum. Not popular idea.
 - ~~re-write SimpleBucket code to make use of Forge fluid handling API~~ DONE
 - ~~add a Zinc plugin (Sinhika's Simple Zinc?) with Brass alloy for use with
 TiC, among others~~ BEING DONE BY THEOLDONE.
