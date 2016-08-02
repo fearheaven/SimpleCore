@@ -22,21 +22,8 @@ public class APISettings {
 		LogHelper.verbose("Loading API Settings...");
 		try {
 			settings.load();
-			
-			//Config Help
-			ConfigEntry link = new ConfigEntry("Documentation", "ConfigHelp");
-				link.createNewValue("DocumentationLink").setActive().setDataType("@S").setCurrentValue("LINK TO GITHUB GOES HERE").setDefaultValue("");
-			link = settings.get(link);
-			
-			ConfigEntry dataTypes = new ConfigEntry("Data Types", "ConfigHelp");
-				dataTypes.createNewValue("ABOUT").setActive().setDataType("@S").setCurrentValue("It is important that the correct data types are used. They are designated by the @ symbol.").setDefaultValue("");
-				dataTypes.createNewValue("Boolean").setActive().setDataType("@B").setCurrentValue("Accepts: true, false.").setDefaultValue("");
-				dataTypes.createNewValue("Integer").setActive().setDataType("@I").setCurrentValue("Accepts: Whole numbers only, such as 2 or 4096.").setDefaultValue("");
-				dataTypes.createNewValue("Float").setActive().setDataType("@F").setCurrentValue("Accepts: Decimal numbers, such as 1.5 or 98.9.").setDefaultValue("");
-				dataTypes.createNewValue("Double").setActive().setDataType("@D").setCurrentValue("Accepts: Decimal numbers, such as 1.5 or 98.9.").setDefaultValue("");
-				dataTypes.createNewValue("String").setActive().setDataType("@S").setCurrentValue("Accepts: Any number or character, such as abcdefg or 9dsa29213mn#.").setDefaultValue("");
-			dataTypes = settings.get(dataTypes);
-			
+			settings.createHelpEntry(APIInfo.URL);
+				
 			//Toggles
 			ConfigEntry toggles = new ConfigEntry("SimpleCore Toggles", "Toggles");
 				toggles.createNewValue("VerboseLogging").setActive().setDataType("@B").setCurrentValue("false").setDefaultValue("false");

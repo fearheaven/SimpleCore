@@ -11,11 +11,67 @@ import com.google.common.collect.Lists;
 /**
  * @author AleXndrTheGr8st
  */
-public class Configuration {
+public class Configuration 
+{
 	private File file;
 	private String modName;
 	private List<ConfigEntry> writeEntryList = Lists.newArrayList();
 	private List<ConfigEntry> loadEntryList = Lists.newArrayList();
+	
+	/**
+	 * create help documentation section.
+	 */
+	public void createHelpEntry(String docLink)
+	{
+		// Config Help
+		ConfigEntry link = new ConfigEntry("Documentation", "ConfigHelp");
+		link.createNewValue("DocumentationLink").setActive()
+				.setDataType("@S")
+				.setCurrentValue(docLink)
+				.setDefaultValue("");
+		link = this.get(link);
+
+		ConfigEntry dataTypes = new ConfigEntry("Data Types", "ConfigHelp");
+		dataTypes
+				.createNewValue("ABOUT")
+				.setActive()
+				.setDataType("@S")
+				.setCurrentValue(
+						"It is important that the correct data types are used. They are designated by the @ symbol.")
+				.setDefaultValue("");
+		dataTypes.createNewValue("Boolean").setActive().setDataType("@B")
+				.setCurrentValue("Accepts: true, false.")
+				.setDefaultValue("");
+		dataTypes
+				.createNewValue("Integer")
+				.setActive()
+				.setDataType("@I")
+				.setCurrentValue(
+						"Accepts: Whole numbers only, such as 2 or 4096.")
+				.setDefaultValue("");
+		dataTypes
+				.createNewValue("Float")
+				.setActive()
+				.setDataType("@F")
+				.setCurrentValue(
+						"Accepts: Decimal numbers, such as 1.5 or 98.9.")
+				.setDefaultValue("");
+		dataTypes
+				.createNewValue("Double")
+				.setActive()
+				.setDataType("@D")
+				.setCurrentValue(
+						"Accepts: Decimal numbers, such as 1.5 or 98.9.")
+				.setDefaultValue("");
+		dataTypes
+				.createNewValue("String")
+				.setActive()
+				.setDataType("@S")
+				.setCurrentValue(
+						"Accepts: Any number or character, such as abcdefg or 9dsa29213mn#.")
+				.setDefaultValue("");
+		dataTypes = this.get(dataTypes);
+	} // end createHelpEntry()
 	
 	/**
 	 * Gets a loaded ConfigEntry if it exists.
