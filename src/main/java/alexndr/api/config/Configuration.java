@@ -23,13 +23,22 @@ public class Configuration
 	 */
 	public void createHelpEntry(String docLink)
 	{
-		// Config Help
-		ConfigEntry link = new ConfigEntry("Documentation", "ConfigHelp");
-		link.createNewValue("DocumentationLink").setActive()
+		ConfigEntry link = new ConfigEntry("Mod Site", "ConfigHelp");
+		link.createNewValue("ModSite").setActive()
 				.setDataType("@S")
 				.setCurrentValue(docLink)
 				.setDefaultValue("");
-		link = this.get(link);
+		// not user-editable.
+		writeEntryList.add(link);
+		
+		// Config Help
+		ConfigEntry link2 = new ConfigEntry("Documentation", "ConfigHelp");
+		link2.createNewValue("DocumentationLink").setActive()
+				.setDataType("@S")
+				.setCurrentValue("Please read https://github.com/AleXndrTheGr8st/SimpleCore/wiki/Using-The-Config")
+				.setDefaultValue("");
+		// not user-editable.
+		writeEntryList.add(link2);
 
 		ConfigEntry dataTypes = new ConfigEntry("Data Types", "ConfigHelp");
 		dataTypes
@@ -70,7 +79,8 @@ public class Configuration
 				.setCurrentValue(
 						"Accepts: Any number or character, such as abcdefg or 9dsa29213mn#.")
 				.setDefaultValue("");
-		dataTypes = this.get(dataTypes);
+		// not user-editable.
+		writeEntryList.add(dataTypes);
 	} // end createHelpEntry()
 	
 	/**
