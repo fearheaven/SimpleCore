@@ -9,7 +9,7 @@ Roadmap of Future releases
 
 ### Soonish:
 
-- needed for Aesthetics: add SimpleDoor, SimpleDoorItem, SimpleBars, ~~SimpleStairs~~ to SimpleCoreAPI.
+- needed for Aesthetics: ~~add SimpleDoor, SimpleDoorItem, SimpleBars, SimpleStairs to SimpleCoreAPI.~~ DONE
 - ~~port SimpleCoreAPI & SimpleOres2 to 1.9.4~~ BETA released
 - ~~port Fusion to 1.9.4~~  BETA released
 - ~~add copy of LGPL 3.0 license to all repositories.~~ DONE
