@@ -35,6 +35,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import alexndr.api.config.types.ConfigBlock;
 import alexndr.api.content.tiles.TileEntitySimpleFurnace;
+import alexndr.api.helpers.game.IConfigureBlockHelper;
 import alexndr.api.helpers.game.TooltipHelper;
 import alexndr.api.registry.ContentCategories;
 import alexndr.api.registry.ContentRegistry;
@@ -46,7 +47,7 @@ import alexndr.api.registry.Plugin;
  * why.
  *
  */
-public abstract class SimpleFurnace extends BlockContainer 
+public abstract class SimpleFurnace extends BlockContainer implements IConfigureBlockHelper<SimpleFurnace>
 {
 	public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
 	protected Random furnaceRand = new Random();

@@ -7,6 +7,14 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import com.google.common.collect.Lists;
+
+import alexndr.api.config.types.ConfigItem;
+import alexndr.api.helpers.game.IConfigureItemHelper;
+import alexndr.api.helpers.game.TooltipHelper;
+import alexndr.api.registry.ContentCategories;
+import alexndr.api.registry.ContentRegistry;
+import alexndr.api.registry.Plugin;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.material.Material;
@@ -42,19 +50,12 @@ import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.items.ItemHandlerHelper;
-import alexndr.api.config.types.ConfigItem;
-import alexndr.api.helpers.game.TooltipHelper;
-import alexndr.api.registry.ContentCategories;
-import alexndr.api.registry.ContentRegistry;
-import alexndr.api.registry.Plugin;
-
-import com.google.common.collect.Lists;
 
 /**
  * @author Sinhika
  *
  */
-public class SimpleBucket extends ItemFluidContainer 
+public class SimpleBucket extends ItemFluidContainer implements IConfigureItemHelper<SimpleBucket, ConfigItem>
 {
 	protected Plugin plugin;
 	protected ContentCategories.Item category = ContentCategories.Item.OTHER;

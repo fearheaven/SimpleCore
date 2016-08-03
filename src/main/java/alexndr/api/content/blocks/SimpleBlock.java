@@ -15,6 +15,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import alexndr.api.config.types.ConfigBlock;
+import alexndr.api.helpers.game.IConfigureBlockHelper;
 import alexndr.api.helpers.game.TooltipHelper;
 import alexndr.api.registry.ContentCategories;
 import alexndr.api.registry.ContentRegistry;
@@ -23,7 +24,7 @@ import alexndr.api.registry.Plugin;
 /**
  * @author AleXndrTheGr8st
  */
-public class SimpleBlock extends Block 
+public class SimpleBlock extends Block implements IConfigureBlockHelper<SimpleBlock>
 {
 	protected Plugin plugin;
 	protected Material material;
@@ -36,7 +37,8 @@ public class SimpleBlock extends Block
 	 * @param material The material of the block
 	 * @param category The category of the block
 	 */
-	public SimpleBlock(Plugin plugin, Material material, ContentCategories.Block category) {
+	public SimpleBlock(Plugin plugin, Material material, ContentCategories.Block category) 
+	{
 		super(material);
 		this.plugin = plugin;
 		this.material = material;
@@ -73,7 +75,8 @@ public class SimpleBlock extends Block
 	 * @param entry ConfigBlock
 	 * @return SimpleBlock
 	 */
-	public SimpleBlock setConfigEntry(ConfigBlock entry) {
+	public SimpleBlock setConfigEntry(ConfigBlock entry) 
+	{
 		this.entry = entry;
 		this.setHardness(entry.getHardness());
 		this.setResistance(entry.getResistance());
@@ -166,12 +169,10 @@ public class SimpleBlock extends Block
 		return false;
 	}
 	
-	public void setAdditionalProperties() {
-		if(entry.getValueByName("CreativeTab") != null && entry.getValueByName("CreativeTab").isActive()) {
-			this.setCreativeTab(entry.getCreativeTab());
-		}
+	public void setAdditionalProperties() 
+	{
 		if(entry.getValueByName("Unbreakable") != null && entry.getValueByName("Unbreakable").isActive()) {
 			this.setBlockUnbreakable();
 		}
 	}
-}
+} // end class

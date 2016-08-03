@@ -11,6 +11,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import alexndr.api.config.types.ConfigArmor;
+import alexndr.api.helpers.game.IConfigureItemHelper;
 import alexndr.api.helpers.game.TooltipHelper;
 import alexndr.api.registry.ContentCategories;
 import alexndr.api.registry.ContentRegistry;
@@ -22,7 +23,7 @@ import com.google.common.collect.Lists;
  * @author AleXndrTheGr8st
  */
 @SuppressWarnings("deprecation")
-public class SimpleArmor extends ItemArmor
+public class SimpleArmor extends ItemArmor implements IConfigureItemHelper<SimpleArmor, ConfigArmor>
 {
 	// { FEET, LEGS, CHEST, HEAD }
 	protected ItemArmor[] armor = { null, null, null, null };
@@ -182,4 +183,8 @@ public class SimpleArmor extends ItemArmor
 		}
 		return true;
 	} // end isFullSet()
+
+    @Override
+    public void setAdditionalProperties()
+    {}
 } // end class

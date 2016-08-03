@@ -5,6 +5,7 @@ import java.util.List;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import alexndr.api.config.types.ConfigItem;
+import alexndr.api.helpers.game.IConfigureItemHelper;
 import alexndr.api.helpers.game.TooltipHelper;
 import alexndr.api.registry.ContentCategories;
 import alexndr.api.registry.ContentRegistry;
@@ -15,7 +16,8 @@ import com.google.common.collect.Lists;
 /**
  * @author AleXndrTheGr8st
  */
-public class SimpleItem extends Item {
+public class SimpleItem extends Item implements IConfigureItemHelper<SimpleItem, ConfigItem> 
+{
 	private Plugin plugin;
 	private ContentCategories.Item category;
 	private ConfigItem entry;

@@ -4,6 +4,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
+import com.google.common.collect.Lists;
+
+import alexndr.api.config.types.ConfigEntry;
+import alexndr.api.helpers.game.IConfigureItemHelper;
+import alexndr.api.helpers.game.TooltipHelper;
+import alexndr.api.registry.ContentCategories;
+import alexndr.api.registry.ContentRegistry;
+import alexndr.api.registry.Plugin;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -21,28 +29,20 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import alexndr.api.config.types.ConfigEntry;
-import alexndr.api.helpers.game.TooltipHelper;
-import alexndr.api.registry.ContentCategories;
-import alexndr.api.registry.ContentRegistry;
-import alexndr.api.registry.Plugin;
-
-import com.google.common.collect.Lists;
 
 /**
  * @author AleXndrTheGr8st
  */
 @SuppressWarnings("deprecation")
-public class SimpleBow extends ItemBow
+public class SimpleBow extends ItemBow implements IConfigureItemHelper<SimpleBow, ConfigEntry>
 {
-	private Plugin plugin;
-	private ContentCategories.Item category = ContentCategories.Item.WEAPON;
-	private ConfigEntry entry;
-	@SuppressWarnings("unused")
-	private List<String> toolTipStrings = Lists.newArrayList();
-	private HashMap<SimpleBowEffects, Object> effects = new HashMap<SimpleBowEffects, Object>();
-	private ItemStack repairMaterial;
-	private float zoomAmount = 0.165F;
+	protected Plugin plugin;
+	protected ContentCategories.Item category = ContentCategories.Item.WEAPON;
+	protected ConfigEntry entry;
+	protected List<String> toolTipStrings = Lists.newArrayList();
+	protected HashMap<SimpleBowEffects, Object> effects = new HashMap<SimpleBowEffects, Object>();
+	protected ItemStack repairMaterial;
+	protected float zoomAmount = 0.165F;
 	
 	/**
 	 * Creates a simple bow, such as the Mythril Bow.

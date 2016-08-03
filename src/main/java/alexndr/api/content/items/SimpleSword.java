@@ -6,6 +6,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import alexndr.api.config.types.ConfigTool;
+import alexndr.api.helpers.game.IConfigureItemHelper;
 import alexndr.api.helpers.game.TooltipHelper;
 import alexndr.api.registry.ContentCategories;
 import alexndr.api.registry.ContentRegistry;
@@ -16,7 +17,7 @@ import com.google.common.collect.Lists;
 /**
  * @author AleXndrTheGr8st
  */
-public class SimpleSword extends ItemSword
+public class SimpleSword extends ItemSword implements IConfigureItemHelper<SimpleSword,ConfigTool>
 {
 	private final ToolMaterial material;
 	private Plugin plugin;
