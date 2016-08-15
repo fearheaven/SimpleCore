@@ -33,7 +33,11 @@ public class SimpleDoor extends BlockDoor implements IConfigureBlockHelper<Simpl
     protected ResourceLocation ItemOfDoorResource;
 
     /**
-     * @param materialIn
+     * @param plugin the mod class plugin field; stores the modid, among other things.
+     * @param materialIn either Material.IRON or Material.WOOD. If Material.IRON, requires redstone signal
+     *      to open. Anything else can be opened by hand.
+     * @param itemOfBlockName the unlocalized name of the door *item*.
+     * @param category a valid ContentCategory.
      */
     public SimpleDoor(Plugin plugin, Material materialIn, String itemOfBlockName, 
                       ContentCategories.Block category)
