@@ -27,6 +27,7 @@ public class SimpleStairs extends BlockStairs implements IConfigureBlockHelper<S
         super(modelState);
         this.plugin = plugin;
         this.category = category;
+        this.useNeighborBrightness = true;
     }
     
     @Override
