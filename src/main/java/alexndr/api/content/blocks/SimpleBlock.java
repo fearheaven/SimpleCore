@@ -55,7 +55,7 @@ public class SimpleBlock extends Block implements IConfigureBlockHelper<SimpleBl
 	public SimpleBlock setUnlocalizedName(String blockName) 
 	{
 		super.setUnlocalizedName(blockName);
-        setRegistryName(this.plugin.getModId(), blockName);
+        this.setRegistryName(this.plugin.getModId(), blockName);
         GameRegistry.register(this);
         GameRegistry.register(new ItemBlock(this).setRegistryName(this.getRegistryName()));
 		ContentRegistry.registerBlock(this.plugin, this, blockName, this.category);
