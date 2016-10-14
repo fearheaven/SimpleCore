@@ -73,35 +73,35 @@ public class ContentRegistry {
 	}
 	
 	/**
-	 * Checks if a plugin with the given name exists in the ContentRegistry.
-	 * @param pluginName Name of the plugin
+	 * Checks if a plugin with the given modid exists in the ContentRegistry.
+	 * @param pluginName modid of the plugin
 	 * @return Whether the plugin is loaded by the ContentRegistry
 	 */
 	public static boolean isPluginLoaded(String pluginName) {
 		for(Plugin plugin : pluginList) {
-			if(plugin.getName().equals(pluginName))
+			if(plugin.getModId().equals(pluginName))
 				return true;
 		}
 		return false;
 	}
 	
 	/**
-	 * Returns a Plugin with the given name if it exists in the ContentRegistry.
+	 * Returns a Plugin with the given modid if it exists in the ContentRegistry.
 	 * If the Plugin doesn't exist, returns null.
-	 * @param pluginName Name of the plugin
+	 * @param pluginName modid of the plugin
 	 * @return Plugin with given name
 	 */
 	public static Plugin getPlugin(String pluginName) {
 		for(Plugin plugin : pluginList) {
-			if(plugin.getName().equals(pluginName))
+			if(plugin.getModId().equals(pluginName))
 				return plugin;
 		}
 		return null;
 	}
 	
 	/**
-	 * Returns a list of all the blocks belonging to the plugin with the given name.
-	 * @param pluginName Name of the plugin
+	 * Returns a list of all the blocks belonging to the plugin with the given modid.
+	 * @param pluginName modid of the plugin
 	 * @return List of blocks belonging to plugin
 	 */
 	public static List<Block> getPluginBlocks(String pluginName) {
@@ -131,7 +131,7 @@ public class ContentRegistry {
 	
 	/**
 	 * Returns a list of all the items belonging to the plugin with the given name.
-	 * @param pluginName Name of the plugin
+	 * @param pluginName modid of the plugin
 	 * @return List of items belonging to plugin
 	 */
 	public static List<Item> getPluginItems(String pluginName) {

@@ -10,10 +10,10 @@ Roadmap of Future releases
 ### Soonish:
 
 - needed for Aesthetics: ~~add SimpleDoor, SimpleDoorItem, SimpleBars, SimpleStairs to SimpleCoreAPI.~~ DONE
-- ~~port SimpleCoreAPI & SimpleOres2 to 1.9.4~~ BETA released
-- ~~port Fusion to 1.9.4~~  BETA released
+- ~~port SimpleCoreAPI & SimpleOres2 to 1.9.4/1.10.2~~ released
+- ~~port Fusion to 1.9.4/1.10.2~~  released
 - ~~add copy of LGPL 3.0 license to all repositories.~~ DONE
-- ~~port Netherrocks to 1.9.4~~  BETA released
+- ~~port Netherrocks to 1.9.4/1.10.2~~  released
 - port Machines to 1.10.2
 - port Aesthetics to 1.10.2
 - ~~recompile for 1.10~~ DONE via build unification.

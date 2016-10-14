@@ -43,11 +43,11 @@ public class RenderItemHelper
 	 */
 	public void renderItemsAndBlocks() 
 	{
-		for(Item item : ContentRegistry.getPluginItems(plugin.getName())) {
+		for(Item item : ContentRegistry.getPluginItems(plugin.getModId())) {
 			RenderDetails details = new RenderDetails(item, plugin.getModId());
 			renderList.add(details);
 		}
-		for(Block block : ContentRegistry.getPluginBlocks(plugin.getName())) {
+		for(Block block : ContentRegistry.getPluginBlocks(plugin.getModId())) {
 			RenderDetails details = new RenderDetails(Item.getItemFromBlock(block), plugin.getModId());
 			renderList.add(details);
 		}
