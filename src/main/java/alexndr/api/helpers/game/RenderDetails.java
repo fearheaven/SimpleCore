@@ -3,19 +3,23 @@ package alexndr.api.helpers.game;
 import net.minecraft.item.Item;
 
 /**
- * @author AleXndrTheGr8st
+ * Holds data for simple items, to be passed to model baking/custom resource load methods.
+ * 
+ * @author AleXndrTheGr8st, Sinhika
  */
-public class RenderDetails {
-	private Item item;
-	private String modId;
-	private String itemName;
+public class RenderDetails 
+{
+	protected Item item;
+	protected String modId;
+	protected String itemName;
 	
 	/**
 	 * Creates a new RenderDetails for the item.
 	 * @param item The item
 	 * @param modId The modId the item belongs to
 	 */
-	public RenderDetails(Item item, String modId) {
+	public RenderDetails(Item item, String modId) 
+	{
 		this.item = item;
 		this.modId = modId;
 		this.itemName = item.getUnlocalizedName().substring(5);
@@ -44,4 +48,4 @@ public class RenderDetails {
 	public String getItemName() {
 		return this.itemName;
 	}
-}
+} // end class RenderDetails

@@ -11,6 +11,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
+import alexndr.api.content.blocks.SimpleDoor;
 import alexndr.api.logger.LogHelper;
 import alexndr.api.registry.ContentRegistry;
 import alexndr.api.registry.Plugin;
@@ -28,13 +29,15 @@ public class RenderItemHelper
 	protected Plugin plugin;
 	
 	//Bow Renders
-	protected List<List<Object>> bowRenderList;
-	
+	protected List<RenderDetails> bowRenderList;
+	// Door Renders
+	protected List<RenderDoorDetails> doorRenderList;
 	
 	public RenderItemHelper(Plugin plugin) 
 	{
 		this.renderList = Lists.newArrayList();
 		this.bowRenderList = Lists.newArrayList();
+		this.doorRenderList = Lists.newArrayList();
 		this.plugin = plugin;
 	}
 
@@ -44,19 +47,26 @@ public class RenderItemHelper
 	 */
 	public void renderItemsAndBlocks() 
 	{
-		for(Item item : ContentRegistry.getPluginItems(plugin.getModId())) {
+		for(Item item : ContentRegistry.getPluginItems(plugin.getModId())) 
+		{
 			RenderDetails details = new RenderDetails(item, plugin.getModId());
-			renderList.add(details);
+			if (! bowRenderList.contains(details)) {
+				renderList.add(details);
+			}
 		}
 		for(Block block : ContentRegistry.getPluginBlocks(plugin.getModId())) 
 		{
+			if (block instanceof SimpleDoor) {
+				continue;
+			}
 			try {
 				RenderDetails details = new RenderDetails(Item.getItemFromBlock(block), plugin.getModId());
 				renderList.add(details);
 			}
-			catch (NullPointerException e)
+			catch (Exception e)
 			{
-				LogHelper.severe("Null ItemFromBlock for Block" + block.getUnlocalizedName() + "\n");
+				LogHelper.severe("Exception " + e.getMessage() + " for Block " 
+						+ block.getUnlocalizedName() + "\n");
 				throw e;
 			}
 		} // end-for
@@ -75,21 +85,35 @@ public class RenderItemHelper
 	 * @param plugin The plugin the bow belongs to
 	 * @param bow The bow
 	 */
-	public void addBowRenderDetails(Item bow) 
+	public void addBowRenderDetails(Plugin plugin, Item bow) 
 	{
-		List<Object> list = Lists.newArrayList();
-		list.add(plugin);
-		list.add(bow);
-		this.bowRenderList.add(list);
+		RenderDetails details = new RenderDetails(bow, plugin.getModId());
+		this.bowRenderList.add(details);
 	}
 	
-	public List<List<Object>> getBowRenderList() 
+	public List<RenderDetails> getBowRenderList() 
 	{
 		return bowRenderList;
 	}
 	
 	/**
-	 * TODO: rewrite this for 1.9.4
+	 * add a door to the list to be rendered.
+	 * @param plugin The plugin the door belongs to
+	 * @param block the door block object
+	 * @param item the door item object
+	 */
+	public void addDoorRenderDetails(Plugin plugin, Block block, Item item)
+	{
+		RenderDoorDetails details = new RenderDoorDetails(block, item, plugin.getModId());
+		this.doorRenderList.add(details);
+	}
+	
+	public List<RenderDoorDetails> getDoorRenderList()
+	{
+		return this.doorRenderList;
+	}
+	
+	/**
 	 * Sets up the 1.8+ Render Item details for all registered blocks and items.
 	 * @param event FMLPreInitializationEvent
 	 */
@@ -97,9 +121,9 @@ public class RenderItemHelper
 	{
 		if(event.getSide() == Side.CLIENT) 
 		{
-			for(List<Object> list : this.bowRenderList) 
+			for(RenderDetails bowDetails : this.getBowRenderList()) 
 			{
-				ResourceLocation bowName = ((Item)list.get(1)).getRegistryName();
+				ResourceLocation bowName = bowDetails.getItem().getRegistryName();
 				
 				List<ModelResourceLocation> variants = new ArrayList<ModelResourceLocation>();
 				variants.add(new ModelResourceLocation(bowName, "inventory"));
@@ -107,8 +131,16 @@ public class RenderItemHelper
 				variants.add(new ModelResourceLocation(bowName + "_pulling_1", "inventory"));
 				variants.add(new ModelResourceLocation(bowName + "_pulling_2", "inventory"));
 				for (ModelResourceLocation v : variants) {
-					ModelBakery.registerItemVariants((Item)list.get(1), v);
+					ModelBakery.registerItemVariants(bowDetails.getItem(), v);
 				}
+			} // end-for
+			
+			for (RenderDoorDetails details : this.getDoorRenderList())
+			{
+				ModelLoader.setCustomModelResourceLocation(
+						details.getItem(), 0, 
+						new ModelResourceLocation(details.getItem().getRegistryName(), 
+												  "inventory"));
 			} // end-for
 			
 			for(RenderDetails details : this.getRenderList()) 

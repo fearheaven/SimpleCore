@@ -7,6 +7,7 @@ import alexndr.api.helpers.game.TooltipHelper;
 import alexndr.api.registry.ContentCategories;
 import alexndr.api.registry.ContentRegistry;
 import alexndr.api.registry.Plugin;
+import net.minecraft.block.Block;
 import net.minecraft.item.ItemDoor;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
@@ -15,19 +16,20 @@ public class SimpleDoorItem extends ItemDoor implements IConfigureItemHelper<Sim
     protected Plugin plugin;
     protected ContentCategories.Item category = ContentCategories.Item.OTHER;
     protected ConfigItem entry;
+    protected Block blockDoor;
     
     public SimpleDoorItem(Plugin plugin, SimpleDoor blockDoor)
     {
         super(blockDoor);
+        this.blockDoor = blockDoor;
         this.plugin = plugin;
-        
     }
     
     @Override
     public SimpleDoorItem setUnlocalizedName(String doorName) 
     {
         super.setUnlocalizedName(doorName);
-        setRegistryName(this.plugin.getModId(), doorName);
+        this.setRegistryName(this.plugin.getModId(), doorName);
         GameRegistry.register(this);
         ContentRegistry.registerItem(this.plugin, this, doorName, this.category);
         return this;

@@ -63,7 +63,6 @@ public class SimpleBow extends ItemBow implements IConfigureItemHelper<SimpleBow
 		
         setRegistryName(this.plugin.getModId(), bowName);
         GameRegistry.register(this);
-//		SimpleCoreAPI.addBowRenderDetails(plugin, this);
 		ContentRegistry.registerItem(this.plugin, this, bowName, this.category);
 		ContentRegistry.registerItem(this.plugin, this, bowName + "_pulling_0", this.category);
 		ContentRegistry.registerItem(this.plugin, this, bowName + "_pulling_1", this.category);
