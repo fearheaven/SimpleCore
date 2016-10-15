@@ -15,11 +15,12 @@ public class SimpleDoorItem extends ItemDoor implements IConfigureItemHelper<Sim
     protected Plugin plugin;
     protected ContentCategories.Item category = ContentCategories.Item.OTHER;
     protected ConfigItem entry;
-
+    
     public SimpleDoorItem(Plugin plugin, SimpleDoor blockDoor)
     {
         super(blockDoor);
         this.plugin = plugin;
+        
     }
     
     @Override

@@ -11,6 +11,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
+import alexndr.api.logger.LogHelper;
 import alexndr.api.registry.ContentRegistry;
 import alexndr.api.registry.Plugin;
 
@@ -47,11 +48,19 @@ public class RenderItemHelper
 			RenderDetails details = new RenderDetails(item, plugin.getModId());
 			renderList.add(details);
 		}
-		for(Block block : ContentRegistry.getPluginBlocks(plugin.getModId())) {
-			RenderDetails details = new RenderDetails(Item.getItemFromBlock(block), plugin.getModId());
-			renderList.add(details);
-		}
-	}
+		for(Block block : ContentRegistry.getPluginBlocks(plugin.getModId())) 
+		{
+			try {
+				RenderDetails details = new RenderDetails(Item.getItemFromBlock(block), plugin.getModId());
+				renderList.add(details);
+			}
+			catch (NullPointerException e)
+			{
+				LogHelper.severe("Null ItemFromBlock for Block" + block.getUnlocalizedName() + "\n");
+				throw e;
+			}
+		} // end-for
+	} // end renderItemsAndBlocks()
 	
 	/**
 	 * Returns the list of items and blocks to render.
