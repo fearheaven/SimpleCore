@@ -12,8 +12,9 @@ import com.google.common.collect.Lists;
 /**
  * @author AleXndrTheGr8st
  */
-public class ConfigBlock extends ConfigEntry{
-	private List<ConfigValue> valuesList = Lists.newArrayList();
+public class ConfigBlock extends ConfigEntry
+{
+	// private List<ConfigValue> valuesList = Lists.newArrayList();
 	
 	//Primary Block Attributes
 	private ConfigValue hardness = new ConfigValue("Hardness").setCurrentValue("0.0");

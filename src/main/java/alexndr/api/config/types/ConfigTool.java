@@ -10,8 +10,9 @@ import com.google.common.collect.Lists;
 /**
  * @author AleXndrTheGr8st
  */
-public class ConfigTool extends ConfigEntry{
-	private List<ConfigValue> valuesList = Lists.newArrayList();
+public class ConfigTool extends ConfigEntry
+{
+	// private List<ConfigValue> valuesList = Lists.newArrayList();
 	
 	//Primary tool attributes.
 	private ConfigValue uses = new ConfigValue("Uses").setCurrentValue("0");

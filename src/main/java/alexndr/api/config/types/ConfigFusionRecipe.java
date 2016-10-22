@@ -5,8 +5,9 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 
-public class ConfigFusionRecipe extends ConfigEntry {
-	private List<ConfigValue> valuesList = Lists.newArrayList();
+public class ConfigFusionRecipe extends ConfigEntry 
+{
+	// private List<ConfigValue> valuesList = Lists.newArrayList();
 
 	// default values
 	private ConfigValue input1 = new ConfigValue("Input1").setDataType("@S")

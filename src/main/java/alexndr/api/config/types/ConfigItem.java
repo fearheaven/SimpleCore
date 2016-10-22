@@ -12,7 +12,7 @@ import com.google.common.collect.Lists;
  */
 public class ConfigItem extends ConfigEntry 
 {
-	private List<ConfigValue> valuesList = Lists.newArrayList();
+	// private List<ConfigValue> valuesList = Lists.newArrayList();
 	
 	//Primary item attributes.
 	private ConfigValue stackSize = new ConfigValue("StackSize").setCurrentValue("64");

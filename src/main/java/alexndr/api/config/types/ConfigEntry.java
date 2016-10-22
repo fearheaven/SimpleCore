@@ -8,11 +8,12 @@ import com.google.common.collect.Lists;
 /**
  * @author AleXndrTheGr8st
  */
-public class ConfigEntry {
+public class ConfigEntry 
+{
 	private String name;
 	private String category;
 	
-	private List<ConfigValue> valuesList = Lists.newArrayList();
+	protected List<ConfigValue> valuesList = Lists.newArrayList();
 	private static HashMap<String, ConfigEntry> entryNameMap = new HashMap<String, ConfigEntry>();
 	
 	/**

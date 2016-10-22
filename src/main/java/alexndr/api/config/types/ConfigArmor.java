@@ -8,7 +8,7 @@ import com.google.common.collect.Lists;
  * @author AleXndrTheGr8st
  */
 public class ConfigArmor extends ConfigEntry{
-	private List<ConfigValue> valuesList = Lists.newArrayList();
+	// private List<ConfigValue> valuesList = Lists.newArrayList();
 	
 	//Primary armor attributes.
 	private ConfigValue durability = new ConfigValue("Durability");
