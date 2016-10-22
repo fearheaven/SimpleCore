@@ -15,6 +15,7 @@ public class SimpleStairs extends BlockStairs implements IConfigureBlockHelper<S
 {
     protected Plugin plugin;
     protected ContentCategories.Block category;
+    protected ConfigBlock entry;
 
     /**
      * Creates a simple stair block.
@@ -42,10 +43,18 @@ public class SimpleStairs extends BlockStairs implements IConfigureBlockHelper<S
     }
 
     @Override
-    public ConfigBlock getConfigEntry()  { return null; }
-
+	public ConfigBlock getConfigEntry() {
+		return this.entry;
+	}
+	
     @Override
-    public SimpleStairs setConfigEntry(ConfigBlock entry) {return null;}
+    public SimpleStairs setConfigEntry(ConfigBlock entry) 
+    {
+		this.entry = entry;
+		this.setCreativeTab(entry.getCreativeTab());
+		this.setAdditionalProperties();
+		return this;
+    }
 
     @Override
     public SimpleStairs addToolTip(String toolTip)
