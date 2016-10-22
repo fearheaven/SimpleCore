@@ -90,7 +90,7 @@ public class SimpleDoor extends BlockDoor implements IConfigureBlockHelper<Simpl
         this.setResistance(entry.getResistance());
         this.setLightLevel(entry.getLightValue());
         this.setHarvestLevel(entry.getHarvestTool(), entry.getHarvestLevel());
-        this.setCreativeTab(entry.getCreativeTab());
+       // this.setCreativeTab(entry.getCreativeTab());
         this.setAdditionalProperties();
         return this;
     }

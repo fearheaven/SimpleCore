@@ -10,7 +10,8 @@ import com.google.common.collect.Lists;
 /**
  * @author AleXndrTheGr8st
  */
-public class ConfigItem extends ConfigEntry{
+public class ConfigItem extends ConfigEntry 
+{
 	private List<ConfigValue> valuesList = Lists.newArrayList();
 	
 	//Primary item attributes.
