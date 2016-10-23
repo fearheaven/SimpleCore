@@ -3,6 +3,10 @@
  */
 package alexndr.api.content.blocks;
 
+import java.util.Random;
+
+import javax.annotation.Nullable;
+
 import alexndr.api.config.types.ConfigBlock;
 import alexndr.api.helpers.game.IConfigureBlockHelper;
 import alexndr.api.helpers.game.TooltipHelper;
@@ -59,12 +63,20 @@ public class SimpleDoor extends BlockDoor implements IConfigureBlockHelper<Simpl
         return this;
     }
     
+    /**
+     * Get the ItemStack for the item registered for this SimpleDoor block.
+     * @return the ItemStack for one SimpleDoorItem.
+     */
     @Override
     public ItemStack getItem(World worldIn, BlockPos pos, IBlockState state)
     {
         return new ItemStack(this.getItem());
     }
 
+    /**
+     * get the door item we registered for this SimpleDoor block.
+     * @return a SimpleDoorItem, or null if no item registered.
+     */
     protected Item getItem()
     {
         if (ItemOfDoorResource == null) { return null; }
@@ -73,6 +85,16 @@ public class SimpleDoor extends BlockDoor implements IConfigureBlockHelper<Simpl
         }
         return Item.REGISTRY.getObject(ItemOfDoorResource);
     } // end getItem()
+    
+    /**
+     * Get the Item that this Block should drop when harvested. Cut&Pasted from BlockDoor,
+     * because BlockDoor.getItem() is private and can't be overridden by inheritance.
+     */
+    @Nullable
+    public Item getItemDropped(IBlockState state, Random rand, int fortune)
+    {
+        return state.getValue(HALF) == BlockDoor.EnumDoorHalf.UPPER ? null : this.getItem();
+    }
 
     /**
      * Returns the ConfigBlock used by this block.
