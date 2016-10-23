@@ -50,7 +50,10 @@ public class SimpleStairs extends BlockStairs implements IConfigureBlockHelper<S
     @Override
     public SimpleStairs setConfigEntry(ConfigBlock entry) 
     {
+    	// most properties are obtained from the block the stair as made of, and not configured
+    	// and set separately.
 		this.entry = entry;
+		this.setLightLevel(entry.getLightValue());
 		this.setCreativeTab(entry.getCreativeTab());
 		this.setAdditionalProperties();
 		return this;
