@@ -20,6 +20,7 @@ Roadmap of Future releases
 - ~~make 1.9.4 & 1.10.2 versions one build.~~ DONE
 - re-write Fusion furnace to use IItemHandler
 - re-factor IItemHandler-based stuff to be useful in Machines, too.
+- remove config options for properties that should not be configured.
 
 ### Later/other:
 
