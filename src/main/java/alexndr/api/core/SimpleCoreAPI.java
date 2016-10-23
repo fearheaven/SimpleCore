@@ -82,7 +82,7 @@ public class SimpleCoreAPI
 				simpleTools = new SimpleTab(SimpleCoreAPI.plugin, "SimpleTools", ContentCategories.CreativeTab.TOOLS);
 				simpleCombat = new SimpleTab(SimpleCoreAPI.plugin, "SimpleCombat", ContentCategories.CreativeTab.COMBAT);
 				simpleMachines = new SimpleTab(SimpleCoreAPI.plugin, "SimpleMachines", 
-						   ContentCategories.CreativeTab.OTHER);
+						   ContentCategories.CreativeTab.REDSTONE);
 			}
 		}
 		TabHelper.setTabInitDone(true);

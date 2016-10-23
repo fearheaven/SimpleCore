@@ -109,4 +109,10 @@ public class TabHelper
 			return ContentRegistry.getFirstTabInCategory(CreativeTab.OTHER);
 		else return CreativeTab.OTHER.vanillaTab;
 	}
-}
+	
+	public static CreativeTabs redstoneTab() {
+		if(ContentRegistry.getFirstTabInCategory(CreativeTab.REDSTONE) != null)
+			return ContentRegistry.getFirstTabInCategory(CreativeTab.REDSTONE);
+		else return CreativeTab.REDSTONE.vanillaTab;
+	}
+} // end class

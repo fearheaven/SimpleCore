@@ -8,10 +8,13 @@ import net.minecraft.item.Item;
 
 import com.google.common.collect.Lists;
 
+import alexndr.api.core.APISettings;
+
 /**
  * @author AleXndrTheGr8st
  */
-public class ContentRegistry {
+public class ContentRegistry 
+{
 	public static Class<BlockDetails> blockDetails = BlockDetails.class;
 	public static Class<ItemDetails> itemDetails = ItemDetails.class;
 	public static Class<TabDetails> tabDetails = TabDetails.class;
@@ -275,14 +278,22 @@ public class ContentRegistry {
 	 * @param category Category of the CreativeTab
 	 * @return First CreativeTab in category
 	 */
-	public static CreativeTabs getFirstTabInCategory(ContentCategories.CreativeTab category) {
+	public static CreativeTabs getFirstTabInCategory(ContentCategories.CreativeTab category) 
+	{
 		for(TabDetails details : tabList) {
-			if(details.category == category)
+			if(details.category == category) {
 				return details.tab;
+			}
+		} // end-for
+		if( (false == APISettings.separateTabs.asBoolean()) && APISettings.tabs.asBoolean()) 
+		{
+			if (! tabList.isEmpty()) {
+				return tabList.get(0).tab;
+			}
 		}
 		return null;
-	}
-}
+	} // end getFirstTabInCategory()
+} // end class
 
 /**
  * @author AleXndrTheGr8st

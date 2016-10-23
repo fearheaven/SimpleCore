@@ -23,8 +23,10 @@ public class ProxyCommon
 		LogHelper.loggerSetup();
 		
 		//Content
-		addVanillaTabs();
-
+		if (false == APISettings.tabs.asBoolean())
+		{
+			addVanillaTabs();
+		}
 	} // end preInit()
 	
     public void load(FMLInitializationEvent event)
@@ -41,20 +43,30 @@ public class ProxyCommon
 	/**
 	 * Adds the vanilla Minecraft tabs to the ContentRegistry.
 	 */
-	private void addVanillaTabs() {
+	private void addVanillaTabs() 
+	{
 		LogHelper.verbose("Adding vanilla tabs to ContentRegistry");
 		ContentRegistry.registerPlugin(SimpleCoreAPI.vanilla);
-		ContentRegistry.registerTab(SimpleCoreAPI.vanilla, CreativeTabs.BUILDING_BLOCKS, "tabBlock", 
-									ContentCategories.CreativeTab.GENERAL);
-		ContentRegistry.registerTab(SimpleCoreAPI.vanilla, CreativeTabs.BREWING, "tabBrewing", ContentCategories.CreativeTab.GENERAL);
-		ContentRegistry.registerTab(SimpleCoreAPI.vanilla, CreativeTabs.COMBAT, "tabCombat", ContentCategories.CreativeTab.GENERAL);
-		ContentRegistry.registerTab(SimpleCoreAPI.vanilla, CreativeTabs.DECORATIONS, "tabDecorations", ContentCategories.CreativeTab.GENERAL);
-		ContentRegistry.registerTab(SimpleCoreAPI.vanilla, CreativeTabs.FOOD, "tabFood", ContentCategories.CreativeTab.GENERAL);
-		ContentRegistry.registerTab(SimpleCoreAPI.vanilla, CreativeTabs.MATERIALS, "tabMaterials", ContentCategories.CreativeTab.GENERAL);
-		ContentRegistry.registerTab(SimpleCoreAPI.vanilla, CreativeTabs.MISC, "tabMisc", ContentCategories.CreativeTab.GENERAL);
-		ContentRegistry.registerTab(SimpleCoreAPI.vanilla, CreativeTabs.REDSTONE, "tabRedstone", ContentCategories.CreativeTab.GENERAL);
-		ContentRegistry.registerTab(SimpleCoreAPI.vanilla, CreativeTabs.TOOLS, "tabTools", ContentCategories.CreativeTab.GENERAL);
-		ContentRegistry.registerTab(SimpleCoreAPI.vanilla, CreativeTabs.TRANSPORTATION, "tabTransport", ContentCategories.CreativeTab.GENERAL);
+		ContentRegistry.registerTab(SimpleCoreAPI.vanilla, CreativeTabs.BUILDING_BLOCKS,
+				CreativeTabs.BUILDING_BLOCKS.getTabLabel(), ContentCategories.CreativeTab.GENERAL);
+		ContentRegistry.registerTab(SimpleCoreAPI.vanilla, CreativeTabs.MISC, CreativeTabs.MISC.getTabLabel(),
+				ContentCategories.CreativeTab.OTHER);
+		ContentRegistry.registerTab(SimpleCoreAPI.vanilla, CreativeTabs.BREWING, CreativeTabs.BREWING.getTabLabel(),
+				ContentCategories.CreativeTab.OTHER);
+		ContentRegistry.registerTab(SimpleCoreAPI.vanilla, CreativeTabs.COMBAT, CreativeTabs.COMBAT.getTabLabel(),
+				ContentCategories.CreativeTab.COMBAT);
+		ContentRegistry.registerTab(SimpleCoreAPI.vanilla, CreativeTabs.DECORATIONS, CreativeTabs.DECORATIONS.getTabLabel(),
+				ContentCategories.CreativeTab.DECORATIONS);
+		ContentRegistry.registerTab(SimpleCoreAPI.vanilla, CreativeTabs.FOOD, CreativeTabs.FOOD.getTabLabel(),
+				ContentCategories.CreativeTab.OTHER);
+		ContentRegistry.registerTab(SimpleCoreAPI.vanilla, CreativeTabs.MATERIALS, CreativeTabs.MATERIALS.getTabLabel(),
+				ContentCategories.CreativeTab.MATERIALS);
+		ContentRegistry.registerTab(SimpleCoreAPI.vanilla, CreativeTabs.REDSTONE, CreativeTabs.REDSTONE.getTabLabel(),
+				ContentCategories.CreativeTab.REDSTONE);
+		ContentRegistry.registerTab(SimpleCoreAPI.vanilla, CreativeTabs.TOOLS, CreativeTabs.TOOLS.getTabLabel(),
+				ContentCategories.CreativeTab.TOOLS);
+		ContentRegistry.registerTab(SimpleCoreAPI.vanilla, CreativeTabs.TRANSPORTATION, CreativeTabs.TRANSPORTATION.getTabLabel(),
+				ContentCategories.CreativeTab.OTHER);
 	} // end addVanillaTabs()
 	
 } // end class
