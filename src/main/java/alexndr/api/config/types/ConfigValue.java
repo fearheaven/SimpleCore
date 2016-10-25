@@ -66,6 +66,12 @@ public class ConfigValue {
 		return name;
 	}
 	
+	
+	@Override
+	public String toString() {
+		return name;
+	}
+
 	/**
 	 * Returns the data type. Will be prefixed with \@ symbol (at).
 	 * \@B = Boolean

@@ -82,8 +82,8 @@ public class SimpleHoe extends ItemHoe implements IConfigureItemHelper<SimpleHoe
 	}
 	
 	public void setAdditionalProperties() {
-		if(entry.getValueByName("CreativeTab") != null && entry.getValueByName("CreativeTab").isActive()) {
-			this.setCreativeTab(entry.getCreativeTab());
-		}
+//		if(entry.getValueByName("CreativeTab") != null && entry.getValueByName("CreativeTab").isActive()) {
+//			this.setCreativeTab(entry.getCreativeTab());
+//		}
 	}
 }

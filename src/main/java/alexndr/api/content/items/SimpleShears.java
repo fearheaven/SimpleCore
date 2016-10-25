@@ -82,8 +82,8 @@ public class SimpleShears extends ItemShears implements IConfigureItemHelper<Sim
 	}
 	
 	public void setAdditionalProperties() {
-		if(entry.getValueByName("CreativeTab") != null && entry.getValueByName("CreativeTab").isActive()) {
-			this.setCreativeTab(entry.getCreativeTab());
-		}
+//		if(entry.getValueByName("CreativeTab") != null && entry.getValueByName("CreativeTab").isActive()) {
+//			this.setCreativeTab(entry.getCreativeTab());
+//		}
 	}
 }

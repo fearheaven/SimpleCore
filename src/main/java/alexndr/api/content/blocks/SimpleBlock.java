@@ -82,7 +82,7 @@ public class SimpleBlock extends Block implements IConfigureBlockHelper<SimpleBl
 		this.setResistance(entry.getResistance());
 		this.setLightLevel(entry.getLightValue());
 		this.setHarvestLevel(entry.getHarvestTool(), entry.getHarvestLevel());
-		this.setCreativeTab(entry.getCreativeTab());
+//		this.setCreativeTab(entry.getCreativeTab());
 		this.setAdditionalProperties();
 		return this;
 	}

@@ -339,9 +339,9 @@ public class SimpleBow extends ItemBow implements IConfigureItemHelper<SimpleBow
 	
     
 	public void setAdditionalProperties() {
-		if(entry.getValueByName("CreativeTab") != null && entry.getValueByName("CreativeTab").isActive()) {
-			if(ContentRegistry.doesTabExist(entry.getValueByName("CreativeTab").getCurrentValue()))
-				this.setCreativeTab(ContentRegistry.getTab(entry.getValueByName("CreativeTab").getCurrentValue()));
-		}
+//		if(entry.getValueByName("CreativeTab") != null && entry.getValueByName("CreativeTab").isActive()) {
+//			if(ContentRegistry.doesTabExist(entry.getValueByName("CreativeTab").getCurrentValue()))
+//				this.setCreativeTab(ContentRegistry.getTab(entry.getValueByName("CreativeTab").getCurrentValue()));
+//		}
 	}
 }

@@ -74,8 +74,8 @@ public class SimpleItem extends Item implements IConfigureItemHelper<SimpleItem,
 	}
 	
 	public void setAdditionalProperties() {
-		if(entry.getValueByName("CreativeTab") != null && entry.getValueByName("CreativeTab").isActive()) {
-			this.setCreativeTab(entry.getCreativeTab());
-		}
+//		if(entry.getValueByName("CreativeTab") != null && entry.getValueByName("CreativeTab").isActive()) {
+//			this.setCreativeTab(entry.getCreativeTab());
+//		}
 	}
-}
+} // end class

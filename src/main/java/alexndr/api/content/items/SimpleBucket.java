@@ -127,9 +127,9 @@ public class SimpleBucket extends ItemFluidContainer implements IConfigureItemHe
 	}
 	
 	public void setAdditionalProperties() {
-		if(entry.getValueByName("CreativeTab") != null && entry.getValueByName("CreativeTab").isActive()) {
-			this.setCreativeTab(entry.getCreativeTab());
-		}
+//		if(entry.getValueByName("CreativeTab") != null && entry.getValueByName("CreativeTab").isActive()) {
+//			this.setCreativeTab(entry.getCreativeTab());
+//		}
 	}
 	
 	

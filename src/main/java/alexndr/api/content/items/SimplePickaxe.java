@@ -82,8 +82,8 @@ public class SimplePickaxe extends ItemPickaxe implements IConfigureItemHelper<S
 	}
 	
 	public void setAdditionalProperties() {
-		if(entry.getValueByName("CreativeTab") != null && entry.getValueByName("CreativeTab").isActive()) {
-			this.setCreativeTab(entry.getCreativeTab());
-		}
+//		if(entry.getValueByName("CreativeTab") != null && entry.getValueByName("CreativeTab").isActive()) {
+//			this.setCreativeTab(entry.getCreativeTab());
+//		}
 	}
 }
