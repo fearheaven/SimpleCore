@@ -10,28 +10,22 @@ Roadmap of Future releases
 ### Soonish:
 
 - needed for Aesthetics: ~~add SimpleDoor, SimpleDoorItem, SimpleBars, SimpleStairs to SimpleCoreAPI.~~ DONE
-- ~~port SimpleCoreAPI & SimpleOres2 to 1.9.4/1.10.2~~ released
-- ~~port Fusion to 1.9.4/1.10.2~~  released
-- ~~add copy of LGPL 3.0 license to all repositories.~~ DONE
-- ~~port Netherrocks to 1.9.4/1.10.2~~  released
 - port Machines to 1.10.2
-- port Aesthetics to 1.10.2
-- ~~recompile for 1.10~~ DONE via build unification.
-- ~~make 1.9.4 & 1.10.2 versions one build.~~ DONE
+- ~~port Aesthetics to 1.10.2~~ ALPHA RELEASED (TODO: test on server)
+- add French localization from fearheaven to Aesthetics
 - re-write Fusion furnace to use IItemHandler
 - re-factor IItemHandler-based stuff to be useful in Machines, too.
-- remove config options for properties that should not be configured.
+- remove config options for properties that should not be configured. STARTED 
+- restructure dependencies so that alloy blocks/items can be added without
+requiring Fusion installed (because other industrial mods have alloy furnaces)
 
 ### Later/other:
 
 - ~~re-implement/port custom fusion furnace recipes configuration~~ DONE
 - add support for config GUI to all 4
 - add support for JEI to Fusion Furnace.
-- ~~copy this roadmap to GitHub README~~ DONE
-- ~~add copies of software license to GitHub repos.~~ DONE
+- add ModTweaker support for Fusion Furnace recipes.
 - port akkkamaddi's Additions (see that thread later on)
-- restructure dependencies so that alloy blocks/items can be added without
-requiring Fusion installed (because other industrial mods have alloy furnaces)
 - add optional recipes for other mods' alloy furnaces.
 - re-write config system to use JSON instead of XML
 - ~~explore non-consumed catalyst option~~ Explored on Forum. Not popular idea.
