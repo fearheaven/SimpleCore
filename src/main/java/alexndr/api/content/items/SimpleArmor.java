@@ -157,6 +157,7 @@ public class SimpleArmor extends ItemArmor implements IConfigureItemHelper<Simpl
 		for (ItemStack stack : armorList)
 		{
 			if (stack == null) { continue; }
+			if (! (stack.getItem() instanceof ItemArmor)) {continue; }
 			ItemArmor piece = (ItemArmor) stack.getItem();
 			ar[piece.armorType.getIndex()] = piece;
 		} // end-for
