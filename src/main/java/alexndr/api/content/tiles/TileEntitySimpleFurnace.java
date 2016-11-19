@@ -42,9 +42,13 @@ import alexndr.api.content.blocks.SimpleFurnace;
 public class TileEntitySimpleFurnace extends TileEntityLockable implements
 		ITickable, ISidedInventory 
 {
-    protected static int[] slotsTop = new int[] {0};  // input
-    protected static int[] slotsBottom = new int[] {2, 1};  // output, fuel
-    protected static int[] slotsSides = new int[] {1};  // fuel
+    protected static final int NDX_INPUT_SLOT = 0;
+    protected static final int NDX_FUEL_SLOT = 1;
+    protected static final int NDX_OUTPUT_SLOT = 2;
+    
+    protected static int[] slotsTop = new int[] {NDX_INPUT_SLOT};  // input
+    protected static int[] slotsBottom = new int[] {NDX_OUTPUT_SLOT, NDX_FUEL_SLOT};  // output, fuel
+    protected static int[] slotsSides = new int[] {NDX_FUEL_SLOT};  // fuel
     
     /** The ItemStacks that hold the items currently being used in the furnace */
     protected ItemStack[] furnaceItemStacks;
@@ -129,7 +133,7 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
             stack.stackSize = this.getInventoryStackLimit();
         }
 
-        if (index == 0 && !flag)
+        if (index == NDX_INPUT_SLOT && !flag)
         {
             this.totalCookTime = this.getCookTime(stack);
             this.cookTime = 0;
@@ -150,7 +154,11 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
 	 */
 	@Override
 	public boolean isUseableByPlayer(EntityPlayer player) {
-        return this.worldObj.getTileEntity(this.pos) != this ? false : player.getDistanceSq((double)this.pos.getX() + 0.5D, (double)this.pos.getY() + 0.5D, (double)this.pos.getZ() + 0.5D) <= 64.0D;
+        return this.worldObj.getTileEntity(this.pos) != this 
+                 ? false 
+                 : player.getDistanceSq((double)this.pos.getX() + 0.5D, 
+                                        (double)this.pos.getY() + 0.5D, 
+                                        (double)this.pos.getZ() + 0.5D) <= 64.0D;
 	}
 
 	/* (non-Javadoc)
@@ -159,17 +167,17 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
 	@Override
     public boolean isItemValidForSlot(int index, ItemStack stack)
     {
-        if (index == 2)
+        if (index == NDX_OUTPUT_SLOT)
         {
             return false;
         }
-        else if (index != 1)
+        else if (index != NDX_FUEL_SLOT)
         {
             return true;
         }
         else
         {
-            ItemStack itemstack = this.furnaceItemStacks[1];
+            ItemStack itemstack = this.furnaceItemStacks[NDX_FUEL_SLOT];
             return isItemFuel(stack) || SlotFurnaceFuel.isBucket(stack) 
                             && (itemstack == null || itemstack.getItem() != Items.BUCKET);
         }
@@ -313,7 +321,7 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
 	@Override
 	public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction) 
 	{
-        if (direction == EnumFacing.DOWN && index == 1)
+        if (direction == EnumFacing.DOWN && index == NDX_FUEL_SLOT)
         {
             Item item = stack.getItem();
 
@@ -344,23 +352,23 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
         if (!this.worldObj.isRemote)
         {
             if (this.isBurning() 
-            	|| this.furnaceItemStacks[1] != null && this.furnaceItemStacks[0] != null)
+            	|| this.furnaceItemStacks[NDX_FUEL_SLOT] != null && this.furnaceItemStacks[NDX_INPUT_SLOT] != null)
             {
                 if (!this.isBurning() && this.canSmelt())
                 {
-                    this.currentItemBurnTime = this.furnaceBurnTime = getItemBurnTime(this.furnaceItemStacks[1]);
+                    this.currentItemBurnTime = this.furnaceBurnTime = getItemBurnTime(this.furnaceItemStacks[NDX_FUEL_SLOT]);
 
                     if (this.isBurning())
                     {
                         flag1 = true;
 
-                        if (this.furnaceItemStacks[1] != null)
+                        if (this.furnaceItemStacks[NDX_FUEL_SLOT] != null)
                         {
-                            --this.furnaceItemStacks[1].stackSize;
+                            --this.furnaceItemStacks[NDX_FUEL_SLOT].stackSize;
 
-                            if (this.furnaceItemStacks[1].stackSize == 0)
+                            if (this.furnaceItemStacks[NDX_FUEL_SLOT].stackSize == 0)
                             {
-                                this.furnaceItemStacks[1] = furnaceItemStacks[1].getItem().getContainerItem(furnaceItemStacks[1]);
+                                this.furnaceItemStacks[NDX_FUEL_SLOT] = furnaceItemStacks[NDX_FUEL_SLOT].getItem().getContainerItem(furnaceItemStacks[NDX_FUEL_SLOT]);
                             }
                         }
                     }
@@ -373,7 +381,7 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
                     if (this.cookTime == this.totalCookTime)
                     {
                         this.cookTime = 0;
-                        this.totalCookTime = this.getCookTime(this.furnaceItemStacks[0]);
+                        this.totalCookTime = this.getCookTime(this.furnaceItemStacks[NDX_INPUT_SLOT]);
                         this.smeltItem();
                         flag1 = true;
                     }
@@ -422,7 +430,7 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
         this.furnaceBurnTime = compound.getShort("BurnTime");
         this.cookTime = compound.getShort("CookTime");
         this.totalCookTime = compound.getShort("CookTimeTotal");
-        this.currentItemBurnTime = getItemBurnTime(this.furnaceItemStacks[1]);
+        this.currentItemBurnTime = getItemBurnTime(this.furnaceItemStacks[NDX_FUEL_SLOT]);
 
         if (compound.hasKey("CustomName", 8))
         {
@@ -486,18 +494,20 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
      */
     protected boolean canSmelt()
     {
-        if (this.furnaceItemStacks[0] == null)
+        if (this.furnaceItemStacks[NDX_INPUT_SLOT] == null)
         {
             return false;
         }
         else
         {
-            ItemStack itemstack = FurnaceRecipes.instance().getSmeltingResult(this.furnaceItemStacks[0]);
+            ItemStack itemstack = 
+                 FurnaceRecipes.instance().getSmeltingResult(this.furnaceItemStacks[NDX_INPUT_SLOT]);
             if (itemstack == null) return false;
-            if (this.furnaceItemStacks[2] == null) return true;
-            if (!this.furnaceItemStacks[2].isItemEqual(itemstack)) return false;
-            int result = furnaceItemStacks[2].stackSize + itemstack.stackSize;
-            return result <= getInventoryStackLimit() && result <= this.furnaceItemStacks[2].getMaxStackSize(); //Forge BugFix: Make it respect stack sizes properly.
+            if (this.furnaceItemStacks[NDX_OUTPUT_SLOT] == null) return true;
+            if (!this.furnaceItemStacks[NDX_OUTPUT_SLOT].isItemEqual(itemstack)) return false;
+            int result = furnaceItemStacks[NDX_OUTPUT_SLOT].stackSize + itemstack.stackSize;
+            return result <= getInventoryStackLimit() 
+                   && result <= this.furnaceItemStacks[NDX_OUTPUT_SLOT].getMaxStackSize(); //Forge BugFix: Make it respect stack sizes properly.
         }
     } // end canSmelt()
 
@@ -509,30 +519,30 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
     {
         if (this.canSmelt())
         {
-            ItemStack itemstack = FurnaceRecipes.instance().getSmeltingResult(this.furnaceItemStacks[0]);
+            ItemStack itemstack = FurnaceRecipes.instance().getSmeltingResult(this.furnaceItemStacks[NDX_INPUT_SLOT]);
 
-            if (this.furnaceItemStacks[2] == null)
+            if (this.furnaceItemStacks[NDX_OUTPUT_SLOT] == null)
             {
-                this.furnaceItemStacks[2] = itemstack.copy();
+                this.furnaceItemStacks[NDX_OUTPUT_SLOT] = itemstack.copy();
             }
-            else if (this.furnaceItemStacks[2].getItem() == itemstack.getItem())
+            else if (this.furnaceItemStacks[NDX_OUTPUT_SLOT].getItem() == itemstack.getItem())
             {
-                this.furnaceItemStacks[2].stackSize += itemstack.stackSize; // Forge BugFix: Results may have multiple items
+                this.furnaceItemStacks[NDX_OUTPUT_SLOT].stackSize += itemstack.stackSize; // Forge BugFix: Results may have multiple items
             }
             // TODO rewrite to work with SimpleBucket
-            if (this.furnaceItemStacks[0].getItem() == Item.getItemFromBlock(Blocks.SPONGE) 
-            		&& this.furnaceItemStacks[0].getMetadata() == 1 
-            		&& this.furnaceItemStacks[1] != null 
-            		&& this.furnaceItemStacks[1].getItem() == Items.BUCKET)
+            if (this.furnaceItemStacks[NDX_INPUT_SLOT].getItem() == Item.getItemFromBlock(Blocks.SPONGE) 
+            		&& this.furnaceItemStacks[NDX_INPUT_SLOT].getMetadata() == 1 
+            		&& this.furnaceItemStacks[NDX_FUEL_SLOT] != null 
+            		&& this.furnaceItemStacks[NDX_FUEL_SLOT].getItem() == Items.BUCKET)
             {
-                this.furnaceItemStacks[1] = new ItemStack(Items.WATER_BUCKET);
+                this.furnaceItemStacks[NDX_FUEL_SLOT] = new ItemStack(Items.WATER_BUCKET);
             }
 
-            --this.furnaceItemStacks[0].stackSize;
+            --this.furnaceItemStacks[NDX_INPUT_SLOT].stackSize;
 
-            if (this.furnaceItemStacks[0].stackSize <= 0)
+            if (this.furnaceItemStacks[NDX_INPUT_SLOT].stackSize <= 0)
             {
-                this.furnaceItemStacks[0] = null;
+                this.furnaceItemStacks[NDX_INPUT_SLOT] = null;
             }
         }
     } // end smeltItem()
