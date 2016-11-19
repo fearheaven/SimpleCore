@@ -157,16 +157,23 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
 	 * @see net.minecraft.inventory.IInventory#isItemValidForSlot(int, net.minecraft.item.ItemStack)
 	 */
 	@Override
-	public boolean isItemValidForSlot(int index, ItemStack stack) {
-		switch(index) {
-		case 1:
-			return isItemFuel(stack) || SlotFurnaceFuel.isBucket(stack);
-		case 2:
-			return false;
-		default:
-			return true;
-		}
-	} // end ()
+    public boolean isItemValidForSlot(int index, ItemStack stack)
+    {
+        if (index == 2)
+        {
+            return false;
+        }
+        else if (index != 1)
+        {
+            return true;
+        }
+        else
+        {
+            ItemStack itemstack = this.furnaceItemStacks[1];
+            return isItemFuel(stack) || SlotFurnaceFuel.isBucket(stack) 
+                            && (itemstack == null || itemstack.getItem() != Items.BUCKET);
+        }
+    }
 
 	public int getMaxCookTime() {
 		return maxCookTime;
@@ -281,8 +288,13 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
 	 * @see net.minecraft.inventory.ISidedInventory#getSlotsForFace(net.minecraft.util.EnumFacing)
 	 */
 	@Override
-	public int[] getSlotsForFace(EnumFacing side) {
-        return side == EnumFacing.DOWN ? slotsBottom : (side == EnumFacing.UP ? slotsTop : slotsSides);
+	public int[] getSlotsForFace(EnumFacing side) 
+	{
+        return ((side == EnumFacing.DOWN) 
+                       ? TileEntitySimpleFurnace.slotsBottom 
+                       : (side == EnumFacing.UP 
+                                       ? TileEntitySimpleFurnace.slotsTop 
+                                       : TileEntitySimpleFurnace.slotsSides));
 	}
 
 	/* (non-Javadoc)

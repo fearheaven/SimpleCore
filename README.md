@@ -9,10 +9,10 @@ Roadmap of Future releases
 
 ### Soonish:
 
-- re-write Fusion furnace to use IItemHandler
+- re-write Fusion furnace/Nether Furnace to use IItemHandler - IN PROGRESS
 - add support for config GUI to all 4
 - add support for JEI to Fusion Furnace.
-- re-factor IItemHandler-based stuff to be useful in Machines, too.
+- re-factor IItemHandler-based stuff to be useful in Machines, too. - IN PROGRESS
 - restructure dependencies so that alloy blocks/items can be added without
 requiring Fusion installed (because other industrial mods have alloy furnaces)
 - port Machines to 1.10.2
@@ -27,6 +27,7 @@ requiring Fusion installed (because other industrial mods have alloy furnaces)
 - port akkkamaddi's Additions (see that thread later on)
 - add optional recipes for other mods' alloy furnaces.
 - re-write config system to use JSON instead of XML
+- re-visit SimpleBucket code and models. They probably aren't quite right.
 - ~~explore non-consumed catalyst option~~ Explored on Forum. Not popular idea.
 - ~~add a Zinc plugin (Sinhika's Simple Zinc?) with Brass alloy for use with
 TiC, among others~~ BEING DONE BY THEOLDONE.
