@@ -10,10 +10,10 @@ Roadmap of Future releases
 ### Soonish:
 
 - add support for config GUI to all 4
-- add support for JEI to Fusion Furnace.
 - restructure dependencies so that alloy blocks/items can be added without
 requiring Fusion installed (because other industrial mods have alloy furnaces)
 - port Machines to 1.10.2
+- ~~add support for JEI to Fusion Furnace~~ DONE
 - ~~re-write Fusion furnace/Nether Furnace to use IItemHandler~~ DONE
 - ~~re-factor IItemHandler-based stuff to be useful in Machines, too.~~ PROBABLY DONE
 - ~~needed for Aesthetics: add SimpleDoor, SimpleDoorItem, SimpleBars, SimpleStairs to SimpleCoreAPI.~~ DONE
