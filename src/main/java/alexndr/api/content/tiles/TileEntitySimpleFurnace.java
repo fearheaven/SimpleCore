@@ -154,7 +154,7 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
 	 */
 	@Override
 	public boolean isUseableByPlayer(EntityPlayer player) {
-        return this.worldObj.getTileEntity(this.pos) != this 
+        return this.getWorld().getTileEntity(this.pos) != this 
                  ? false 
                  : player.getDistanceSq((double)this.pos.getX() + 0.5D, 
                                         (double)this.pos.getY() + 0.5D, 
@@ -349,7 +349,7 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
             --this.furnaceBurnTime;
         }
 
-        if (!this.worldObj.isRemote)
+        if (!this.getWorld().isRemote)
         {
             if (this.isBurning() 
             	|| this.furnaceItemStacks[NDX_FUEL_SLOT] != null && this.furnaceItemStacks[NDX_INPUT_SLOT] != null)
@@ -399,7 +399,7 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
             if (flag != this.isBurning())
             {
                 flag1 = true;
-                SimpleFurnace.setState(this.isBurning(), this.worldObj, this.pos);
+                SimpleFurnace.setState(this.isBurning(), this.getWorld(), this.pos);
             } // end-if
         } // end-if
 

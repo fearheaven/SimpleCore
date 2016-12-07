@@ -9,10 +9,11 @@ Roadmap of Future releases
 
 ### Soonish:
 
+- revise to support 1.11 with CompatLayer changes
 - add support for config GUI to all 4
 - restructure dependencies so that alloy blocks/items can be added without
 requiring Fusion installed (because other industrial mods have alloy furnaces)
-- port Machines to 1.10.2
+- ~~port Machines to 1.10.2~~ DONE/ALPHA RELEASED
 - ~~add support for JEI to Fusion Furnace~~ DONE
 - ~~re-write Fusion furnace/Nether Furnace to use IItemHandler~~ DONE
 - ~~re-factor IItemHandler-based stuff to be useful in Machines, too.~~ PROBABLY DONE

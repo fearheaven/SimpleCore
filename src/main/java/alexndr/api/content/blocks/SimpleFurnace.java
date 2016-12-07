@@ -50,6 +50,10 @@ import alexndr.api.registry.Plugin;
 public abstract class SimpleFurnace extends BlockContainer implements IConfigureBlockHelper<SimpleFurnace>
 {
 	public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
+	
+    /**
+     * Is the random generator used by furnace to drop the inventory contents in random directions.
+     */
 	protected Random furnaceRand = new Random();
 	
 	protected Plugin plugin;
@@ -62,6 +66,10 @@ public abstract class SimpleFurnace extends BlockContainer implements IConfigure
 	protected static Block unlit_furnace = Blocks.LIT_FURNACE;
 	protected static Block lit_furnace = Blocks.FURNACE;
 	
+    /**
+     * This flag is used to prevent the furnace inventory to be dropped upon block removal, is used internally when the
+     * furnace block changes from idle to active and vice-versa.
+     */
 	protected static boolean keepInventory = false;
 
 	/**
@@ -321,7 +329,11 @@ public abstract class SimpleFurnace extends BlockContainer implements IConfigure
         return true;
     }
 
-    @Override
+    /**
+     * If hasComparatorInputOverride returns true, the return value from this is used instead of the redstone signal
+     * strength when this block inputs to a comparator.
+     */
+   @Override
     public int getComparatorInputOverride(IBlockState blockState, World worldIn, 
     									  BlockPos pos)
     {
@@ -386,9 +398,10 @@ public abstract class SimpleFurnace extends BlockContainer implements IConfigure
         return new BlockStateContainer(this, new IProperty[] {FACING});
     }
     
-    /* ----------- Special to SimpleFurnace, not cut & pasted from BlockFurnace --------- */
+    /* ----------- Special to SimpleFurnace, not cut & pasted from BlockFurnace -------- */
+    /* ----------- MUST BE RE-IMPLEMENTED IN CHILD CLASSES ----------------------------- */
     
-	public static SimpleFurnace getUnlit_furnace()
+    public static SimpleFurnace getUnlit_furnace()
 	{
 		return (SimpleFurnace) unlit_furnace;
 	}
