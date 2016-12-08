@@ -1,15 +1,16 @@
 package alexndr.api.content.inventory;
 
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
 import alexndr.api.registry.ContentCategories;
 import alexndr.api.registry.ContentRegistry;
 import alexndr.api.registry.Plugin;
+import mcjty.lib.compat.CompatCreativeTabs;
+import net.minecraft.item.Item;
 
 /**
  * @author AleXndrTheGr8st
  */
-public class SimpleTab extends CreativeTabs{
+public class SimpleTab extends CompatCreativeTabs
+{
 	private Item itemForIcon;
 
 	/**
@@ -35,7 +36,7 @@ public class SimpleTab extends CreativeTabs{
 	}
 
 	@Override
-	public Item getTabIconItem() {
+	protected Item getItem() {
 		return itemForIcon;
 	}
-}
+} // end class

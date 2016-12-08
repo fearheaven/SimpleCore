@@ -4,6 +4,7 @@ import java.util.List;
 
 import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -38,12 +39,15 @@ public class SimpleCoreAPI
 	private static boolean iconsSet = false;
 	private static SimpleTab simpleBlocks, simpleDecorations, simpleMaterials, 
 							 simpleTools, simpleCombat, simpleMachines;
-	
+
+	public SimpleCoreAPI() {
+		FluidRegistry.enableUniversalBucket();
+	}
+
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event) 
 	{
 		LogHelper.info("SimpleCore API Loading...");
-		
 		//Register Event Stuff
 		MinecraftForge.EVENT_BUS.register(new CommonEventHelper());
 		
