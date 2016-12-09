@@ -229,6 +229,11 @@ public class SimpleBucket extends ItemFluidContainer
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand)
     {
+    	return clOnItemRightClick(world, player, hand);
+    }
+    
+    protected ActionResult<ItemStack> clOnItemRightClick(World world, EntityPlayer player, EnumHand hand)
+    {
     	ItemStack itemstack = player.getHeldItem(hand);
         FluidStack fluidStack = getFluid(itemstack);
         boolean flag = fluidStack == null;

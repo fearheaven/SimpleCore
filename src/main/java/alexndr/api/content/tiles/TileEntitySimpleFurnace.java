@@ -19,7 +19,6 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ContainerFurnace;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
-import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.inventory.SlotFurnaceFuel;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemHoe;
@@ -114,7 +113,7 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
 	@Override
 	public ItemStack decrStackSize(int index, int count) 
 	{
-        return ItemStackHelper.getAndSplit(this.furnaceItemStacks, index, count);
+        return SimpleItemStackHelper.getAndSplit(this.furnaceItemStacks, index, count);
 	} // end decrStackSize()
 
 	/* (non-Javadoc)
@@ -122,7 +121,7 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
 	 */
 	@Override
 	public ItemStack removeStackFromSlot(int index) {
-	       return ItemStackHelper.getAndRemove(this.furnaceItemStacks, index);
+	       return SimpleItemStackHelper.getAndRemove(this.furnaceItemStacks, index);
 	}
 
 	/* (non-Javadoc)
@@ -530,9 +529,12 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
             {
             	ItemStackTools.incStackSize(itemstack2, ItemStackTools.getStackSize(itemstack1));
             }
-            if (itemstack.getItem() == Item.getItemFromBlock(Blocks.SPONGE) && itemstack.getMetadata() == 1 && !((ItemStack)this.furnaceItemStacks.get(1)).func_190926_b() && ((ItemStack)this.furnaceItemStacks.get(1)).getItem() == Items.BUCKET)
+            if (itemstack.getItem() == Item.getItemFromBlock(Blocks.SPONGE) 
+            	&& itemstack.getMetadata() == 1 
+            	&& ItemStackTools.isValid(this.furnaceItemStacks.get(NDX_FUEL_SLOT)) 
+            	&& (this.furnaceItemStacks.get(NDX_FUEL_SLOT)).getItem() == Items.BUCKET)
             {
-                this.furnaceItemStacks.set(1, new ItemStack(Items.WATER_BUCKET));
+                this.furnaceItemStacks.set(NDX_FUEL_SLOT, new ItemStack(Items.WATER_BUCKET));
             }
 
             ItemStackTools.incStackSize(itemstack, -1);
@@ -619,7 +621,6 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
         return super.getCapability(capability, facing);
     }
 
-	@Override
 	public boolean func_191420_l() {
         for (ItemStack itemstack : this.furnaceItemStacks)
         {

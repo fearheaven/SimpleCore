@@ -84,8 +84,7 @@ public class SimpleBucketFluidHandler extends FluidHandlerItemStackSimple.SwapEm
         if (bucketType.getDestroyOnLava())
         {
         	Fluid liquid = resource.getFluid();
-        	if (liquid == FluidRegistry.LAVA 
-        		|| liquid.getTemperature() >= SimpleBucketType.DESTROY_ON_LAVA_TEMP)
+        	if (liquid.getTemperature() >= SimpleBucketType.DESTROY_ON_LAVA_TEMP)
         	{
         		// No, we didn't fill the bucket, because it's melting.
         		return 0;

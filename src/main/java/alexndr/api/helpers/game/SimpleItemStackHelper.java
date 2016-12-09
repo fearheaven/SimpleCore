@@ -5,6 +5,7 @@ package alexndr.api.helpers.game;
 
 import mcjty.lib.tools.ItemStackList;
 import net.minecraft.inventory.ItemStackHelper;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 /**
@@ -14,7 +15,16 @@ import net.minecraft.nbt.NBTTagCompound;
  */
 public class SimpleItemStackHelper extends ItemStackHelper 
 {
+    public static ItemStack getAndSplit(ItemStackList stacks, int index, int amount)
+    {
+    	return ItemStackHelper.getAndSplit(stacks, index, amount);
+    }
 
+    public static ItemStack getAndRemove(ItemStackList stacks, int index)
+    {
+    	return ItemStackHelper.getAndRemove(stacks, index);
+    }
+    
     public static void read_itemStackFromNBT(NBTTagCompound compound, ItemStackList stacklist)
     {
     	ItemStackHelper.func_191283_b(compound, stacklist);
