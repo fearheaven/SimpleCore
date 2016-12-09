@@ -12,6 +12,7 @@ import alexndr.api.helpers.game.TooltipHelper;
 import alexndr.api.registry.ContentCategories;
 import alexndr.api.registry.ContentRegistry;
 import alexndr.api.registry.Plugin;
+import mcjty.lib.tools.ItemStackTools;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -33,7 +34,6 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 /**
  * @author AleXndrTheGr8st
  */
-@SuppressWarnings("deprecation")
 public class SimpleBow extends ItemBow implements IConfigureItemHelper<SimpleBow, ConfigEntry>
 {
 	protected Plugin plugin;
@@ -104,6 +104,7 @@ public class SimpleBow extends ItemBow implements IConfigureItemHelper<SimpleBow
 	 * @param toolTip Name of the localisation entry for the tooltip, as a String. Normal format is modId.theitem.info
 	 * @return SimpleBow
 	 */
+	@SuppressWarnings("deprecation")
 	public SimpleBow addToolTip(String toolTip, TextFormatting color) {
 		TooltipHelper.addTooltipToItem(this, color + I18n.translateToLocal(toolTip));
 		return this;
@@ -201,12 +202,13 @@ public class SimpleBow extends ItemBow implements IConfigureItemHelper<SimpleBow
             ItemStack itemstack = this.findAmmo(entityplayer);
 
             int i = this.getMaxItemUseDuration(stack) - timeLeft;
-            i = net.minecraftforge.event.ForgeEventFactory.onArrowLoose(stack, worldIn, (EntityPlayer)entityLiving, i, itemstack != null || flag);
+			i = net.minecraftforge.event.ForgeEventFactory.onArrowLoose(stack, worldIn, (EntityPlayer) entityLiving, i,
+					ItemStackTools.isValid(itemstack) || flag);
             if (i < 0) return;
 
-            if (itemstack != null || flag)
+            if (ItemStackTools.isValid(itemstack) || flag)
             {
-                if (itemstack == null)
+                if (ItemStackTools.isEmpty(itemstack))
                 {
                     itemstack = new ItemStack(Items.ARROW);
                 }
@@ -282,8 +284,8 @@ public class SimpleBow extends ItemBow implements IConfigureItemHelper<SimpleBow
 
                     if (!flag1 && !efficient)
                     {
-                        --itemstack.stackSize;
-                        if (itemstack.stackSize == 0)
+                    	ItemStackTools.incStackSize(itemstack, -1);
+                        if (ItemStackTools.isEmpty(itemstack))
                         {
                             entityplayer.inventory.deleteStack(itemstack);
                         }

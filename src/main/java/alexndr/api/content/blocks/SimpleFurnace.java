@@ -2,17 +2,20 @@ package alexndr.api.content.blocks;
 
 import java.util.Random;
 
-import javax.annotation.Nullable;
-
+import alexndr.api.config.types.ConfigBlock;
+import alexndr.api.content.tiles.TileEntitySimpleFurnace;
+import alexndr.api.helpers.game.IConfigureBlockHelper;
+import alexndr.api.helpers.game.TooltipHelper;
+import alexndr.api.registry.ContentCategories;
+import alexndr.api.registry.ContentRegistry;
+import alexndr.api.registry.Plugin;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.Container;
@@ -23,7 +26,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
@@ -33,13 +35,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import alexndr.api.config.types.ConfigBlock;
-import alexndr.api.content.tiles.TileEntitySimpleFurnace;
-import alexndr.api.helpers.game.IConfigureBlockHelper;
-import alexndr.api.helpers.game.TooltipHelper;
-import alexndr.api.registry.ContentCategories;
-import alexndr.api.registry.ContentRegistry;
-import alexndr.api.registry.Plugin;
 
 /**
  * We can't just subclass BlockFurnace, because then the material does not get properly set. Why not?
@@ -47,7 +42,7 @@ import alexndr.api.registry.Plugin;
  * why.
  *
  */
-public abstract class SimpleFurnace extends BlockContainer implements IConfigureBlockHelper<SimpleFurnace>
+public abstract class SimpleFurnace extends SimpleContainer implements IConfigureBlockHelper<SimpleFurnace>
 {
 	public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
 	
@@ -231,14 +226,6 @@ public abstract class SimpleFurnace extends BlockContainer implements IConfigure
             }
         }
     } // end randomDisplayTick()
-
-	/* cut & pasted from BlockFurnace */
-    @Override
-    public abstract boolean onBlockActivated(World worldIn, BlockPos pos, 
-    		IBlockState state, EntityPlayer playerIn, EnumHand hand, 
-    		@Nullable ItemStack heldItem, EnumFacing side, 
-    		float hitX, float hitY, float hitZ);
-
 
     /**
      * Mostly cut & pasted from BlockFurnace. This *MUST* be overridden for custom classes...

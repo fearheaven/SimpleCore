@@ -2,7 +2,6 @@ package alexndr.api.content.items;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -85,8 +84,7 @@ public class SimpleBucketFluidHandler extends FluidHandlerItemStackSimple.SwapEm
         if (bucketType.getDestroyOnLava())
         {
         	Fluid liquid = resource.getFluid();
-        	if (liquid == FluidRegistry.LAVA 
-        		|| liquid.getTemperature() >= SimpleBucketType.DESTROY_ON_LAVA_TEMP)
+        	if (liquid.getTemperature() >= SimpleBucketType.DESTROY_ON_LAVA_TEMP)
         	{
         		// No, we didn't fill the bucket, because it's melting.
         		return 0;
@@ -99,7 +97,6 @@ public class SimpleBucketFluidHandler extends FluidHandlerItemStackSimple.SwapEm
         return Fluid.BUCKET_VOLUME;
     } // end fill()
 
-	@SuppressWarnings("deprecation")
 	@Override
 	protected void setFluid(FluidStack fluid) 
 	{
@@ -110,17 +107,17 @@ public class SimpleBucketFluidHandler extends FluidHandlerItemStackSimple.SwapEm
 		}
 		else if (fluid.getFluid() == FluidRegistry.WATER)
         {
-            container.setItem(bucketType.getBucketFromLiquid(FluidRegistry.WATER));
+            container = new ItemStack(bucketType.getBucketFromLiquid(FluidRegistry.WATER));
             container.setTagCompound(null);
         }
         else if (fluid.getFluid() == FluidRegistry.LAVA
         		 && ! bucketType.getDestroyOnLava())
         {
-            container.setItem(bucketType.getBucketFromLiquid(FluidRegistry.LAVA));
+            container = new ItemStack(bucketType.getBucketFromLiquid(FluidRegistry.LAVA));
             container.setTagCompound(null);
         }
         else {
-            container.setItem(bucketType.getBucketFromLiquid(fluid.getFluid()));
+            container = new ItemStack(bucketType.getBucketFromLiquid(fluid.getFluid()));
             super.setFluid(fluid);
         }
 	} // end setFluid()
@@ -129,16 +126,15 @@ public class SimpleBucketFluidHandler extends FluidHandlerItemStackSimple.SwapEm
 	@Nullable
 	public FluidStack getFluid() 
 	{
-		Item item = container.getItem();
-		if (item == emptyContainer.getItem()) 
+		if (container.isItemEqualIgnoreDurability(emptyContainer))
 		{
 			return null;
 		}
-		else if (item == bucketType.getBucketFromLiquid(FluidRegistry.WATER))
+		else if (container.getItem() == bucketType.getBucketFromLiquid(FluidRegistry.WATER))
 		{
 			return new FluidStack(FluidRegistry.WATER, Fluid.BUCKET_VOLUME);
 		}
-		else if (item == bucketType.getBucketFromLiquid(FluidRegistry.LAVA))
+		else if (container.getItem() == bucketType.getBucketFromLiquid(FluidRegistry.LAVA))
 		{
 			return new FluidStack(FluidRegistry.LAVA, Fluid.BUCKET_VOLUME);
 		}

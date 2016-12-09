@@ -15,6 +15,7 @@ import alexndr.api.helpers.game.TooltipHelper;
 import alexndr.api.registry.ContentCategories;
 import alexndr.api.registry.ContentRegistry;
 import alexndr.api.registry.Plugin;
+import mcjty.lib.tools.ItemStackTools;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.material.Material;
@@ -55,7 +56,8 @@ import net.minecraftforge.items.ItemHandlerHelper;
  * @author Sinhika
  *
  */
-public class SimpleBucket extends ItemFluidContainer implements IConfigureItemHelper<SimpleBucket, ConfigItem>
+public class SimpleBucket extends ItemFluidContainer 
+	implements IConfigureItemHelper<SimpleBucket, ConfigItem> 
 {
 	protected Plugin plugin;
 	protected ContentCategories.Item category = ContentCategories.Item.OTHER;
@@ -77,6 +79,8 @@ public class SimpleBucket extends ItemFluidContainer implements IConfigureItemHe
 		this.bucketType = type;
 		this.plugin = plugin;
         this.setMaxStackSize(1);
+        
+        // YES, we really mean to check against null here!
         if (empty == null) {
         	this.empty = new ItemStack(this);
         }
@@ -163,7 +167,7 @@ public class SimpleBucket extends ItemFluidContainer implements IConfigureItemHe
 
         // not for us to handle, because this isn't an empty bucket.
         ItemStack emptyBucket = event.getEmptyBucket();
-        if (emptyBucket == null ||
+        if (ItemStackTools.isEmpty(emptyBucket) ||
             !emptyBucket.isItemEqual(getEmpty()))
         {
             return;
@@ -180,10 +184,12 @@ public class SimpleBucket extends ItemFluidContainer implements IConfigureItemHe
         BlockPos pos = target.getBlockPos();
 
         ItemStack singleBucket = emptyBucket.copy();
-        singleBucket.stackSize = 1;
-
-        ItemStack filledBucket = FluidUtil.tryPickUpFluid(singleBucket, event.getEntityPlayer(), world, pos, target.sideHit);
-        if (filledBucket != null)
+        ItemStackTools.setStackSize(singleBucket, 1);
+        // note difference here from 1.11 version...
+        ItemStack fRes = FluidUtil.tryPickUpFluid(singleBucket, event.getEntityPlayer(), 
+        												  world, pos, target.sideHit);
+        ItemStack filledBucket = fRes;
+        if (ItemStackTools.isValid(filledBucket))
         {
             event.setResult(Event.Result.ALLOW);
             event.setFilledBucket(filledBucket);
@@ -196,15 +202,14 @@ public class SimpleBucket extends ItemFluidContainer implements IConfigureItemHe
         	Fluid fluid = targetFluidHandler.getTankProperties()[0].getContents().getFluid();
         	
         	// did we??
-        	if (fluid == FluidRegistry.LAVA 
-        		|| fluid.getTemperature() >= SimpleBucketType.DESTROY_ON_LAVA_TEMP)
+        	if (fluid.getTemperature() >= SimpleBucketType.DESTROY_ON_LAVA_TEMP)
         	{
         		event.getEntityPlayer().playSound(
 						SoundEvents.BLOCK_LAVA_EXTINGUISH, 0.5F,
 						2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
-        		// TODO see if this works...
+        		// see if this works...
                 event.setResult(Event.Result.ALLOW);
-                event.setFilledBucket(null);
+                event.setFilledBucket(ItemStackTools.getEmptyStack());
         	}
         	else {
                 // cancel event, otherwise the vanilla minecraft ItemBucket would
@@ -220,11 +225,17 @@ public class SimpleBucket extends ItemFluidContainer implements IConfigureItemHe
         }
     } // end onFillBucket()
 
-    
+
     @Override
-    public ActionResult<ItemStack> onItemRightClick(ItemStack itemstack, World world, 
-    											    EntityPlayer player, EnumHand hand)
+    public ActionResult<ItemStack> onItemRightClick(ItemStack itemStackIn, World worldIn, EntityPlayer playerIn, EnumHand hand)
     {
+        return clOnItemRightClick(worldIn, playerIn, hand);
+    }
+
+    protected ActionResult<ItemStack> clOnItemRightClick(World world, EntityPlayer player, 
+                    EnumHand hand) 
+    {
+    	ItemStack itemstack = player.getHeldItem(hand);
         FluidStack fluidStack = getFluid(itemstack);
         boolean flag = fluidStack == null;
         RayTraceResult mop = this.rayTrace(world, player, flag);
@@ -290,15 +301,12 @@ public class SimpleBucket extends ItemFluidContainer implements IConfigureItemHe
                     	player.playSound(SoundEvents.BLOCK_LAVA_EXTINGUISH, 0.5F,
                     			2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
                     	// destroy it
-                    	--itemstack.stackSize;
-                        if (itemstack.stackSize < 0)
-                        {
-                        	itemstack.stackSize = 0;
-                        }
+                    	ItemStackTools.incStackSize(itemstack, -1);
                         return ActionResult.newResult(EnumActionResult.FAIL, itemstack);
                     }
                     // no, we didn't. But do we do lava?
                 	Item lava_bucket = bucketType.getBucketFromLiquid(FluidRegistry.LAVA);
+                	// YES, this is supposed to be compared with null!
                     if (lava_bucket == null) 
                     {
                         return ActionResult.newResult(EnumActionResult.FAIL, itemstack);
@@ -337,11 +345,12 @@ public class SimpleBucket extends ItemFluidContainer implements IConfigureItemHe
             		return ActionResult.newResult(EnumActionResult.SUCCESS, itemstack);
                 }
                 else {
-                	itemstack.stackSize--;
-                	ItemStack emptyStack = getEmpty() != null ? getEmpty().copy() : new ItemStack(this);
+                	ItemStackTools.incStackSize(itemstack, -1);
+                	ItemStack emptyStack = getEmpty() != null 
+                			? getEmpty().copy() : new ItemStack(this);
 
                 	// check whether we replace the item or add the empty one to the inventory
-                	if (itemstack.stackSize <= 0)
+                	if (ItemStackTools.isEmpty(itemstack))
                 	{
                 		return ActionResult.newResult(EnumActionResult.SUCCESS, emptyStack);
                 	}
@@ -445,7 +454,7 @@ public class SimpleBucket extends ItemFluidContainer implements IConfigureItemHe
         {
             return emptyBuckets;
         }
-        else if (--emptyBuckets.stackSize <= 0)
+        else if (ItemStackTools.isEmpty(ItemStackTools.incStackSize(emptyBuckets, -1)))
         {
             return new ItemStack(fullBucket);
         }

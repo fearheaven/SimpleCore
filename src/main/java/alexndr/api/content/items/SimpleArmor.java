@@ -16,6 +16,7 @@ import alexndr.api.helpers.game.TooltipHelper;
 import alexndr.api.registry.ContentCategories;
 import alexndr.api.registry.ContentRegistry;
 import alexndr.api.registry.Plugin;
+import mcjty.lib.compat.CompatItemArmor;
 
 import com.google.common.collect.Lists;
 
@@ -23,7 +24,7 @@ import com.google.common.collect.Lists;
  * @author AleXndrTheGr8st
  */
 @SuppressWarnings("deprecation")
-public class SimpleArmor extends ItemArmor implements IConfigureItemHelper<SimpleArmor, ConfigArmor>
+public class SimpleArmor extends CompatItemArmor implements IConfigureItemHelper<SimpleArmor, ConfigArmor>
 {
 	// { FEET, LEGS, CHEST, HEAD }
 	protected ItemArmor[] armor = { null, null, null, null };
@@ -112,8 +113,11 @@ public class SimpleArmor extends ItemArmor implements IConfigureItemHelper<Simpl
 	}
 	
 	@Override
-	public boolean getIsRepairable(ItemStack toRepair, ItemStack repair) {
-		return this.material.customCraftingMaterial == repair.getItem() ? true : super.getIsRepairable(toRepair, repair);
+	public boolean getIsRepairable(ItemStack toRepair, ItemStack repair) 
+	{
+		return this.material.getRepairItem() == repair.getItem() 
+				? true 
+				: super.getIsRepairable(toRepair, repair);
 	}
 	
 	@Override

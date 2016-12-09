@@ -14,7 +14,8 @@ import alexndr.api.logger.LogHelper;
 public class APISettings {
 	public static Configuration settings = new Configuration();
 	
-	public static void createOrLoadSettings(FMLPreInitializationEvent event) {
+	public static void createOrLoadSettings(FMLPreInitializationEvent event) 
+	{
 		settings.setModName(APIInfo.NAME);
 		File configDir = new File(event.getModConfigurationDirectory(), "AleXndr");
 		File settingsFile = new File(configDir, "SimpleCoreAPI_Settings.xml");
