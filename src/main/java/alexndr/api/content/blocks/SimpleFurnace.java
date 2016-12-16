@@ -9,7 +9,9 @@ import alexndr.api.helpers.game.TooltipHelper;
 import alexndr.api.registry.ContentCategories;
 import alexndr.api.registry.ContentRegistry;
 import alexndr.api.registry.Plugin;
+import mcjty.lib.compat.CompatBlock;
 import net.minecraft.block.Block;
+import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyDirection;
@@ -42,7 +44,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * why.
  *
  */
-public abstract class SimpleFurnace extends SimpleContainer implements IConfigureBlockHelper<SimpleFurnace>
+public abstract class SimpleFurnace extends CompatBlock 
+    implements ITileEntityProvider, IConfigureBlockHelper<SimpleFurnace>
 {
 	public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
 	
@@ -82,6 +85,7 @@ public abstract class SimpleFurnace extends SimpleContainer implements IConfigur
 		this.material = material;
 		this.category = category;
 		this.isBurning = isBurning;
+	    this.isBlockContainer = true;
         this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
 	} // end ctor()
 	
@@ -142,6 +146,21 @@ public abstract class SimpleFurnace extends SimpleContainer implements IConfigur
 			this.setBlockUnbreakable();
 		}
 	}
+
+	/* --- COPIED FROM BlockContainer ----- */
+    /**
+     * Called on both Client and Server when World#addBlockEvent is called. On the Server, this may perform additional
+     * changes to the world, like pistons replacing the block with an extended base. On the client, the update may
+     * involve replacing tile entities, playing sounds, or performing other visual actions to reflect the server side
+     * changes. 
+     */
+    @SuppressWarnings("deprecation")
+    public boolean eventReceived(IBlockState state, World worldIn, BlockPos pos, int id, int param)
+    {
+        super.eventReceived(state, worldIn, pos, id, param);
+        TileEntity tileentity = worldIn.getTileEntity(pos);
+        return tileentity == null ? false : tileentity.receiveClientEvent(id, param);
+    }
 	
 	/*------------- MOST OF THE FOLLOWING ARE CUT & PASTED FROM BlockFurnace ----------------------*/
 	/* If BlockFurnace changes, you will need to change these methods -- Sinhika                   */
