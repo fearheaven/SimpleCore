@@ -152,8 +152,7 @@ public class SimpleBucket extends ItemFluidContainer
         if (ItemStackTools.isEmpty(empty)) {
             empty = new ItemStack(this);
             SimpleBucketFluidHandler handler = 
-                            (SimpleBucketFluidHandler) empty.getCapability(
-                                       CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
+                            (SimpleBucketFluidHandler) FluidUtil.getFluidHandler(empty);
             handler.setContainerToEmpty();
         }
         return empty;
@@ -168,8 +167,7 @@ public class SimpleBucket extends ItemFluidContainer
     protected FluidStack getFluid(ItemStack container)
     {
 		SimpleBucketFluidHandler handler = 
-				(SimpleBucketFluidHandler) container.getCapability(
-						CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
+				(SimpleBucketFluidHandler) FluidUtil.getFluidHandler(container);
 		return handler != null ? handler.getFluid() : null;
     }
 
@@ -289,9 +287,7 @@ public class SimpleBucket extends ItemFluidContainer
 
                     // empty the bucket
                     SimpleBucketFluidHandler handler = 
-                                    (SimpleBucketFluidHandler) itemstack.getCapability(
-                                            CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY,
-                                            null);
+                                    (SimpleBucketFluidHandler) FluidUtil.getFluidHandler(itemstack);
                     handler.setContainerToEmpty();
                     return ActionResult.newResult(EnumActionResult.SUCCESS, itemstack);
                 } // end-if tryPlaceFluid
@@ -394,8 +390,7 @@ public class SimpleBucket extends ItemFluidContainer
             // add all fluids that the bucket can be filled  with
             ItemStack stack = new ItemStack(this);
             SimpleBucketFluidHandler handler = 
-                            (SimpleBucketFluidHandler) stack.getCapability(
-                                    CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
+                            (SimpleBucketFluidHandler) FluidUtil.getFluidHandler(stack);
             if (handler != null && handler.fill(fluid, true) == fluid.amount)
             {
                 subItems.add(stack);
