@@ -23,13 +23,13 @@ public class SimpleBucketFluidHandler extends FluidHandlerItemStackSimple
 	@Override
 	public boolean canFillFluidType(FluidStack fluid) 
 	{
-		return bucketType.doesVariantExist(fluid.getFluid());
+		return bucketType.doesVariantExist(fluid);
 	}
 
 	@Override
 	public boolean canDrainFluidType(FluidStack fluid) 
 	{
-		return bucketType.doesVariantExist(fluid.getFluid());
+		return bucketType.doesVariantExist(fluid);
 	}
 	
     @Override

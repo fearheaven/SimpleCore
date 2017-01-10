@@ -54,6 +54,7 @@ public class SimpleBucket extends ItemFluidContainer
 	protected Plugin plugin;
 	protected ContentCategories.Item category = ContentCategories.Item.OTHER;
 	protected ConfigItem entry;
+	protected ItemStack empty; // empty item to return and recognize when filling
 	protected List<String> toolTipStrings = Lists.newArrayList();
 
     protected final SimpleBucketType bucketType;
@@ -69,6 +70,7 @@ public class SimpleBucket extends ItemFluidContainer
 		this.bucketType = type;
 		this.plugin = plugin;
         this.setMaxStackSize(1);
+        this.empty = ItemStackTools.getEmptyStack();
         
         // allows to work with dispensers
         BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(this, DispenseFluidContainer.getInstance());
@@ -145,7 +147,18 @@ public class SimpleBucket extends ItemFluidContainer
         return capacity;
     }
     
-	
+    public ItemStack getEmpty()
+    {
+        if (ItemStackTools.isEmpty(empty)) {
+            empty = new ItemStack(this);
+            SimpleBucketFluidHandler handler = 
+                            (SimpleBucketFluidHandler) empty.getCapability(
+                                       CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
+            handler.setContainerToEmpty();
+        }
+        return empty;
+    } // end getEmpty()
+
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) 
 	{
@@ -172,7 +185,7 @@ public class SimpleBucket extends ItemFluidContainer
         // not for us to handle, because this isn't an empty bucket.
         ItemStack emptyBucket = event.getEmptyBucket();
         if (ItemStackTools.isEmpty(emptyBucket) 
-            || ! emptyBucket.isItemEqual(new ItemStack(this))
+            || ! emptyBucket.isItemEqual(this.getEmpty())
             || (emptyBucket.getCapability(
                             CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null) == null)
             || (this.getFluid(emptyBucket) != null && this.getFluid(emptyBucket).amount > 0)
@@ -376,15 +389,14 @@ public class SimpleBucket extends ItemFluidContainer
     @Override
     public void getSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems)
     {
-        for (Fluid fluid : bucketType.getLiquidsList())
+        for (FluidStack fluid : bucketType.getLiquidsList())
         {
             // add all fluids that the bucket can be filled  with
-            FluidStack fs = new FluidStack(fluid, getCapacity());
             ItemStack stack = new ItemStack(this);
             SimpleBucketFluidHandler handler = 
                             (SimpleBucketFluidHandler) stack.getCapability(
                                     CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
-            if (handler != null && handler.fill(fs, true) == fs.amount)
+            if (handler != null && handler.fill(fluid, true) == fluid.amount)
             {
                 subItems.add(stack);
             }
