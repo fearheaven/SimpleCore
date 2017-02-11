@@ -13,6 +13,8 @@ import alexndr.api.helpers.game.TooltipHelper;
 import alexndr.api.registry.ContentCategories;
 import alexndr.api.registry.ContentRegistry;
 import alexndr.api.registry.Plugin;
+import mcjty.lib.compat.CompatItem;
+import mcjty.lib.tools.FluidTools;
 import mcjty.lib.tools.ItemStackTools;
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.creativetab.CreativeTabs;
@@ -24,6 +26,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.stats.StatList;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -33,8 +36,11 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.event.entity.player.FillBucketEvent;
 import net.minecraftforge.fluids.DispenseFluidContainer;
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.IFluidContainerItem;
+import net.minecraftforge.fluids.UniversalBucket;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.ItemFluidContainer;
@@ -48,16 +54,19 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * @author Sinhika
  *
  */
-public class SimpleBucket extends ItemFluidContainer 
-	implements IConfigureItemHelper<SimpleBucket, ConfigItem> 
+@SuppressWarnings("deprecation")
+public class SimpleBucket extends CompatItem 
+	implements IFluidContainerItem, IConfigureItemHelper<SimpleBucket, ConfigItem> 
 {
 	protected Plugin plugin;
 	protected ContentCategories.Item category = ContentCategories.Item.OTHER;
 	protected ConfigItem entry;
-	protected ItemStack empty; // empty item to return and recognize when filling
+	protected ItemStack emptyBucketStack; // empty itemstack to return and recognize when filling
 	protected List<String> toolTipStrings = Lists.newArrayList();
 
+	protected final int capacity;
     protected final SimpleBucketType bucketType;
+    protected final boolean nbtSensitive;
 
 	/**
 	 * It's a bucket; it has a fixed volume.
@@ -65,12 +74,12 @@ public class SimpleBucket extends ItemFluidContainer
 	 */
 	public SimpleBucket(Plugin plugin, SimpleBucketType type) 
 	{
-		super(Fluid.BUCKET_VOLUME);
-		
+		this.capacity = Fluid.BUCKET_VOLUME;
 		this.bucketType = type;
 		this.plugin = plugin;
         this.setMaxStackSize(1);
-        this.empty = ItemStackTools.getEmptyStack();
+        this.emptyBucketStack = ItemStackTools.getEmptyStack();
+        this.nbtSensitive = false;
         
         // allows to work with dispensers
         BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(this, DispenseFluidContainer.getInstance());
@@ -86,13 +95,16 @@ public class SimpleBucket extends ItemFluidContainer
 		return this;
 	}
 	
-	@SuppressWarnings("deprecation")
-    @Override
+	@Override
 	public String getItemStackDisplayName(ItemStack stack)
 	{
 	    FluidStack fluidStack = getFluid(stack);
 	    if (fluidStack == null)
 	    {
+            if(getEmpty() != null)
+            {
+                return getEmpty().getDisplayName();
+            }
 	        return super.getItemStackDisplayName(stack);
 	    }
 
@@ -147,28 +159,78 @@ public class SimpleBucket extends ItemFluidContainer
         return capacity;
     }
     
+    public static ItemStack getFilledBucket(SimpleBucket item, Fluid fluid)
+    {
+        ItemStack stack = new ItemStack(item);
+        item.fill(stack, new FluidStack(fluid, item.getCapacity()), true);
+        return stack;
+    }
+   
+    @Override
+    public int fill(ItemStack container, FluidStack resource, boolean doFill)
+    {
+        // has to be exactly 1, must be handled from the caller
+        if (container.stackSize != 1)
+        {
+            return 0;
+        }
+
+        // can only fill exact capacity
+        if (resource == null || resource.amount < getCapacity())
+        {
+            return 0;
+        }
+
+        // already contains fluid?
+        if (getFluid(container) != null)
+        {
+            return 0;
+        }
+        // registered in the registry?
+        if (bucketType.doesVariantExist(resource))
+        {
+            // fill the container
+            if (doFill)
+            {
+                NBTTagCompound tag = container.getTagCompound();
+                if (tag == null)
+                {
+                    tag = new NBTTagCompound();
+                }
+                resource.writeToNBT(tag);
+                container.setTagCompound(tag);
+            }
+            return getCapacity();
+        }
+        return 0;
+    } // end fill()
+
     public ItemStack getEmpty()
     {
-        if (ItemStackTools.isEmpty(empty)) {
-            empty = new ItemStack(this);
-            SimpleBucketFluidHandler handler = 
-                            (SimpleBucketFluidHandler) FluidUtil.getFluidHandler(empty);
-            handler.setContainerToEmpty();
+        if (ItemStackTools.isEmpty(emptyBucketStack)) 
+        {
+            SimpleBucket emptyBucket = new SimpleBucket(plugin, bucketType);
+            emptyBucketStack = new ItemStack(emptyBucket);
+            emptyBucketStack.deserializeNBT(emptyBucketStack.serializeNBT());
         }
-        return empty;
+        return emptyBucketStack;
     } // end getEmpty()
 
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) 
 	{
-		return new SimpleBucketFluidHandler(stack, capacity, bucketType);
+		return new SimpleBucketFluidHandler(stack, bucketType);
 	}
 
-    protected FluidStack getFluid(ItemStack container)
+    public boolean isNbtSensitive()
     {
-		SimpleBucketFluidHandler handler = 
-				(SimpleBucketFluidHandler) FluidUtil.getFluidHandler(container);
-		return handler != null ? handler.getFluid() : null;
+        return nbtSensitive;
+    }
+
+	@Override
+    public FluidStack getFluid(ItemStack container)
+    {
+        return FluidStack.loadFluidStackFromNBT(container.getTagCompound());
     }
 
     @SubscribeEvent
@@ -204,9 +266,8 @@ public class SimpleBucket extends ItemFluidContainer
         ItemStack singleBucket = emptyBucket.copy();
         ItemStackTools.setStackSize(singleBucket, 1);
         // NOTE difference here from 1.11 version...
-        ItemStack fRes = FluidUtil.tryPickUpFluid(singleBucket, event.getEntityPlayer(), 
+        ItemStack filledBucket = FluidUtil.tryPickUpFluid(singleBucket, event.getEntityPlayer(), 
         												  world, pos, target.sideHit);
-        ItemStack filledBucket = fRes;
         if (ItemStackTools.isValid(filledBucket))
         {
             event.setResult(Event.Result.ALLOW);
@@ -245,7 +306,8 @@ public class SimpleBucket extends ItemFluidContainer
 
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(ItemStack itemStackIn, World worldIn, EntityPlayer playerIn, EnumHand hand)
+    public ActionResult<ItemStack> onItemRightClick(ItemStack itemStackIn, World worldIn, 
+                                                    EntityPlayer playerIn, EnumHand hand)
     {
         return clOnItemRightClick(worldIn, playerIn, hand);
     }
@@ -253,48 +315,83 @@ public class SimpleBucket extends ItemFluidContainer
     protected ActionResult<ItemStack> clOnItemRightClick(World world, EntityPlayer player, 
                     EnumHand hand) 
     {
-    	ItemStack itemstack = player.getHeldItem(hand);
-        FluidStack fluidStack = getFluid(itemstack);
-        // empty bucket shouldn't exist, do nothing since it should be handled by the bucket event
-        if (fluidStack == null)
-        {
-            return ActionResult.newResult(EnumActionResult.PASS, itemstack);
-        }
-
+        ItemStack itemstack = player.getHeldItem(hand);
+        boolean flag = FluidTools.isEmptyContainer(itemstack);
+        
+        RayTraceResult raytraceresult = this.rayTrace(world, player, flag);
+        ActionResult<ItemStack> ret = 
+                        net.minecraftforge.event.ForgeEventFactory.onBucketUse(player, world, 
+                                                                             itemstack, raytraceresult);
+        if (ret != null) return ret;
+        
         // clicked on a block?
-        RayTraceResult mop = this.rayTrace(world, player, false);
-        if(mop == null || mop.typeOfHit != RayTraceResult.Type.BLOCK)
+        if(raytraceresult == null || raytraceresult.typeOfHit != RayTraceResult.Type.BLOCK)
         {
             return ActionResult.newResult(EnumActionResult.PASS, itemstack);
         }
 
-        BlockPos clickPos = mop.getBlockPos();
-        // can we place liquid there?
+        BlockPos clickPos = raytraceresult.getBlockPos();
+        // can we place/remove liquid there?
         if (world.isBlockModifiable(player, clickPos))
         {
             // the block adjacent to the side we clicked on
-            BlockPos targetPos = clickPos.offset(mop.sideHit);
-
-            // can the player place there?
-            if (player.canPlayerEdit(targetPos, mop.sideHit, itemstack))
+            BlockPos targetPos = clickPos.offset(raytraceresult.sideHit);
+            if (flag)  // empty bucket
             {
-                // try placing liquid
-                if (FluidUtil.tryPlaceFluid(player, player.getEntityWorld(), fluidStack, targetPos)
-                        && !player.capabilities.isCreativeMode)
+                // can the player pick up there? No?
+                if (! player.canPlayerEdit(targetPos, raytraceresult.sideHit, itemstack))
                 {
-                    // success!
-                    player.addStat(StatList.getObjectUseStats(this));
+                    return ActionResult.newResult(EnumActionResult.FAIL, itemstack);
+                }
+                else // yes, player can pick up 
+                {
+                    ItemStack filledBucket = FluidUtil.tryPickUpFluid(itemstack, player, world, 
+                                                                      clickPos, 
+                                                                      raytraceresult.sideHit);
+                    if (ItemStackTools.isEmpty(filledBucket)) 
+                    {
+                        return ActionResult.newResult(EnumActionResult.FAIL, itemstack);
+                    }
+                    else
+                    {
+                        return ActionResult.newResult(EnumActionResult.SUCCESS, filledBucket);
+                    } // end-else we got a filled bucket
+                } // end-else player can pick up
+            } // end-if empty bucket
+//            else  // non-empty bucket
+//            {
+//                boolean flag1 = world.getBlockState(clickPos).getBlock().isReplaceable(world, clickPos);
+//                BlockPos blockpos1 = flag1 
+//                                && raytraceresult.sideHit == EnumFacing.UP ? clickPos : targetPos;
+//                
+//                if (! player.canPlayerEdit(targetPos, raytraceresult.sideHit, itemstack))
+//                {
+//                    return ActionResult.newResult(EnumActionResult.FAIL, itemstack);
+//                }
+//                else // canPlayerEdit
+//                {
+//                    FluidStack fluidStack = getFluid(itemstack);
+//                    // empty bucket shouldn't exist, do nothing since it should be handled by the bucket event
+//                    if (fluidStack == null)
+//                    {
+//                        return ActionResult.newResult(EnumActionResult.PASS, itemstack);
+//                    }
+//                   // try placing liquid
+//                    if (FluidUtil.tryPlaceFluid(player, world, fluidStack, blockpos1))
+//                    {
+//                        // success!
+//                        player.addStat(StatList.getObjectUseStats(this));
+//
+//                        // empty the bucket
+//                        itemstack = FluidTools.drainContainer(itemstack);
+//                        return ActionResult.newResult(EnumActionResult.SUCCESS, itemstack);
+//                    } // end-if tryPlaceFluid
+//                    
+//                } // end-else canPlayerEdit
+//            } // end-else non-empty bucket
+         } // end-if isBlockModifiable
 
-                    // empty the bucket
-                    SimpleBucketFluidHandler handler = 
-                                    (SimpleBucketFluidHandler) FluidUtil.getFluidHandler(itemstack);
-                    handler.setContainerToEmpty();
-                    return ActionResult.newResult(EnumActionResult.SUCCESS, itemstack);
-                } // end-if tryPlaceFluid
-            } // end-if canPlayerEdit
-        } // end-if isBlockModifiable
-
-        // couldn't place liquid there2
+        // couldn't place or remove liquid there
         return ActionResult.newResult(EnumActionResult.FAIL, itemstack);
     } // end onItemRightClick()
 
@@ -389,13 +486,64 @@ public class SimpleBucket extends ItemFluidContainer
         {
             // add all fluids that the bucket can be filled  with
             ItemStack stack = new ItemStack(this);
-            SimpleBucketFluidHandler handler = 
-                            (SimpleBucketFluidHandler) FluidUtil.getFluidHandler(stack);
-            if (handler != null && handler.fill(fluid, true) == fluid.amount)
+            if (fill(stack, fluid, true) == fluid.amount)
             {
                 subItems.add(stack);
             }
-        } // end-for fluids
+         } // end-for fluids
     } // end getSubItems()
+
+    @Override
+    public int getCapacity(ItemStack container)
+    {
+        return getCapacity();
+    }
+
+    @Override
+    public ItemStack getContainerItem(ItemStack itemStack)
+    {
+        if (getEmpty() != null)
+        {
+            // Create a copy such that the game can't mess with it
+            return getEmpty().copy();
+        }
+        return super.getContainerItem(itemStack);
+    }
+
+    @Override
+    public boolean hasContainerItem(ItemStack stack)
+    {
+        return getEmpty() != null;
+    }
+
+
+    @Override
+    public FluidStack drain(ItemStack container, int maxDrain, boolean doDrain)
+    {
+        // has to be exactly 1, must be handled from the caller
+        if (container.stackSize != 1)
+        {
+            return null;
+        }
+
+        // can only drain everything at once
+        if (maxDrain < getCapacity(container))
+        {
+            return null;
+        }
+
+        FluidStack fluidStack = getFluid(container);
+        if (doDrain && fluidStack != null)
+        {
+            if(getEmpty() != null)
+            {
+                container.deserializeNBT(getEmpty().serializeNBT());
+            }
+            else {
+                container.stackSize = 0;
+            }
+        }
+        return fluidStack;
+    } // end drain()
 
 } // end class
