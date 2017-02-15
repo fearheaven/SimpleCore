@@ -2,17 +2,14 @@ package alexndr.api.content.items;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.init.Items;
+import mcjty.lib.tools.ItemStackTools;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
-import net.minecraftforge.common.ForgeModContainer;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.UniversalBucket;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.FluidTankProperties;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -78,7 +75,7 @@ public class SimpleBucketFluidHandler implements IFluidHandler, ICapabilityProvi
     public int fill(FluidStack resource, boolean doFill)
     {
         // don't bother with 'lava check' if nothing there.
-        if (container.stackSize != 1 ||  resource == null || resource.amount <= 0 ) 
+        if (ItemStackTools.getStackSize(container) != 1 ||  resource == null || resource.amount <= 0 ) 
         {
             return 0;
         }
@@ -109,7 +106,8 @@ public class SimpleBucketFluidHandler implements IFluidHandler, ICapabilityProvi
    @Override
 	public FluidStack drain(FluidStack resource, boolean doDrain) 
     {
-        if (container.stackSize != 1 || resource == null || resource.amount < Fluid.BUCKET_VOLUME)
+        if (ItemStackTools.getStackSize(container) != 1 || resource == null 
+                        || resource.amount < Fluid.BUCKET_VOLUME)
         {
             return null;
         }
@@ -131,7 +129,7 @@ public class SimpleBucketFluidHandler implements IFluidHandler, ICapabilityProvi
    @Override
    public FluidStack drain(int maxDrain, boolean doDrain)
    {
-       if (container.stackSize != 1 || maxDrain < Fluid.BUCKET_VOLUME)
+       if (ItemStackTools.getStackSize(container) != 1 || maxDrain < Fluid.BUCKET_VOLUME)
        {
            return null;
        }
