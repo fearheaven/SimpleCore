@@ -52,11 +52,7 @@ repositories {
 }
 
 dependencies {
-    // you may put jars on which you depend on in ./libs
-    // or you may define them like so..
-    //compile "some.group:artifact:version:classifier"
-    //compile "some.group:artifact:version"
-    deobfCompile "com.github.mcjty:compatlayer:1.11-0.1.3"
+    deobfCompile "com.github.mcjty:compatlayer:1.11.2-0.2.2"
 }
 
 configurations {

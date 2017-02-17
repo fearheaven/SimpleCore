@@ -3,21 +3,33 @@ package alexndr.api.content.items;
 import javax.annotation.Nullable;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.FluidTankProperties;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
-import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStackSimple;
 
-public class SimpleBucketFluidHandler extends FluidHandlerItemStackSimple.SwapEmpty
+public class SimpleBucketFluidHandler implements IFluidHandler, ICapabilityProvider
 {
 	protected SimpleBucketType bucketType;
+    public static final String FLUID_NBT_KEY = "Fluid";
+    protected final ItemStack emptyContainer;
+    protected ItemStack container;
+    protected final int capacity;
+
 
 	public SimpleBucketFluidHandler(ItemStack container, ItemStack emptyContainer, 
 									int capacity, SimpleBucketType type) 
 	{
-		super(container, emptyContainer, capacity);
+        this.container = container;
+        this.capacity = capacity;
+        this.emptyContainer = emptyContainer;
 		this.bucketType = type;
 	}
 
@@ -26,13 +38,11 @@ public class SimpleBucketFluidHandler extends FluidHandlerItemStackSimple.SwapEm
 		return capacity;
 	}
 	
-	@Override
 	public boolean canFillFluidType(FluidStack fluid) 
 	{
 		return bucketType.doesVariantExist(fluid.getFluid());
 	}
 
-	@Override
 	public boolean canDrainFluidType(FluidStack fluid) 
 	{
 		return bucketType.doesVariantExist(fluid.getFluid());
@@ -97,7 +107,6 @@ public class SimpleBucketFluidHandler extends FluidHandlerItemStackSimple.SwapEm
         return Fluid.BUCKET_VOLUME;
     } // end fill()
 
-	@Override
 	protected void setFluid(FluidStack fluid) 
 	{
 		if (fluid == null || fluid.getFluid() == null)
@@ -118,11 +127,17 @@ public class SimpleBucketFluidHandler extends FluidHandlerItemStackSimple.SwapEm
         }
         else {
             container = new ItemStack(bucketType.getBucketFromLiquid(fluid.getFluid()));
-            super.setFluid(fluid);
+            if (!container.hasTagCompound())
+            {
+                container.setTagCompound(new NBTTagCompound());
+            }
+
+            NBTTagCompound fluidTag = new NBTTagCompound();
+            fluid.writeToNBT(fluidTag);
+            container.getTagCompound().setTag(FLUID_NBT_KEY, fluidTag);
         }
 	} // end setFluid()
 
-	@Override
 	@Nullable
 	public FluidStack getFluid() 
 	{
@@ -140,7 +155,12 @@ public class SimpleBucketFluidHandler extends FluidHandlerItemStackSimple.SwapEm
 		}
 		else
 		{
-			return super.getFluid();
+	        NBTTagCompound tagCompound = container.getTagCompound();
+	        if (tagCompound == null || !tagCompound.hasKey(FLUID_NBT_KEY))
+	        {
+	            return null;
+	        }
+	        return FluidStack.loadFluidStackFromNBT(tagCompound.getCompoundTag(FLUID_NBT_KEY));
 		}
 	} // end getFluid()
 
@@ -150,17 +170,34 @@ public class SimpleBucketFluidHandler extends FluidHandlerItemStackSimple.SwapEm
         return new FluidTankProperties[] { new FluidTankProperties(getFluid(), Fluid.BUCKET_VOLUME) };
 	}
 
-	@Override
+    /**
+     * Override this method for special handling.
+     * Can be used to swap out the container's item for a different one with "container.setItem".
+     * Can be used to destroy the container with "container.stackSize--"
+     */
 	protected void setContainerToEmpty() 
 	{
 		// we don't want to mess with the tagcompound if it doesn't exist...
 		if (container.hasTagCompound()) {
-			super.setContainerToEmpty();
-		}
+	        container.getTagCompound().removeTag(FLUID_NBT_KEY);
+	    }
 		// but we still want to update other nbt tags if they exist.
 		else {
             container.deserializeNBT(emptyContainer.serializeNBT());
 		}
 	} // end setContainerToEmpty()
 	
+    @Override
+    public boolean hasCapability(Capability<?> capability, EnumFacing facing)
+    {
+        return capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> T getCapability(Capability<T> capability, EnumFacing facing)
+    {
+        return capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY ? (T) this : null;
+    }
+
 } // end class

@@ -15,6 +15,7 @@ import alexndr.api.helpers.game.TooltipHelper;
 import alexndr.api.registry.ContentCategories;
 import alexndr.api.registry.ContentRegistry;
 import alexndr.api.registry.Plugin;
+import mcjty.lib.compat.CompatItem;
 import mcjty.lib.tools.ItemStackTools;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
@@ -41,13 +42,10 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.entity.player.FillBucketEvent;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidActionResult;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.ItemFluidContainer;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -57,13 +55,14 @@ import net.minecraftforge.items.ItemHandlerHelper;
  * @author Sinhika
  *
  */
-public class SimpleBucket extends ItemFluidContainer 
+public class SimpleBucket extends CompatItem 
 	implements IConfigureItemHelper<SimpleBucket, ConfigItem> 
 {
 	protected Plugin plugin;
 	protected ContentCategories.Item category = ContentCategories.Item.OTHER;
 	protected ConfigItem entry;
 	protected List<String> toolTipStrings = Lists.newArrayList();
+    protected final int capacity;
 	
     protected final ItemStack empty; // empty item to return and recognize when filling
     protected final SimpleBucketType bucketType;
@@ -75,7 +74,7 @@ public class SimpleBucket extends ItemFluidContainer
 	 */
 	public SimpleBucket(Plugin plugin, ItemStack empty, SimpleBucketType type) 
 	{
-		super(Fluid.BUCKET_VOLUME);
+		this.capacity = Fluid.BUCKET_VOLUME;
 		
 		this.bucketType = type;
 		this.plugin = plugin;
@@ -147,8 +146,7 @@ public class SimpleBucket extends ItemFluidContainer
     protected FluidStack getFluid(ItemStack container)
     {
 		SimpleBucketFluidHandler handler = 
-				(SimpleBucketFluidHandler) container.getCapability(
-						CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
+				(SimpleBucketFluidHandler) FluidUtil.getFluidHandler(container);
 		return handler != null ? handler.getFluid() : null;
     }
 
@@ -186,10 +184,11 @@ public class SimpleBucket extends ItemFluidContainer
 
         ItemStack singleBucket = emptyBucket.copy();
         ItemStackTools.setStackSize(singleBucket, 1);
-        FluidActionResult fRes = FluidUtil.tryPickUpFluid(singleBucket, event.getEntityPlayer(), 
+        // note difference here from 1.11 version...
+        ItemStack fRes = FluidUtil.tryPickUpFluid(singleBucket, event.getEntityPlayer(), 
         												  world, pos, target.sideHit);
-        ItemStack filledBucket = fRes.getResult();
-        if (fRes.isSuccess() && ItemStackTools.isValid(filledBucket))
+        ItemStack filledBucket = fRes;
+        if (ItemStackTools.isValid(filledBucket))
         {
             event.setResult(Event.Result.ALLOW);
             event.setFilledBucket(filledBucket);
@@ -225,9 +224,9 @@ public class SimpleBucket extends ItemFluidContainer
         }
     } // end onFillBucket()
 
-    
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand)
+    protected ActionResult<ItemStack> clOnItemRightClick(World world, EntityPlayer player, 
+                    EnumHand hand) 
     {
     	return clOnItemRightClick(world, player, hand);
     }

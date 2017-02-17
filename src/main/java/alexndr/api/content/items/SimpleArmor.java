@@ -115,7 +115,7 @@ public class SimpleArmor extends CompatItemArmor implements IConfigureItemHelper
 	@Override
 	public boolean getIsRepairable(ItemStack toRepair, ItemStack repair) 
 	{
-		return this.material.getRepairItemStack() == repair 
+		return this.material.getRepairItem() == repair.getItem() 
 				? true 
 				: super.getIsRepairable(toRepair, repair);
 	}

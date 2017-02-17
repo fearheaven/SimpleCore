@@ -280,10 +280,11 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
 
     public static void registerFixesFurnace(DataFixer fixer)
     {
-        fixer.registerWalker(FixTypes.BLOCK_ENTITY, new ItemStackDataLists(TileEntitySimpleFurnace.class, new String[] {"Items"}));
+        fixer.registerWalker(FixTypes.BLOCK_ENTITY, new ItemStackDataLists("Furnace", new String[] {"Items"}));
     }
 
-	/* (non-Javadoc)
+
+ 	/* (non-Javadoc)
 	 * @see net.minecraft.world.IInteractionObject#createContainer(net.minecraft.entity.player.InventoryPlayer, net.minecraft.entity.player.EntityPlayer)
 	 * Override this for custom classes.
 	 */
@@ -504,7 +505,8 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
                 if (!itemstack1.isItemEqual(itemstack)) return false;
                 int result = ItemStackTools.getStackSize(itemstack1) 
                 		+ ItemStackTools.getStackSize(itemstack);
-                return result <= getInventoryStackLimit() && result <= itemstack1.getMaxStackSize(); // Forge fix: make furnace respect stack sizes in furnace recipes
+                return result <= getInventoryStackLimit() 
+                         && result <= itemstack1.getMaxStackSize(); // Forge fix: make furnace respect stack sizes in furnace recipes
             }
         }
     } // end canSmelt()
