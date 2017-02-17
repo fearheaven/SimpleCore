@@ -13,6 +13,7 @@ import alexndr.api.registry.ContentCategories;
 import alexndr.api.registry.ContentRegistry;
 import alexndr.api.registry.Plugin;
 import mcjty.lib.tools.ItemStackTools;
+import mcjty.lib.tools.WorldTools;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -274,7 +275,7 @@ public class SimpleBow extends ItemBow implements IConfigureItemHelper<SimpleBow
                             entityarrow.pickupStatus = EntityArrow.PickupStatus.CREATIVE_ONLY;
                         }
 
-                        worldIn.spawnEntityInWorld(entityarrow);
+                        WorldTools.spawnEntity(worldIn, entityarrow);
                     }
 
                     worldIn.playSound((EntityPlayer)null, entityplayer.posX, 

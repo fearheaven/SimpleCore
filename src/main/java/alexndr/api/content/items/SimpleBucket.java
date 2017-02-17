@@ -42,6 +42,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.entity.player.FillBucketEvent;
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidActionResult;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
@@ -184,10 +185,11 @@ public class SimpleBucket extends CompatItem
 
         ItemStack singleBucket = emptyBucket.copy();
         ItemStackTools.setStackSize(singleBucket, 1);
-        // note difference here from 1.11 version...
-        ItemStack fRes = FluidUtil.tryPickUpFluid(singleBucket, event.getEntityPlayer(), 
+        // note difference here from 1.10.2 version...
+        FluidActionResult fRes = FluidUtil.tryPickUpFluid(singleBucket, event.getEntityPlayer(), 
         												  world, pos, target.sideHit);
-        ItemStack filledBucket = fRes;
+        ItemStack filledBucket = fRes.getResult();
+        // end difference
         if (ItemStackTools.isValid(filledBucket))
         {
             event.setResult(Event.Result.ALLOW);
@@ -225,12 +227,6 @@ public class SimpleBucket extends CompatItem
     } // end onFillBucket()
 
     @Override
-    protected ActionResult<ItemStack> clOnItemRightClick(World world, EntityPlayer player, 
-                    EnumHand hand) 
-    {
-    	return clOnItemRightClick(world, player, hand);
-    }
-    
     protected ActionResult<ItemStack> clOnItemRightClick(World world, EntityPlayer player, EnumHand hand)
     {
     	ItemStack itemstack = player.getHeldItem(hand);

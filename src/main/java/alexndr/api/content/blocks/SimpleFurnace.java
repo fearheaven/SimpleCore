@@ -284,10 +284,11 @@ public abstract class SimpleFurnace extends CompatBlock
      * IBlockstate. Cut & pasted from BlockFurnace.
      */
     @Override
-    public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer)
+     public IBlockState clGetStateForPlacement(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer)
     {
         return this.getDefaultState().withProperty(FACING, placer.getHorizontalFacing().getOpposite());
     }
+
 
     /**
      * Called by ItemBlocks after a block is set in the world, to allow post-place logic. 

@@ -108,7 +108,8 @@ public class SimpleBlock extends Block implements IConfigureBlockHelper<SimpleBl
 	}
 	
 	@Override
-	public int quantityDropped(Random random) {
+	public int quantityDropped(Random random) 
+	{
 		if(entry.getDropItem() && entry.getValueByName("DropItem").isActive()) {
 			if(entry.getValueByName("QuantityToDrop") != null && entry.getValueByName("QuantityToDrop").isActive()) {
 				return entry.getQuantityToDrop();
@@ -118,10 +119,11 @@ public class SimpleBlock extends Block implements IConfigureBlockHelper<SimpleBl
 	}
 	
 	@Override
-	public void dropBlockAsItemWithChance(World worldIn, BlockPos pos, IBlockState state, float chance, int fortune) {
+	public void dropBlockAsItemWithChance(World worldIn, BlockPos pos, IBlockState state, float chance, int fortune) 
+	{
         super.dropBlockAsItemWithChance(worldIn, pos, state, chance, fortune);
         if(this.getItemDropped(state, worldIn.rand, fortune) != Item.getItemFromBlock(this)) {
-        	int amount = MathHelper.getRandomIntegerInRange(worldIn.rand, 16, 33);
+        	int amount = MathHelper.getInt(worldIn.rand, 16, 33);
         	this.dropXpOnBlockBreak(worldIn, pos, amount);
         }
 	}

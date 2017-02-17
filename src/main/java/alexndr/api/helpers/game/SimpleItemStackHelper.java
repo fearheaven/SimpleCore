@@ -38,7 +38,7 @@ public class SimpleItemStackHelper extends ItemStackHelper
 
             if (j >= 0 && j < stacklist.size())
             {
-                stacklist.set(j, ItemStack.loadItemStackFromNBT(nbttagcompound));
+                stacklist.set(j, ItemStackTools.loadFromNBT(nbttagcompound));
             }
         }
     }
