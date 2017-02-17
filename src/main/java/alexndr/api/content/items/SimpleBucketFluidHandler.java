@@ -2,13 +2,13 @@ package alexndr.api.content.items;
 
 import javax.annotation.Nullable;
 
-import mcjty.lib.tools.ItemStackTools;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.FluidTankProperties;
@@ -18,102 +18,58 @@ import net.minecraftforge.fluids.capability.IFluidTankProperties;
 public class SimpleBucketFluidHandler implements IFluidHandler, ICapabilityProvider
 {
 	protected SimpleBucketType bucketType;
-    protected final ItemStack container;
     public static final String FLUID_NBT_KEY = "Fluid";
+    protected final ItemStack emptyContainer;
+    protected ItemStack container;
+    protected final int capacity;
 
-	public SimpleBucketFluidHandler(ItemStack container, SimpleBucketType type) 
+
+	public SimpleBucketFluidHandler(ItemStack container, ItemStack emptyContainer, 
+									int capacity, SimpleBucketType type) 
 	{
         this.container = container;
+        this.capacity = capacity;
+        this.emptyContainer = emptyContainer;
 		this.bucketType = type;
 	}
 
+	public int getCapacity() 
+	{
+		return capacity;
+	}
+	
 	public boolean canFillFluidType(FluidStack fluid) 
 	{
-		return bucketType.doesVariantExist(fluid);
+		return bucketType.doesVariantExist(fluid.getFluid());
 	}
 
 	public boolean canDrainFluidType(FluidStack fluid) 
 	{
-		return bucketType.doesVariantExist(fluid);
+		return bucketType.doesVariantExist(fluid.getFluid());
 	}
-
-    @Nullable
-    public FluidStack getFluid()
+	
+    @Override
+	public FluidStack drain(FluidStack resource, boolean doDrain) 
     {
-        Item item = container.getItem();
-        if (item instanceof SimpleBucket)
-        {
-            return ((SimpleBucket) item).getFluid(container);
-        }
-        else
+        if (resource == null || resource.amount < Fluid.BUCKET_VOLUME)
         {
             return null;
         }
-    }
 
-    protected void setFluid(Fluid fluid)
-    {
-        if (fluid == null)
-        {
-            container.deserializeNBT(new ItemStack(container.getItem()).serializeNBT());
-        }
-        else if (bucketType.doesVariantExist(fluid))
-        {
-            ItemStack filledBucket = 
-                 SimpleBucket.getFilledBucket((SimpleBucket) container.getItem(), fluid);
-            container.deserializeNBT(filledBucket.serializeNBT());
-        }
-    } // end setFluid()
-    
-    @Override
-    public IFluidTankProperties[] getTankProperties()
-    {
-        return new FluidTankProperties[] { new FluidTankProperties(getFluid(), Fluid.BUCKET_VOLUME) };
-    }
+        return drain(resource.amount, doDrain);
+	} // end drain(FluidStack, boolean)
+
 
     @Override
-    public int fill(FluidStack resource, boolean doFill)
+	public FluidStack drain(int maxDrain, boolean doDrain) 
     {
-        // don't bother with 'lava check' if nothing there.
-        if (ItemStackTools.getStackSize(container) != 1 ||  resource == null || resource.amount <= 0 ) 
-        {
-            return 0;
-        }
-        // lava check -- trying to dip bucket into something that will melt it?
-        if (bucketType.getDestroyOnLava())
-        {
-            Fluid liquid = resource.getFluid();
-            if (liquid.getTemperature() >= SimpleBucketType.DESTROY_ON_LAVA_TEMP)
-            {
-                // No, we didn't fill the bucket, because it's melting.
-                return 0;
-            }
-        } // if bucket-type will melt
-
-        if (resource.amount <= Fluid.BUCKET_VOLUME || !canFillFluidType(resource))
-        {
-            return 0;
-        }
-
-        if (doFill)
-        {
-            setFluid(resource.getFluid());
-        }
-
-        return Fluid.BUCKET_VOLUME;
-    } // end fill()
-
-   @Override
-	public FluidStack drain(FluidStack resource, boolean doDrain) 
-    {
-        if (ItemStackTools.getStackSize(container) != 1 || resource == null 
-                        || resource.amount < Fluid.BUCKET_VOLUME)
+        if (maxDrain < Fluid.BUCKET_VOLUME)
         {
             return null;
         }
 
         FluidStack fluidStack = getFluid();
-        if (fluidStack != null && fluidStack.isFluidEqual(resource))
+        if (fluidStack != null)
         {
             if (doDrain)
             {
@@ -123,44 +79,125 @@ public class SimpleBucketFluidHandler implements IFluidHandler, ICapabilityProvi
         }
 
         return null;
-	} // end drain(FluidStack, boolean)
-
-   @Nullable
-   @Override
-   public FluidStack drain(int maxDrain, boolean doDrain)
-   {
-       if (ItemStackTools.getStackSize(container) != 1 || maxDrain < Fluid.BUCKET_VOLUME)
-       {
-           return null;
-       }
-
-       FluidStack fluidStack = getFluid();
-       if (fluidStack != null)
-       {
-           if (doDrain)
-           {
-               setFluid(null);
-           }
-           return fluidStack;
-       }
-
-       return null;
-   }
+	} // end drain(int, boolean)
 
 	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
+    public int fill(FluidStack resource, boolean doFill)
+    {
+        if ( resource == null || resource.amount < Fluid.BUCKET_VOLUME
+        	|| getFluid() != null || !canFillFluidType(resource)) 
+        {
+            return 0;
+        }
+        // lava check -- trying to dip bucket into something that will melt it?
+        // (and we were silly enough to declare it as a valid variant)
+        if (bucketType.getDestroyOnLava())
+        {
+        	Fluid liquid = resource.getFluid();
+        	if (liquid.getTemperature() >= SimpleBucketType.DESTROY_ON_LAVA_TEMP)
+        	{
+        		// No, we didn't fill the bucket, because it's melting.
+        		return 0;
+        	}
+        } // if bucket-type will melt
+
+        if (doFill) {
+        	setFluid(resource);
+        }
+        return Fluid.BUCKET_VOLUME;
+    } // end fill()
+
+	protected void setFluid(FluidStack fluid) 
 	{
-	    return capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY;
+		if (fluid == null || fluid.getFluid() == null)
+		{
+            setContainerToEmpty();
+            return;
+		}
+		else if (fluid.getFluid() == FluidRegistry.WATER)
+        {
+            container = new ItemStack(bucketType.getBucketFromLiquid(FluidRegistry.WATER));
+            container.setTagCompound(null);
+        }
+        else if (fluid.getFluid() == FluidRegistry.LAVA
+        		 && ! bucketType.getDestroyOnLava())
+        {
+            container = new ItemStack(bucketType.getBucketFromLiquid(FluidRegistry.LAVA));
+            container.setTagCompound(null);
+        }
+        else {
+            container = new ItemStack(bucketType.getBucketFromLiquid(fluid.getFluid()));
+            if (!container.hasTagCompound())
+            {
+                container.setTagCompound(new NBTTagCompound());
+            }
+
+            NBTTagCompound fluidTag = new NBTTagCompound();
+            fluid.writeToNBT(fluidTag);
+            container.getTagCompound().setTag(FLUID_NBT_KEY, fluidTag);
+        }
+	} // end setFluid()
+
+	@Nullable
+	public FluidStack getFluid() 
+	{
+		if (container.isItemEqualIgnoreDurability(emptyContainer))
+		{
+			return null;
+		}
+		else if (container.getItem() == bucketType.getBucketFromLiquid(FluidRegistry.WATER))
+		{
+			return new FluidStack(FluidRegistry.WATER, Fluid.BUCKET_VOLUME);
+		}
+		else if (container.getItem() == bucketType.getBucketFromLiquid(FluidRegistry.LAVA))
+		{
+			return new FluidStack(FluidRegistry.LAVA, Fluid.BUCKET_VOLUME);
+		}
+		else
+		{
+	        NBTTagCompound tagCompound = container.getTagCompound();
+	        if (tagCompound == null || !tagCompound.hasKey(FLUID_NBT_KEY))
+	        {
+	            return null;
+	        }
+	        return FluidStack.loadFluidStackFromNBT(tagCompound.getCompoundTag(FLUID_NBT_KEY));
+		}
+	} // end getFluid()
+
+	@Override
+	public IFluidTankProperties[] getTankProperties() 
+	{
+        return new FluidTankProperties[] { new FluidTankProperties(getFluid(), Fluid.BUCKET_VOLUME) };
 	}
 
-	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
+    /**
+     * Override this method for special handling.
+     * Can be used to swap out the container's item for a different one with "container.setItem".
+     * Can be used to destroy the container with "container.stackSize--"
+     */
+	protected void setContainerToEmpty() 
 	{
-	    if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
-	    {
-	        return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(this);
+		// we don't want to mess with the tagcompound if it doesn't exist...
+		if (container.hasTagCompound()) {
+	        container.getTagCompound().removeTag(FLUID_NBT_KEY);
 	    }
-	    return null;
-	}
+		// but we still want to update other nbt tags if they exist.
+		else {
+            container.deserializeNBT(emptyContainer.serializeNBT());
+		}
+	} // end setContainerToEmpty()
+	
+    @Override
+    public boolean hasCapability(Capability<?> capability, EnumFacing facing)
+    {
+        return capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> T getCapability(Capability<T> capability, EnumFacing facing)
+    {
+        return capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY ? (T) this : null;
+    }
 
 } // end class

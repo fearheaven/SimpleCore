@@ -2,10 +2,10 @@ package alexndr.api.content.items;
 
 import java.util.List;
 
-import com.google.common.collect.Lists;
-
+import net.minecraft.item.Item;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidStack;
+
+import com.google.common.collect.Lists;
 
 /**
  * @author AleXndrTheGr8st
@@ -59,34 +59,19 @@ public class SimpleBucketType
 	 * @param liquidBlock The liquid in the bucket
 	 * @return SimpleBucketType
 	 */
-	public SimpleBucketType addVariant(String name, Fluid fluid) 
+	public SimpleBucketType addVariant(String name, Item bucket, Fluid fluid) 
 	{
-		BucketVariant variant = 
-		     new BucketVariant(name, new FluidStack(fluid, Fluid.BUCKET_VOLUME));
+		BucketVariant variant = new BucketVariant(name, bucket, fluid);
 		this.variantList.add(variant);
 		return this;
 	}
 	
-	   /**
-     * Adds a new variant to this bucket type. 
-     * @param name The name of the variant, eg. "Water"
-     * @param bucket The bucket item
-     * @param liquidBlock The liquid in the bucket
-     * @return SimpleBucketType
-     */
-    public SimpleBucketType addVariant(String name, FluidStack fsfluid) 
-    {
-        BucketVariant variant = new BucketVariant(name, fsfluid);
-        this.variantList.add(variant);
-        return this;
-    }
-
 	/**
 	 * Returns a list of the liquid variants belonging to this SimpleBucketType.
 	 * @return List of liquid variants.
 	 */
-	public List<FluidStack> getLiquidsList() {
-		List<FluidStack> liquidList = Lists.newArrayList();
+	public List<Fluid> getLiquidsList() {
+		List<Fluid> liquidList = Lists.newArrayList();
 		for(BucketVariant variant : this.variantList) {
 			liquidList.add(variant.liquidBlock);
 		}
@@ -101,54 +86,42 @@ public class SimpleBucketType
 	 */
 	public boolean doesVariantExist(Fluid liquid) {
 		for(BucketVariant variant : this.variantList) {
-			if(variant.liquidBlock.getFluid() == liquid)
+			if(variant.liquidBlock == liquid)
 				return true;
 		}
 		return false;
 	}
-
-   /**
-     * Checks if a liquid variant exists for this SimpleBucketType.
-     * Returns true if it exists, false otherwise.
-     * @param liquid The liquid to check for
-     * @return If the variant exists
-     */
-    public boolean doesVariantExist(FluidStack fsliquid) {
-        for(BucketVariant variant : this.variantList) {
-            if(variant.liquidBlock == fsliquid)
-                return true;
-        }
-        return false;
-    }
-    
-
-//	/**
-//	 * Returns a bucket variant containing the given liquid, if it exists.
-//	 * Returns null if it doesn't exist.
-//	 * @param liquid The liquid to check for
-//	 * @return SimpleBucket containing the given liquid
-//	 */
-//	public Item getBucketFromLiquid(Fluid liquid) {
-//		for(BucketVariant variant : this.variantList) {
-//			if(variant.liquidBlock == liquid) 
-//				return variant.bucket;
-//		}
-//		return null;
-//	}
+	
+	/**
+	 * Returns a bucket variant containing the given liquid, if it exists.
+	 * Returns null if it doesn't exist.
+	 * @param liquid The liquid to check for
+	 * @return SimpleBucket containing the given liquid
+	 */
+	public Item getBucketFromLiquid(Fluid liquid) {
+		for(BucketVariant variant : this.variantList) {
+			if(variant.liquidBlock == liquid) 
+				return variant.bucket;
+		}
+		return null;
+	}
 } // end class SimpleBucketType
 
 class BucketVariant 
 {
 	String name;
-	FluidStack liquidBlock;
-	
+	Fluid liquidBlock;
+	Item bucket;
+
 	/**
 	 * Creates a new BucketVariant that stores details on the bucket variant.
 	 * @param name Name of the variant, eg. "Water"
+	 * @param bucket The bucket item
 	 * @param liquidBlock The liquid in the bucket
 	 */
-	public BucketVariant(String name, FluidStack liquidBlock) {
+	public BucketVariant(String name, Item bucket, Fluid liquidBlock) {
 		this.name = name;
+		this.bucket = bucket;
 		this.liquidBlock = liquidBlock;
 	}
 } // end class BucketVariant
