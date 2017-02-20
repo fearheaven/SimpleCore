@@ -12,10 +12,10 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.FluidTankProperties;
-import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
 
-public class SimpleBucketFluidHandler implements IFluidHandler, ICapabilityProvider
+public class SimpleBucketFluidHandler implements IFluidHandlerItem, ICapabilityProvider
 {
 	protected SimpleBucketType bucketType;
     public static final String FLUID_NBT_KEY = "Fluid";
@@ -190,14 +190,21 @@ public class SimpleBucketFluidHandler implements IFluidHandler, ICapabilityProvi
     @Override
     public boolean hasCapability(Capability<?> capability, EnumFacing facing)
     {
-        return capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY;
+    	// note change of capability from 1.10.2 to 1.11.2
+        return capability == CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY;
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public <T> T getCapability(Capability<T> capability, EnumFacing facing)
     {
-        return capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY ? (T) this : null;
+    	// note change of capability from 1.10.2 to 1.11.2
+        return capability == CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY ? (T) this : null;
     }
+
+	@Override
+	public ItemStack getContainer() {
+		return container;
+	}
 
 } // end class
