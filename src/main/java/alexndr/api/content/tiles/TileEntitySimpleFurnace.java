@@ -10,6 +10,7 @@ import alexndr.api.helpers.game.SimpleItemStackHelper;
 import mcjty.lib.compat.CompatSidedInventory;
 import mcjty.lib.tools.ItemStackList;
 import mcjty.lib.tools.ItemStackTools;
+import mcjty.lib.tools.MathTools;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
@@ -33,7 +34,6 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.datafix.DataFixer;
 import net.minecraft.util.datafix.FixTypes;
 import net.minecraft.util.datafix.walkers.ItemStackDataLists;
-import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -409,7 +409,7 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
             } // end-if isBurnning && valid FUEL && valid INPUT
             else if (!this.isBurning() && this.cookTime > 0)
             {
-                this.cookTime = MathHelper.clamp(this.cookTime - 2, 0, this.totalCookTime);
+                this.cookTime = MathTools.clamp(this.cookTime - 2, 0, this.totalCookTime);
             }
 
             if (flag != this.isBurning())
