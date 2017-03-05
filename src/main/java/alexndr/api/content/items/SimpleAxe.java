@@ -5,8 +5,15 @@ import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.List;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import alexndr.api.config.types.ConfigTool;
 import alexndr.api.helpers.game.IConfigureItemHelper;
@@ -119,6 +126,30 @@ public class SimpleAxe extends ItemAxe implements IConfigureItemHelper<SimpleAxe
 		return this;
 	}
 	
+	/* lifted from McJty's CompatItemTool class */
+    protected ActionResult<ItemStack> clOnItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand hand) {
+        return super.onItemRightClick(worldIn, playerIn, hand);
+    }
+
+    @Override
+    public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand hand) {
+        return clOnItemRightClick(worldIn, playerIn, hand);
+    }
+
+    /**
+     * Called when a Block is right-clicked with this Item
+     */
+    @Override
+    public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+        return clOnItemUse(player, world, pos, hand, facing, hitX, hitY, hitZ);
+    }
+
+    protected EnumActionResult clOnItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+        return super.onItemUse(player, world, pos, hand, facing, hitX, hitY, hitZ);
+    }
+    /* end McJty */
+    
+ 
 	/**
 	 * Adds a tooltip to the tool. Must be unlocalised, so needs to be present in a localization file.
 	 * @param toolTip Name of the localisation entry for the tooltip, as a String. Normal format is modId.theitem.info
