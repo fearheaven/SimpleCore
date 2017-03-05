@@ -2,21 +2,21 @@ package alexndr.api.content.items;
 
 import java.util.List;
 
-import net.minecraft.item.Item;
-import net.minecraftforge.fml.common.registry.GameRegistry;
+import com.google.common.collect.Lists;
+
 import alexndr.api.config.types.ConfigItem;
 import alexndr.api.helpers.game.IConfigureItemHelper;
 import alexndr.api.helpers.game.TooltipHelper;
 import alexndr.api.registry.ContentCategories;
 import alexndr.api.registry.ContentRegistry;
 import alexndr.api.registry.Plugin;
-
-import com.google.common.collect.Lists;
+import mcjty.lib.compat.CompatItem;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
 /**
  * @author AleXndrTheGr8st
  */
-public class SimpleItem extends Item implements IConfigureItemHelper<SimpleItem, ConfigItem> 
+public class SimpleItem extends CompatItem implements IConfigureItemHelper<SimpleItem, ConfigItem> 
 {
 	private Plugin plugin;
 	private ContentCategories.Item category;
