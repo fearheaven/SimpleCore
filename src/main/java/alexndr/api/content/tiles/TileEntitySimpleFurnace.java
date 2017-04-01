@@ -120,7 +120,8 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
 	 * @see net.minecraft.inventory.IInventory#removeStackFromSlot(int)
 	 */
 	@Override
-	public ItemStack removeStackFromSlot(int index) {
+	public ItemStack removeStackFromSlot(int index) 
+	{
 	       return SimpleItemStackHelper.getAndRemove(this.furnaceItemStacks, index);
 	}
 
@@ -130,7 +131,7 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
 	@Override
 	public void setInventorySlotContents(int index, @Nullable ItemStack stack) 
 	{
-        ItemStack itemstack = (ItemStack)this.furnaceItemStacks.get(index);
+        ItemStack itemstack = (ItemStack)this.getStackInSlot(index);
         boolean flag = ItemStackTools.isValid(stack) && stack.isItemEqual(itemstack) 
         		&& ItemStack.areItemStackTagsEqual(stack, itemstack);
         this.furnaceItemStacks.set(index, stack);
@@ -185,7 +186,7 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
         }
         else
         {
-            ItemStack itemstack = this.furnaceItemStacks.get(NDX_FUEL_SLOT);
+            ItemStack itemstack = this.getStackInSlot(NDX_FUEL_SLOT);
             return isItemFuel(stack) || SlotFurnaceFuel.isBucket(stack) 
             							&& itemstack.getItem() != Items.BUCKET;
         }
@@ -363,10 +364,10 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
 
         if (!this.getWorld().isRemote)
         {
-        	ItemStack itemstack = (ItemStack)this.furnaceItemStacks.get(NDX_FUEL_SLOT);
+        	ItemStack itemstack = (ItemStack)this.getStackInSlot(NDX_FUEL_SLOT);
         	 
             if (this.isBurning() || ItemStackTools.isValid(itemstack) 
-            	&&	ItemStackTools.isValid(this.furnaceItemStacks.get(NDX_INPUT_SLOT)))
+            	&&	ItemStackTools.isValid(this.getStackInSlot(NDX_INPUT_SLOT)))
             {
                 if (!this.isBurning() && this.canSmelt())
                 {
@@ -397,7 +398,7 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
                     {
                         this.cookTime = 0;
                         this.totalCookTime = this.getCookTime(
-                        		this.furnaceItemStacks.get(NDX_INPUT_SLOT));
+                        		this.getStackInSlot(NDX_INPUT_SLOT));
                         this.smeltItem();
                         flag1 = true;
                     }
@@ -437,7 +438,7 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
         this.furnaceBurnTime = compound.getInteger("BurnTime");
         this.cookTime = compound.getInteger("CookTime");
         this.totalCookTime = compound.getInteger("CookTimeTotal");
-        this.currentItemBurnTime = getItemBurnTime((ItemStack)this.furnaceItemStacks.get(NDX_FUEL_SLOT));
+        this.currentItemBurnTime = getItemBurnTime((ItemStack)this.getStackInSlot(NDX_FUEL_SLOT));
 
         if (compound.hasKey("CustomName", 8))
         {
@@ -488,7 +489,7 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
      */
     protected boolean canSmelt()
     {
-        if (ItemStackTools.isEmpty(this.furnaceItemStacks.get(NDX_INPUT_SLOT)))
+        if (ItemStackTools.isEmpty(this.getStackInSlot(NDX_INPUT_SLOT)))
         {
             return false;
         }
@@ -496,12 +497,12 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
         {
             ItemStack itemstack = 
                  FurnaceRecipes.instance().getSmeltingResult(
-                		 this.furnaceItemStacks.get(NDX_INPUT_SLOT));
+                		 this.getStackInSlot(NDX_INPUT_SLOT));
             if (ItemStackTools.isEmpty(itemstack)) {
             	return false;
             }
             else {
-                ItemStack itemstack1 = (ItemStack)this.furnaceItemStacks.get(NDX_OUTPUT_SLOT);
+                ItemStack itemstack1 = (ItemStack)this.getStackInSlot(NDX_OUTPUT_SLOT);
                 if (ItemStackTools.isEmpty(itemstack1)) return true;
                 if (!itemstack1.isItemEqual(itemstack)) return false;
                 int result = ItemStackTools.getStackSize(itemstack1) 
@@ -520,9 +521,9 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
     {
         if (this.canSmelt())
         {
-            ItemStack itemstack = (ItemStack)this.furnaceItemStacks.get(NDX_INPUT_SLOT);
+            ItemStack itemstack = (ItemStack)this.getStackInSlot(NDX_INPUT_SLOT);
             ItemStack itemstack1 = FurnaceRecipes.instance().getSmeltingResult(itemstack);
-            ItemStack itemstack2 = (ItemStack)this.furnaceItemStacks.get(NDX_OUTPUT_SLOT);
+            ItemStack itemstack2 = (ItemStack)this.getStackInSlot(NDX_OUTPUT_SLOT);
 
             if (ItemStackTools.isEmpty(itemstack2))
             {
@@ -534,8 +535,8 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
             }
             if (itemstack.getItem() == Item.getItemFromBlock(Blocks.SPONGE) 
             	&& itemstack.getMetadata() == 1 
-            	&& ItemStackTools.isValid(this.furnaceItemStacks.get(NDX_FUEL_SLOT)) 
-            	&& (this.furnaceItemStacks.get(NDX_FUEL_SLOT)).getItem() == Items.BUCKET)
+            	&& ItemStackTools.isValid(this.getStackInSlot(NDX_FUEL_SLOT)) 
+            	&& (this.getStackInSlot(NDX_FUEL_SLOT)).getItem() == Items.BUCKET)
             {
                 this.furnaceItemStacks.set(NDX_FUEL_SLOT, new ItemStack(Items.WATER_BUCKET));
             }
