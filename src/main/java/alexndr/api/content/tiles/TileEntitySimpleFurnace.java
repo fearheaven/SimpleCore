@@ -6,6 +6,7 @@ package alexndr.api.content.tiles;
 import javax.annotation.Nullable;
 
 import alexndr.api.content.blocks.SimpleFurnace;
+import alexndr.api.helpers.game.FurnaceHelper;
 import alexndr.api.helpers.game.SimpleItemStackHelper;
 import mcjty.lib.compat.CompatSidedInventory;
 import mcjty.lib.tools.ItemStackList;
@@ -364,55 +365,7 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
 
         if (!this.getWorld().isRemote)
         {
-        	ItemStack itemstack = (ItemStack)this.getStackInSlot(NDX_FUEL_SLOT);
-        	 
-            if (this.isBurning() || ItemStackTools.isValid(itemstack) 
-            	&&	ItemStackTools.isValid(this.getStackInSlot(NDX_INPUT_SLOT)))
-            {
-                if (!this.isBurning() && this.canSmelt())
-                {
-                    this.furnaceBurnTime = getItemBurnTime(itemstack);
-                    this.currentItemBurnTime = this.furnaceBurnTime;
-
-                    if (this.isBurning())
-                    {
-                        flag1 = true;
-
-                        if (ItemStackTools.isValid(itemstack))
-                        {
-                            Item item = itemstack.getItem();
-                            ItemStackTools.incStackSize(itemstack, -1);
-                        	if (ItemStackTools.isEmpty(itemstack)) {
-                                ItemStack item1 = item.getContainerItem(itemstack);
-                                this.furnaceItemStacks.set(NDX_FUEL_SLOT, item1);
-                        	}
-                        }
-                    } // end-if isBurning
-                } // end-if !isBurning && canSmelt
-
-                if (this.isBurning() && this.canSmelt())
-                {
-                    ++this.cookTime;
-
-                    if (this.cookTime == this.totalCookTime)
-                    {
-                        this.cookTime = 0;
-                        this.totalCookTime = this.getCookTime(
-                        		this.getStackInSlot(NDX_INPUT_SLOT));
-                        this.smeltItem();
-                        flag1 = true;
-                    }
-                }
-                else
-                {
-                    this.cookTime = 0;
-                }
-            } // end-if isBurnning && valid FUEL && valid INPUT
-            else if (!this.isBurning() && this.cookTime > 0)
-            {
-                this.cookTime = MathTools.clamp(this.cookTime - 2, 0, this.totalCookTime);
-            }
-
+            flag1 = default_cooking_update(flag1);
             if (flag != this.isBurning())
             {
                 flag1 = true;
@@ -521,27 +474,30 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
     {
         if (this.canSmelt())
         {
-            ItemStack itemstack = (ItemStack)this.getStackInSlot(NDX_INPUT_SLOT);
-            ItemStack itemstack1 = FurnaceRecipes.instance().getSmeltingResult(itemstack);
-            ItemStack itemstack2 = (ItemStack)this.getStackInSlot(NDX_OUTPUT_SLOT);
+            ItemStack instack = (ItemStack)this.getStackInSlot(NDX_INPUT_SLOT);
+            ItemStack result_stack = FurnaceRecipes.instance().getSmeltingResult(instack);
+            ItemStack outstack = (ItemStack)this.getStackInSlot(NDX_OUTPUT_SLOT);
 
-            if (ItemStackTools.isEmpty(itemstack2))
+            if (ItemStackTools.isEmpty(outstack))
             {
-                this.furnaceItemStacks.set(2, itemstack1.copy());
+               FurnaceHelper.SetInSlot(furnaceItemStacks, NDX_OUTPUT_SLOT, 
+                                        ItemStackTools.safeCopy(result_stack));
+
             }
-            else if (itemstack2.getItem() == itemstack1.getItem())
+            else if (outstack.getItem() == result_stack.getItem())
             {
-            	ItemStackTools.incStackSize(itemstack2, ItemStackTools.getStackSize(itemstack1));
+            	ItemStackTools.incStackSize(outstack, ItemStackTools.getStackSize(result_stack));
             }
-            if (itemstack.getItem() == Item.getItemFromBlock(Blocks.SPONGE) 
-            	&& itemstack.getMetadata() == 1 
+            if (instack.getItem() == Item.getItemFromBlock(Blocks.SPONGE) 
+            	&& instack.getMetadata() == 1 
             	&& ItemStackTools.isValid(this.getStackInSlot(NDX_FUEL_SLOT)) 
             	&& (this.getStackInSlot(NDX_FUEL_SLOT)).getItem() == Items.BUCKET)
             {
-                this.furnaceItemStacks.set(NDX_FUEL_SLOT, new ItemStack(Items.WATER_BUCKET));
+                FurnaceHelper.SetInSlot(furnaceItemStacks, NDX_FUEL_SLOT,
+                                        new ItemStack(Items.WATER_BUCKET));
             }
 
-            ItemStackTools.incStackSize(itemstack, -1);
+            ItemStackTools.incStackSize(instack, -1);
         }
     } // end smeltItem()
 
@@ -636,4 +592,56 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
         return true;
 	}
     
+	protected boolean default_cooking_update(boolean flag1)
+	{
+        ItemStack itemstack = (ItemStack)this.getStackInSlot(NDX_FUEL_SLOT);
+        
+        if (this.isBurning() || ItemStackTools.isValid(itemstack) 
+            &&  ItemStackTools.isValid(this.getStackInSlot(NDX_INPUT_SLOT)))
+        {
+            if (!this.isBurning() && this.canSmelt())
+            {
+                this.furnaceBurnTime = getItemBurnTime(itemstack);
+                this.currentItemBurnTime = this.furnaceBurnTime;
+
+                if (this.isBurning())
+                {
+                    flag1 = true;
+
+                    if (ItemStackTools.isValid(itemstack))
+                    {
+                        Item item = itemstack.getItem();
+                        ItemStackTools.incStackSize(itemstack, -1);
+                        if (ItemStackTools.isEmpty(itemstack)) {
+                            ItemStack item1 = item.getContainerItem(itemstack);
+                            this.furnaceItemStacks.set(NDX_FUEL_SLOT, item1);
+                        }
+                    }
+                } // end-if isBurning
+            } // end-if !isBurning && canSmelt
+
+            if (this.isBurning() && this.canSmelt())
+            {
+                ++this.cookTime;
+
+                if (this.cookTime == this.totalCookTime)
+                {
+                    this.cookTime = 0;
+                    this.totalCookTime = this.getCookTime(this.getStackInSlot(NDX_INPUT_SLOT));
+                    this.smeltItem();
+                    flag1 = true;
+                }
+            }
+            else
+            {
+                this.cookTime = 0;
+            }
+        } // end-if isBurnning && valid FUEL && valid INPUT
+        else if (!this.isBurning() && this.cookTime > 0)
+        {
+            this.cookTime = MathTools.clamp(this.cookTime - 2, 0, this.totalCookTime);
+        }
+        return flag1;
+	} // end default_cooking_update()
+
 } // end class
