@@ -9,7 +9,7 @@ import alexndr.api.core.APISettings;
 /**
  * @author AleXndrTheGr8st
  */
-public class LogHelper{
+public class LogHelper {
 	private static Logger logger;
 	
 	private static boolean verbose;
@@ -45,9 +45,10 @@ public class LogHelper{
 	 * @param loggerName String that becomes the Logger name
 	 * @param message String that will be output to the console
 	 */
-	public static void info(String loggerName, String message) {
-		logger = LogManager.getLogger(loggerName);
-		logger.log(Level.INFO, message);
+	public static void info(String loggerName, String message) 
+	{
+	    Logger myLogger = LogManager.getLogger(loggerName);
+	    myLogger.log(Level.INFO, message);
 	}
 	
 	/**
@@ -66,8 +67,8 @@ public class LogHelper{
 	 * @param message String that will be output to the console
 	 */
 	public static void warning(String loggerName, String message) {
-		logger = LogManager.getLogger(loggerName);
-		logger.log(Level.WARN, message);
+	    Logger myLogger = LogManager.getLogger(loggerName);
+	    myLogger.log(Level.WARN, message);
 	}
 	
 	/**
@@ -86,8 +87,8 @@ public class LogHelper{
 	 * @param message String that will be output to the console
 	 */
 	public static void severe(String loggerName, String message) {
-		logger = LogManager.getLogger(loggerName);
-		logger.log(Level.ERROR, message);
+	    Logger myLogger = LogManager.getLogger(loggerName);
+	    myLogger.log(Level.ERROR, message);
 	}
 	
 	/**
@@ -111,8 +112,8 @@ public class LogHelper{
 	 */
 	public static void verbose(String loggerName, String message) {
 		if(verbose) {
-			logger = LogManager.getLogger(loggerName);
-			logger.log(Level.INFO, message);
+		    Logger myLogger = LogManager.getLogger(loggerName);
+		    myLogger.log(Level.INFO, message);
 		}
 	}
 	
