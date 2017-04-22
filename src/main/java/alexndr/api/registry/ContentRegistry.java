@@ -2,13 +2,12 @@ package alexndr.api.registry;
 
 import java.util.List;
 
-import net.minecraft.block.Block;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
-
 import com.google.common.collect.Lists;
 
 import alexndr.api.core.APISettings;
+import net.minecraft.block.Block;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
 
 /**
  * @author AleXndrTheGr8st
@@ -293,6 +292,21 @@ public class ContentRegistry
 		}
 		return null;
 	} // end getFirstTabInCategory()
+
+    /**
+     * Returns the first CreativeTab in the specified category for that plugin.
+     * @param category Category of the CreativeTab
+     * @return First CreativeTab in category
+     */
+   public static CreativeTabs getFirstTabInCategory(ContentCategories.CreativeTab category, Plugin plugin)
+    {
+        for(TabDetails details : tabList) {
+            if(details.category == category && details.plugin == plugin) {
+                return details.tab;
+            }
+        } // end-for
+       return null;
+    }
 } // end class
 
 /**

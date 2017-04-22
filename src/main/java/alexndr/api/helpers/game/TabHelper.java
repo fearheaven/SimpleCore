@@ -3,6 +3,7 @@ package alexndr.api.helpers.game;
 import net.minecraft.creativetab.CreativeTabs;
 import alexndr.api.registry.ContentCategories.CreativeTab;
 import alexndr.api.registry.ContentRegistry;
+import alexndr.api.registry.Plugin;
 
 /**
  * @author AleXndrTheGr8st
@@ -32,10 +33,18 @@ public class TabHelper
 	 * If there is no appropriate tab, returns the vanilla BLOCKS tab.
 	 * @return CreativeTab for the item/block to be placed in
 	 */
-	public static CreativeTabs generalTab() {
+	public static CreativeTabs generalTab() 
+	{
 		if(ContentRegistry.getFirstTabInCategory(CreativeTab.GENERAL) != null)
 			return ContentRegistry.getFirstTabInCategory(CreativeTab.GENERAL);
 		else return CreativeTab.GENERAL.vanillaTab;
+	}
+	
+	public static CreativeTabs generalTab(Plugin plugin)
+	{
+	    if (ContentRegistry.getFirstTabInCategory(CreativeTab.GENERAL, plugin) != null)
+	        return ContentRegistry.getFirstTabInCategory(CreativeTab.GENERAL, plugin);
+	    else return generalTab();
 	}
 	
 	/**
@@ -50,6 +59,13 @@ public class TabHelper
 		else return CreativeTab.BLOCKS.vanillaTab;
 	}
 	
+	public static CreativeTabs blocksTab(Plugin plugin)
+	{
+	    if (ContentRegistry.getFirstTabInCategory(CreativeTab.BLOCKS, plugin) != null)
+	        return ContentRegistry.getFirstTabInCategory(CreativeTab.BLOCKS, plugin);
+	    else return blocksTab();
+	}
+	
 	/**
 	 * Returns an appropriate DECORATIONS CreativeTab.
 	 * DECORATIONS tabs contain items/blocks used for decoration.
@@ -61,7 +77,14 @@ public class TabHelper
 			return ContentRegistry.getFirstTabInCategory(CreativeTab.DECORATIONS);
 		else return CreativeTab.DECORATIONS.vanillaTab;
 	}
-	
+
+	public static CreativeTabs decorationsTab(Plugin plugin)
+	{
+	    if (ContentRegistry.getFirstTabInCategory(CreativeTab.DECORATIONS, plugin) != null)
+	        return ContentRegistry.getFirstTabInCategory(CreativeTab.DECORATIONS, plugin);
+	    else return decorationsTab();
+	}
+
 	/**
 	 * Returns an appropriate MATERIALS CreativeTab.
 	 * MATERIALS tabs contain items such as ingots.
@@ -73,6 +96,13 @@ public class TabHelper
 			return ContentRegistry.getFirstTabInCategory(CreativeTab.MATERIALS);
 		else return CreativeTab.MATERIALS.vanillaTab;
 	}
+
+    public static CreativeTabs materialsTab(Plugin plugin)
+    {
+        if (ContentRegistry.getFirstTabInCategory(CreativeTab.MATERIALS, plugin) != null)
+            return ContentRegistry.getFirstTabInCategory(CreativeTab.MATERIALS, plugin);
+        else return materialsTab();
+    }
 	
 	/**
 	 * Returns an appropriate TOOLS CreativeTab.
@@ -85,7 +115,14 @@ public class TabHelper
 			return ContentRegistry.getFirstTabInCategory(CreativeTab.TOOLS);
 		else return CreativeTab.TOOLS.vanillaTab;
 	}
-	
+
+    public static CreativeTabs toolsTab(Plugin plugin)
+    {
+        if (ContentRegistry.getFirstTabInCategory(CreativeTab.TOOLS, plugin) != null)
+            return ContentRegistry.getFirstTabInCategory(CreativeTab.TOOLS, plugin);
+        else return toolsTab();
+    }
+    
 	/**
 	 * Returns an appropriate COMBAT CreativeTab.
 	 * COMBAT tabs contain armor and weapons such as Onyx Armor and Copper Sword.
@@ -98,6 +135,13 @@ public class TabHelper
 		else return CreativeTab.COMBAT.vanillaTab;
 	}
 	
+    public static CreativeTabs combatTab(Plugin plugin)
+    {
+        if (ContentRegistry.getFirstTabInCategory(CreativeTab.COMBAT, plugin) != null)
+            return ContentRegistry.getFirstTabInCategory(CreativeTab.COMBAT, plugin);
+        else return combatTab();
+    }
+    
 	/**
 	 * Returns an appropriate OTHER CreativeTab.
 	 * OTHER tabs contain items/blocks that don't fit into any other tabs.
@@ -109,10 +153,25 @@ public class TabHelper
 			return ContentRegistry.getFirstTabInCategory(CreativeTab.OTHER);
 		else return CreativeTab.OTHER.vanillaTab;
 	}
-	
+
+    public static CreativeTabs otherTab(Plugin plugin)
+    {
+        if (ContentRegistry.getFirstTabInCategory(CreativeTab.OTHER, plugin) != null)
+            return ContentRegistry.getFirstTabInCategory(CreativeTab.OTHER, plugin);
+        else return otherTab();
+    }
+    
 	public static CreativeTabs redstoneTab() {
 		if(ContentRegistry.getFirstTabInCategory(CreativeTab.REDSTONE) != null)
 			return ContentRegistry.getFirstTabInCategory(CreativeTab.REDSTONE);
 		else return CreativeTab.REDSTONE.vanillaTab;
 	}
+
+    public static CreativeTabs redstoneTab(Plugin plugin)
+    {
+        if (ContentRegistry.getFirstTabInCategory(CreativeTab.REDSTONE, plugin) != null)
+            return ContentRegistry.getFirstTabInCategory(CreativeTab.REDSTONE, plugin);
+        else return redstoneTab();
+    }
+
 } // end class
