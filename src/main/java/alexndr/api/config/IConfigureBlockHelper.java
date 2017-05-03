@@ -1,4 +1,4 @@
-package alexndr.api.helpers.game;
+package alexndr.api.config;
 
 import alexndr.api.config.types.ConfigBlock;
 

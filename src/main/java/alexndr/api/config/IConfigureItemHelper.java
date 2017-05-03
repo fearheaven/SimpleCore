@@ -1,5 +1,5 @@
 
-package alexndr.api.helpers.game;
+package alexndr.api.config;
 
 /**
  * Standard configuration-related methods for all Simple* item classes.

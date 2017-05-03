@@ -19,7 +19,7 @@ public class LogHelper {
 	 * Only needs to be called by SimpleCore API, after APISettings is loaded.
 	 */
 	public static void loggerSetup() {
-		verbose = APISettings.verboseLogging.asBoolean();
+		verbose = APISettings.verboseLogging;
 	}
 	
 	/**

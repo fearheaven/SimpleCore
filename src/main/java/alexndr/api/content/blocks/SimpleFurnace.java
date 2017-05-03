@@ -2,9 +2,9 @@ package alexndr.api.content.blocks;
 
 import java.util.Random;
 
+import alexndr.api.config.IConfigureBlockHelper;
 import alexndr.api.config.types.ConfigBlock;
 import alexndr.api.content.tiles.TileEntitySimpleFurnace;
-import alexndr.api.helpers.game.IConfigureBlockHelper;
 import alexndr.api.helpers.game.TooltipHelper;
 import alexndr.api.registry.ContentCategories;
 import alexndr.api.registry.ContentRegistry;

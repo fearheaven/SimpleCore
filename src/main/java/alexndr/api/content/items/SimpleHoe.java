@@ -4,8 +4,8 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 
+import alexndr.api.config.IConfigureItemHelper;
 import alexndr.api.config.types.ConfigTool;
-import alexndr.api.helpers.game.IConfigureItemHelper;
 import alexndr.api.helpers.game.TooltipHelper;
 import alexndr.api.registry.ContentCategories;
 import alexndr.api.registry.ContentRegistry;

@@ -23,7 +23,7 @@ public class ProxyCommon
 		LogHelper.loggerSetup();
 		
 		//Content
-		if (false == APISettings.tabs.asBoolean())
+		if (false == APISettings.tabs)
 		{
 			addVanillaTabs();
 		}

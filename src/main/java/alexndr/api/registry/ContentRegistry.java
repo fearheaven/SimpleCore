@@ -284,7 +284,7 @@ public class ContentRegistry
 				return details.tab;
 			}
 		} // end-for
-		if( (false == APISettings.separateTabs.asBoolean()) && APISettings.tabs.asBoolean()) 
+		if( (false == APISettings.separateTabs) && APISettings.tabs) 
 		{
 			if (! tabList.isEmpty()) {
 				return tabList.get(0).tab;

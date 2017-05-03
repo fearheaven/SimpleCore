@@ -76,10 +76,10 @@ public class SimpleCoreAPI
 	public static void tabPreInit() 
 	{
 		LogHelper.verbose("Creating tabs");
-		if(APISettings.tabs.asBoolean()) 
+		if(APISettings.tabs) 
 		{
 			simpleBlocks = new SimpleTab(SimpleCoreAPI.plugin, "SimpleBlocks", ContentCategories.CreativeTab.BLOCKS);
-			if(APISettings.separateTabs.asBoolean()) 
+			if(APISettings.separateTabs) 
 			{
 				simpleDecorations = new SimpleTab(SimpleCoreAPI.plugin, "SimpleDecorations", ContentCategories.CreativeTab.DECORATIONS);
 				simpleMaterials = new SimpleTab(SimpleCoreAPI.plugin, "SimpleMaterials", ContentCategories.CreativeTab.MATERIALS);
@@ -106,9 +106,9 @@ public class SimpleCoreAPI
 	public static void setTabIcons(List<Item> iconItemsList) {
 		if(!iconsSet) {
 			iconsSet = true;
-			if(APISettings.tabs.asBoolean()) {
+			if(APISettings.tabs) {
 				simpleBlocks.setIcon(iconItemsList.get(0));
-				if(APISettings.separateTabs.asBoolean()) 
+				if(APISettings.separateTabs) 
 				{
 					simpleDecorations.setIcon(iconItemsList.get(1));
 					simpleMaterials.setIcon(iconItemsList.get(2));
@@ -118,7 +118,7 @@ public class SimpleCoreAPI
 				}
 			}
 		}
-	}
+	} // end setTabIcons()
 	
 	
 

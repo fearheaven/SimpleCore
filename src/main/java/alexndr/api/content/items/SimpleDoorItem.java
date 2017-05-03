@@ -1,8 +1,8 @@
 package alexndr.api.content.items;
 
+import alexndr.api.config.IConfigureItemHelper;
 import alexndr.api.config.types.ConfigItem;
 import alexndr.api.content.blocks.SimpleDoor;
-import alexndr.api.helpers.game.IConfigureItemHelper;
 import alexndr.api.helpers.game.TooltipHelper;
 import alexndr.api.registry.ContentCategories;
 import alexndr.api.registry.ContentRegistry;

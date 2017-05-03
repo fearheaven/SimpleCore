@@ -1,4 +1,4 @@
-package alexndr.api.config;
+package alexndr.api.old_config;
 
 import java.io.File;
 import java.util.List;

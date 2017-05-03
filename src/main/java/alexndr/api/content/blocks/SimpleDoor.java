@@ -7,8 +7,8 @@ import java.util.Random;
 
 import javax.annotation.Nullable;
 
+import alexndr.api.config.IConfigureBlockHelper;
 import alexndr.api.config.types.ConfigBlock;
-import alexndr.api.helpers.game.IConfigureBlockHelper;
 import alexndr.api.helpers.game.TooltipHelper;
 import alexndr.api.logger.LogHelper;
 import alexndr.api.registry.ContentCategories;
