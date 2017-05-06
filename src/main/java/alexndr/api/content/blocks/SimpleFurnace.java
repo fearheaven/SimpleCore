@@ -113,13 +113,14 @@ public abstract class SimpleFurnace extends CompatBlock
 	 * @param entry ConfigBlock
 	 * @return SimpleFurnace
 	 */
-	public SimpleFurnace setConfigEntry(ConfigBlock entry) {
+	public SimpleFurnace setConfigEntry(ConfigBlock entry) 
+	{
 		this.entry = entry;
 		this.setHardness(entry.getHardness());
 		this.setResistance(entry.getResistance());
 		if(this.isBurning) this.setLightLevel(entry.getLightValue());
 		this.setHarvestLevel(entry.getHarvestTool(), entry.getHarvestLevel());
-		this.setCreativeTab(entry.getCreativeTab());
+		// this.setCreativeTab(entry.getCreativeTab());
 		this.setAdditionalProperties();
 		return this;
 	}
@@ -134,14 +135,9 @@ public abstract class SimpleFurnace extends CompatBlock
 		return this;
 	}
 
-	public void setAdditionalProperties() {
-		if(entry.getValueByName("CreativeTab") != null 
-				&& entry.getValueByName("CreativeTab").isActive()) 
-		{
-			this.setCreativeTab(entry.getCreativeTab());
-		}
-		if(entry.getValueByName("Unbreakable") != null 
-				&& entry.getValueByName("Unbreakable").isActive()) 
+	public void setAdditionalProperties() 
+	{
+		if(entry.getUnbreakable()) 
 		{
 			this.setBlockUnbreakable();
 		}

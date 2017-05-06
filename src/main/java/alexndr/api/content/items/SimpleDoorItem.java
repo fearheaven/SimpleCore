@@ -1,7 +1,5 @@
 package alexndr.api.content.items;
 
-import alexndr.api.config.IConfigureItemHelper;
-import alexndr.api.config.types.ConfigItem;
 import alexndr.api.content.blocks.SimpleDoor;
 import alexndr.api.helpers.game.TooltipHelper;
 import alexndr.api.registry.ContentCategories;
@@ -11,11 +9,11 @@ import net.minecraft.block.Block;
 import net.minecraft.item.ItemDoor;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
-public class SimpleDoorItem extends ItemDoor implements IConfigureItemHelper<SimpleDoorItem, ConfigItem>
+public class SimpleDoorItem extends ItemDoor
 {
     protected Plugin plugin;
     protected ContentCategories.Item category = ContentCategories.Item.OTHER;
-    protected ConfigItem entry;
+    // protected ConfigItem entry; // not configurable
     protected Block blockDoor;
     
     public SimpleDoorItem(Plugin plugin, SimpleDoor blockDoor)
@@ -35,34 +33,10 @@ public class SimpleDoorItem extends ItemDoor implements IConfigureItemHelper<Sim
         return this;
     }
     
-
-    @Override
-    public ConfigItem getConfigEntry()
-    {
-        return this.entry;
-    }
-
-    @Override
-    public SimpleDoorItem setConfigEntry(ConfigItem entry)
-    {
-        this.entry = entry;
-        this.setAdditionalProperties();
-        return this;
-    }
-
-    @Override
-    public SimpleDoorItem addToolTip(String toolTip)
+     public SimpleDoorItem addToolTip(String toolTip)
     {
         TooltipHelper.addTooltipToItem(this, toolTip);
         return this;
-    }
-
-    @Override
-    public void setAdditionalProperties()
-    {
-        if(entry.getValueByName("CreativeTab") != null && entry.getValueByName("CreativeTab").isActive()) {
-            this.setCreativeTab(entry.getCreativeTab());
-        }
     }
 
 } // end class

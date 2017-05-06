@@ -9,8 +9,6 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.Lists;
 
-import alexndr.api.config.IConfigureItemHelper;
-import alexndr.api.config.types.ConfigItem;
 import alexndr.api.helpers.game.TooltipHelper;
 import alexndr.api.registry.ContentCategories;
 import alexndr.api.registry.ContentRegistry;
@@ -57,11 +55,10 @@ import net.minecraftforge.items.ItemHandlerHelper;
  *
  */
 public class SimpleBucket extends CompatItem 
-	implements IConfigureItemHelper<SimpleBucket, ConfigItem> 
 {
 	protected Plugin plugin;
 	protected ContentCategories.Item category = ContentCategories.Item.OTHER;
-	protected ConfigItem entry;
+	// protected ConfigItem entry; // not configurable
 	protected List<String> toolTipStrings = Lists.newArrayList();
     protected final int capacity;
 	
@@ -102,26 +99,6 @@ public class SimpleBucket extends CompatItem
 	}
 	
 	/**
-	 * Returns the ConfigItem used by this bucket.
-	 * @return ConfigItem
-	 */
-	public ConfigItem getConfigEntry() {
-		return this.entry;
-	}
-	
-	/**
-	 * Sets the ConfigItem to be used for this bucket.
-	 * @param entry ConfigItem
-	 * @return SimpleBucket
-	 */
-	public SimpleBucket setConfigEntry(ConfigItem entry) {
-		this.entry = entry;
-		this.setMaxStackSize(entry.getStackSize());
-		this.setAdditionalProperties();
-		return this;
-	}
-	
-	/**
 	 * Adds a tooltip to the bucket. Must be unlocalised, so needs to be present in a localization file.
 	 * @param toolTip Name of the localisation entry for the tooltip, as a String. Normal format is modId.theitem.info
 	 * @return SimpleBucket
@@ -130,13 +107,6 @@ public class SimpleBucket extends CompatItem
 		TooltipHelper.addTooltipToItem(this, toolTip);
 		return this;
 	}
-	
-	public void setAdditionalProperties() {
-//		if(entry.getValueByName("CreativeTab") != null && entry.getValueByName("CreativeTab").isActive()) {
-//			this.setCreativeTab(entry.getCreativeTab());
-//		}
-	}
-	
 	
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) 

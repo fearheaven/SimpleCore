@@ -16,6 +16,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import alexndr.api.config.IConfigureBlockHelper;
 import alexndr.api.config.types.ConfigBlock;
+import alexndr.api.helpers.game.TabHelper;
 import alexndr.api.helpers.game.TooltipHelper;
 import alexndr.api.registry.ContentCategories;
 import alexndr.api.registry.ContentRegistry;
@@ -30,6 +31,15 @@ public class SimpleBlock extends Block implements IConfigureBlockHelper<SimpleBl
 	protected Material material;
 	protected ContentCategories.Block category;
 	protected ConfigBlock entry;
+	
+	//Additional Block Attributes
+	protected boolean dropItem = false;
+	protected String itemToDrop;
+	protected int quantityToDrop = 1;
+	protected boolean fireSource = false;
+	protected boolean isLeaves = false;
+	protected boolean isWood = false;
+	protected boolean isOre = false;
 	
 	/**
 	 * Creates a simple block, such as an ore or a storage block.
@@ -82,11 +92,21 @@ public class SimpleBlock extends Block implements IConfigureBlockHelper<SimpleBl
 		this.setResistance(entry.getResistance());
 		this.setLightLevel(entry.getLightValue());
 		this.setHarvestLevel(entry.getHarvestTool(), entry.getHarvestLevel());
-//		this.setCreativeTab(entry.getCreativeTab());
 		this.setAdditionalProperties();
 		return this;
 	}
-	
+
+	/**
+	 * Sets the CreativeTab the block will be placed in.
+	 * CreativeTab needs to be added to the ContentRegistry.
+	 * @param tabName Name of the CreativeTab
+	 * @return ConfigBlock
+	 */
+	public SimpleBlock setCreativeTab(String tabName) {
+		this.setCreativeTab(TabHelper.getTab(tabName));
+		return this;
+	}
+
 	/**
 	 * Adds a tooltip to the block. Must be unlocalised, so needs to be present in a localization file.
 	 * @param toolTip Name of the localisation entry for the tooltip, as a String. Normal format is modId.theitem.info
@@ -96,13 +116,80 @@ public class SimpleBlock extends Block implements IConfigureBlockHelper<SimpleBl
 		TooltipHelper.addTooltipToBlock(this, toolTip);
 		return this;
 	}
+
+	/**
+	 * Returns a boolean for whether or not to drop an item.
+	 * @return Drop item boolean
+	 */
+	public boolean getDropItem() {
+		return this.dropItem;
+	}
+
+	/**
+	 * Returns the item to drop when this block is broken.
+	 * @return Item to drop
+	 */
+	public Item getItemToDrop() {
+		return (Item) Item.getByNameOrId(this.itemToDrop);
+	}
+
+	/**
+	 * Sets the drop item for the block.
+	 * @param dropItem Drop Item
+	 * @return ConfigBlock
+	 */
+	public SimpleBlock setDropItem(boolean dropItem) {
+		this.dropItem = dropItem;
+		return this;
+	}
+
+	/**
+	 * Sets the item to drop when this block is broken.
+	 * @param itemToDrop Item to drop
+	 * @return ConfigBlock
+	 */
+	public SimpleBlock setItemToDrop(Item itemToDrop) {
+		this.itemToDrop = itemToDrop.getUnlocalizedName();
+		return this;
+	}
 	
+	/**
+	 * Sets the item to drop when this block is broken.
+	 * This method uses the String name of the item.
+	 * Should be of the form modId:itemName, eg. simpleores:onyx_gem.
+	 * @param itemToDrop String name of the item
+	 * @return ConfigBlock
+	 */
+	public SimpleBlock setItemToDrop(String itemToDrop) {
+		this.itemToDrop = itemToDrop;
+		return this;
+	}
+
+	/**
+	 * Returns the quantity to drop when this block is broken.
+	 * @return Quantity to drop
+	 */
+	public int getQuantityToDrop() {
+		return this.quantityToDrop;
+	}
+	
+	/**
+	 * Sets the quantity to drop when this block is broken. 
+	 * @param quantityToDrop Quantity to drop
+	 * @return configBlock
+	 */
+	public SimpleBlock setQuantityToDrop(int quantityToDrop) {
+		this.quantityToDrop = quantityToDrop;
+		return this;
+	}
+
+
+
 	@Override
-	public Item getItemDropped(IBlockState state, Random rand, int fortune) {
-		if(entry.getValueByName("DropItem") != null && entry.getValueByName("DropItem").isActive()) {
-			if(entry.getDropItem() && entry.getValueByName("ItemToDrop") != null && entry.getValueByName("ItemToDrop").isActive()) {
-				return entry.getItemToDrop();
-			}
+	public Item getItemDropped(IBlockState state, Random rand, int fortune) 
+	{
+		if (this.getDropItem()) {
+			return this.getItemToDrop();
 		}
 		return Item.getItemFromBlock(this);
 	}
@@ -110,10 +197,8 @@ public class SimpleBlock extends Block implements IConfigureBlockHelper<SimpleBl
 	@Override
 	public int quantityDropped(Random random) 
 	{
-		if(entry.getDropItem() && entry.getValueByName("DropItem").isActive()) {
-			if(entry.getValueByName("QuantityToDrop") != null && entry.getValueByName("QuantityToDrop").isActive()) {
-				return entry.getQuantityToDrop();
-			}
+		if(this.getDropItem()) {
+			return this.getQuantityToDrop();
 		}
 		return 1;
 	}
@@ -129,7 +214,8 @@ public class SimpleBlock extends Block implements IConfigureBlockHelper<SimpleBl
 	}
 	
 	@Override
-	public int quantityDroppedWithBonus(int fortune, Random random) {
+	public int quantityDroppedWithBonus(int fortune, Random random) 
+	{
 		if(fortune > 0 && this.getItemDropped((IBlockState)this.getBlockState().getValidStates().iterator().next(), random, fortune) != Item.getItemFromBlock(this)) {
 			int var = random.nextInt(fortune + 2) - 1;
 			if(var < 0) var = 0;
@@ -138,42 +224,67 @@ public class SimpleBlock extends Block implements IConfigureBlockHelper<SimpleBl
 		else return this.quantityDropped(random);
 	}
 	
+	/**
+	 * Sets whether or not the block is a fire source.
+	 * Fire source blocks can sustain fire indefinitely (eg. Netherrack).
+	 * @param fireSource Fire source boolean
+	 * @return SimpleBlock
+	 */
+	public SimpleBlock setFireSource(boolean fireSource) {
+		this.fireSource = fireSource;
+		return this;
+	}
+
 	@Override
-	public boolean isFireSource(World world, BlockPos pos, EnumFacing side) {
-		if(entry.getValueByName("FireSource") != null && entry.getValueByName("FireSource").isActive()) {
-			return entry.getFireSource();
-		}
-		return false;
+	public boolean isFireSource(World world, BlockPos pos, EnumFacing side) 
+	{
+		return fireSource;
 	}
 	
+	/**
+	 * Sets whether or not the block is leaves.
+	 * Blocks that are leaves will decay after time unless near a log block.
+	 * @param isLeaves Is leaves boolean
+	 * @return ConfigBlock
+	 */
+	public SimpleBlock setIsLeaves(boolean isLeaves) {
+		this.isLeaves = isLeaves;
+		return this;
+	}
+
+
 	@Override
-	public boolean isLeaves(IBlockState state, IBlockAccess world, BlockPos pos) {
-		if(entry.getValueByName("IsLeaves") != null && entry.getValueByName("IsLeaves").isActive()) {
-			return entry.getFireSource();
-		}
-		return false;
+	public boolean isLeaves(IBlockState state, IBlockAccess world, BlockPos pos) 
+	{
+		return isLeaves;
 	}
 	
-	
+	/**
+	 * Sets whether or not the block is a wood block.
+	 * Wood blocks burn, and can also sustain leaves.
+	 * @param isWood Is wood boolean
+	 * @return ConfigBlock
+	 */
+	public SimpleBlock setIsWood(boolean isWood) {
+		this.isWood = isWood;
+		return this;
+	}
+
 	@Override
 	public boolean isWood(IBlockAccess world, BlockPos pos) {
-		if(entry.getValueByName("IsWood") != null && entry.getValueByName("IsWood").isActive()){
-			return entry.getIsWood();
-		}
-		return false;
+		return isWood;
 	}
 	
 	@Override
-	public boolean isBeaconBase(IBlockAccess worldObj, BlockPos pos, BlockPos beaconPos) {
-		if(entry.getValueByName("BeaconBase") != null && entry.getValueByName("BeaconBase").isActive()){
-			return entry.getIsLeaves();
-		}
-		return false;
+	public boolean isBeaconBase(IBlockAccess worldObj, BlockPos pos, BlockPos beaconPos) 
+	{
+		return entry.getBeaconBase();
 	}
 	
 	public void setAdditionalProperties() 
 	{
-		if(entry.getValueByName("Unbreakable") != null && entry.getValueByName("Unbreakable").isActive()) {
+		if(entry.getUnbreakable()) 
+		{
 			this.setBlockUnbreakable();
 		}
 	}

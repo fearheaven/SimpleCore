@@ -56,7 +56,7 @@ public class SimpleBars extends BlockPane implements IConfigureBlockHelper<Simpl
         this.setResistance(entry.getResistance());
         this.setLightLevel(entry.getLightValue());
         this.setHarvestLevel(entry.getHarvestTool(), entry.getHarvestLevel());
-        this.setCreativeTab(entry.getCreativeTab());
+        // this.setCreativeTab(entry.getCreativeTab());
         this.setAdditionalProperties();
         return this;
     }
@@ -73,8 +73,7 @@ public class SimpleBars extends BlockPane implements IConfigureBlockHelper<Simpl
     @Override
     public void setAdditionalProperties()
     {
-        if (entry.getValueByName("Unbreakable") != null
-                        && entry.getValueByName("Unbreakable").isActive())
+        if (entry.getUnbreakable())
         {
             this.setBlockUnbreakable();
         }

@@ -5,7 +5,7 @@ import net.minecraftforge.common.config.Configuration;
 /**
  * @author AleXndrTheGr8st
  */
-public class ConfigEntry 
+public abstract class ConfigEntry 
 {
 	protected String name;
 	protected String category;
@@ -60,4 +60,5 @@ public class ConfigEntry
 		return category;
 	}
 	
+	abstract public void GetConfig(Configuration config);
 } // end class

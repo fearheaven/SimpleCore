@@ -58,7 +58,6 @@ public class SimpleItem extends CompatItem implements IConfigureItemHelper<Simpl
 	 */
 	public SimpleItem setConfigEntry(ConfigItem entry) {
 		this.entry = entry;
-		this.setMaxStackSize(entry.getStackSize());
 		this.setAdditionalProperties();
 		return this;
 	}
@@ -74,8 +73,5 @@ public class SimpleItem extends CompatItem implements IConfigureItemHelper<Simpl
 	}
 	
 	public void setAdditionalProperties() {
-//		if(entry.getValueByName("CreativeTab") != null && entry.getValueByName("CreativeTab").isActive()) {
-//			this.setCreativeTab(entry.getCreativeTab());
-//		}
 	}
 } // end class

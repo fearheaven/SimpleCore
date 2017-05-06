@@ -54,7 +54,7 @@ public class SimpleStairs extends BlockStairs implements IConfigureBlockHelper<S
     	// and set separately.
 		this.entry = entry;
 		this.setLightLevel(entry.getLightValue());
-		this.setCreativeTab(entry.getCreativeTab());
+		// this.setCreativeTab(entry.getCreativeTab());
 		this.setAdditionalProperties();
 		return this;
     }

@@ -1,105 +1,59 @@
 package alexndr.api.config.types;
 
-import java.util.List;
-
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
-import net.minecraft.util.ResourceLocation;
-import alexndr.api.registry.ContentRegistry;
-
-import com.google.common.collect.Lists;
+import net.minecraftforge.common.config.Configuration;
 
 /**
  * @author AleXndrTheGr8st
  */
 public class ConfigBlock extends ConfigEntry
 {
-	// private List<ConfigValue> valuesList = Lists.newArrayList();
-	
 	//Primary Block Attributes
-	private ConfigValue hardness = new ConfigValue("Hardness").setCurrentValue("0.0");
-	private ConfigValue resistance = new ConfigValue("Resistance").setCurrentValue("0.0");
-	private ConfigValue lightValue = new ConfigValue("LightValue").setCurrentValue("0.0");
-	private ConfigValue harvestLevel = new ConfigValue("HarvestLevel").setCurrentValue("0");
-	private ConfigValue harvestTool = new ConfigValue("HarvestTool");
-	private ConfigValue creativeTab = new ConfigValue("CreativeTab");
-	
-	//World Gen Attributes
-	private ConfigValue spawnRate = new ConfigValue("SpawnRate");
-	private ConfigValue veinSize = new ConfigValue("VeinSize");
-	private ConfigValue minHeight = new ConfigValue("MinHeight");
-	private ConfigValue maxHeight = new ConfigValue("MaxHeight");
+	private float hardness = 0.0F;
+	private float resistance = 0.0F;
+	private int lightValue = 0;
+	private int harvestLevel = 0;
+	private String harvestTool;
 	
 	//Additional Block Attributes
-	private ConfigValue dropItem = new ConfigValue("DropItem").setCurrentValue("false");
-	private ConfigValue itemToDrop = new ConfigValue("ItemToDrop");
-	private ConfigValue quantityToDrop = new ConfigValue("QuantityToDrop");
-	private ConfigValue unbreakable = new ConfigValue("Unbreakable").setCurrentValue("false");
-	private ConfigValue fireSource = new ConfigValue("FireSource").setCurrentValue("false");
-	private ConfigValue isLeaves = new ConfigValue("IsLeaves").setCurrentValue("false");
-	private ConfigValue isWood = new ConfigValue("IsWood").setCurrentValue("false");
-	private ConfigValue beaconBase = new ConfigValue("BeaconBase").setCurrentValue("false");
+	private boolean unbreakable = false;
+	private boolean beaconBase = false;
 	
 	/**
 	 * Creates a new ConfigBlock. This is for blocks, eg. Copper Ore or Block of Tin.
 	 * @param name Name of the ConfigBlock
 	 * @param category The category to place the ConfigBlock in
 	 */
-	public ConfigBlock(String name, String category) {
-		super(name, category);
-		this.valuesList.addAll(Lists.newArrayList(hardness, resistance, lightValue, harvestLevel, harvestTool, creativeTab, spawnRate, veinSize, minHeight, maxHeight,
-				dropItem, itemToDrop, quantityToDrop,unbreakable, fireSource, isLeaves, isWood, beaconBase));
-		super.setValuesList(valuesList);
+	public ConfigBlock(String name, String category) 
+	{
+		super(name, category, true);
 	}
 	
 	@Override
-	public List<ConfigValue> getValuesList() {
-		return valuesList;
-	}
-	
-	@Override
-	public void setValuesList(List<ConfigValue> valuesList) {
-		this.valuesList = valuesList;
-	}
-	
-	@Override
-	public ConfigValue createNewValue(String valueName) {
-		ConfigValue value = new ConfigValue(valueName);
-		value.setActive();
-		valuesList.add(value);
-		return value;
-	}
-	
-	@Override
-	public ConfigBlock createNewValue(String valueName, String dataType, String currentValue, String defaultValue) {
-		ConfigValue value = new ConfigValue(valueName);
-		value.setActive();
-		value.setDataType(dataType);
-		value.setCurrentValue(currentValue);
-		value.setDefaultValue(defaultValue);
-		valuesList.add(value);
-		return this;
-	}
-	
-	@Override
-	public ConfigValue getValueByName(String valueName) {
-		for(ConfigValue value : this.valuesList) {
-			if(value.getName().equals(valueName))
-				return value;
-		}
-		return null;
-	}
+	public void GetConfig(Configuration config) 
+	{
+		hardness = config.getFloat("hardness", subcategory, hardness, 0.0F, 32000.0F, 
+									"how many hits it takes to break a block");
+		resistance = config.getFloat("resistance", subcategory, resistance, 0.0F, 32000.0F, 
+								     "how much this block can resist explosions");
+		lightValue = config.getInt("lightValue", subcategory, lightValue, 0, 255, 
+									  "Amount of light emitted (15 is max torchlight)");
+		harvestLevel = config.getInt("harvestLevel", subcategory, harvestLevel, 0, 8, 
+									 "level required to harvest this block (0=wood, 3=diamond)");
+		harvestTool = config.getString("harvestTool", subcategory, harvestTool, 
+										"tool Class");
+		unbreakable = config.getBoolean("unbreakable", subcategory, unbreakable, 
+										"is literally unbreakable?");
+		beaconBase = config.getBoolean("beaconBase", subcategory, beaconBase, 
+										"block can serve as a beacon base");
+	} // end GetConfig()
+
 
 	/**
 	 * Returns the hardness of the block.
 	 * @return Hardness
 	 */
 	public float getHardness() {
-		for(ConfigValue value : valuesList) {
-			if(value.getName().equals(hardness.getName()))
-				return Float.parseFloat(value.getCurrentValue());
-		}
-		return 0.0F;
+		return this.hardness;
 	}
 	
 	/**
@@ -108,7 +62,7 @@ public class ConfigBlock extends ConfigEntry
 	 * @return ConfigBlock
 	 */
 	public ConfigBlock setHardness(float hardness) {
-		this.hardness.setActive().setDataType("@F").setCurrentValue("" + hardness).setDefaultValue("" + hardness);
+		this.hardness = hardness;
 		return this;
 	}
 
@@ -117,11 +71,7 @@ public class ConfigBlock extends ConfigEntry
 	 * @return Blast resistance
  	 */
 	public float getResistance() {
-		for(ConfigValue value: valuesList) {
-			if(value.getName().equals(resistance.getName()))
-				return Float.parseFloat(value.getCurrentValue());
-		}
-		return 0.0F;
+		return this.resistance;
 	}
 	
 	/**
@@ -130,7 +80,7 @@ public class ConfigBlock extends ConfigEntry
 	 * @return ConfigBlock
 	 */
 	public ConfigBlock setResistance(float resistance) {
-		this.resistance.setActive().setDataType("@F").setCurrentValue("" + resistance).setDefaultValue("" + resistance);
+		this.resistance = resistance;
 		return this;
 	}
 
@@ -138,12 +88,8 @@ public class ConfigBlock extends ConfigEntry
 	 * Returns the light value of the block.
 	 * @return Light value
 	 */
-	public float getLightValue() {
-		for(ConfigValue value : valuesList) {
-			if(value.getName().equals(lightValue.getName()))
-				return Float.parseFloat(value.getCurrentValue());
-		}
-		return 0.0F;
+	public int getLightValue() {
+		return this.lightValue;
 	}
 	
 	/**
@@ -151,8 +97,8 @@ public class ConfigBlock extends ConfigEntry
 	 * @param lightValue Light value
 	 * @return ConfigBlock
 	 */
-	public ConfigBlock setLightValue(float lightValue) {
-		this.lightValue.setActive().setDataType("@F").setCurrentValue("" + lightValue).setDefaultValue("" + lightValue);
+	public ConfigBlock setLightValue(int lightValue) {
+		this.lightValue = lightValue;
 		return this;
 	}
 
@@ -161,11 +107,7 @@ public class ConfigBlock extends ConfigEntry
 	 * @return Harvest level
 	 */
 	public int getHarvestLevel() {
-		for(ConfigValue value : valuesList) {
-			if(value.getName().equals(harvestLevel.getName()))
-				return Integer.parseInt(value.getCurrentValue());
-		}
-		return 0;
+		return this.harvestLevel;
 	}
 	
 	/**
@@ -174,7 +116,7 @@ public class ConfigBlock extends ConfigEntry
 	 * @return ConfigBlock
 	 */
 	public ConfigBlock setHarvestLevel(int harvestLevel) {
-		this.harvestLevel.setActive().setDataType("@I").setCurrentValue("" + harvestLevel).setDefaultValue("" + harvestLevel);
+		this.harvestLevel = harvestLevel;
 		return this;
 	}
 
@@ -183,11 +125,7 @@ public class ConfigBlock extends ConfigEntry
 	 * @return Harvest tool
 	 */
 	public String getHarvestTool() {
-		for(ConfigValue value : valuesList) {
-			if(value.getName().equals(harvestTool.getName()))
-				return value.getCurrentValue();
-		}
-		return "";
+		return this.harvestTool;
 	}
 
 	/**
@@ -196,213 +134,16 @@ public class ConfigBlock extends ConfigEntry
 	 * @return ConfigBlock
 	 */
 	public ConfigBlock setHarvestTool(String harvestTool) {
-		this.harvestTool.setActive().setDataType("@S").setCurrentValue(harvestTool).setDefaultValue(harvestTool);
+		this.harvestTool = harvestTool;
 		return this;
 	}
-
-	/**
-	 * Returns the CreativeTab the block will be placed in.
-	 * Searches the ContentRegistry for the tab name, so it must be registered there.
-	 * @return CreativeTab
-	 */
-	public CreativeTabs getCreativeTab() {
-		for(ConfigValue value : valuesList) {
-			if(value.getName().equals(creativeTab.getName()))
-				if(ContentRegistry.doesTabExist(value.getCurrentValue()))
-					return ContentRegistry.getTab(value.getCurrentValue());
-		}
-		return null;
-	}
-	
-	/**
-	 * Sets the CreativeTab the block will be placed in.
-	 * CreativeTab needs to be added to the ContentRegistry.
-	 * @param tabName Name of the CreativeTab
-	 * @return ConfigBlock
-	 */
-	public ConfigBlock setCreativeTab(String tabName) {
-		this.creativeTab.setActive().setDataType("@S").setCurrentValue(tabName).setDefaultValue(tabName);
-		return this;
-	}
-
-	/**
-	 * Returns the spawn rate of the block.
-	 * @return Spawn rate
-	 */
-	public int getSpawnRate() {
-		for(ConfigValue value : valuesList) {
-			if(value.getName().equals(spawnRate.getName()))
-				return Integer.parseInt(value.getCurrentValue());
-		}
-		return 0;
-	}
-	
-	/**
-	 * Sets the spawn rate of the block.
-	 * @param spawnRate Spawn rate
-	 * @return ConfigBlock
-	 */
-	public ConfigBlock setSpawnRate(int spawnRate) {
-		this.spawnRate.setActive().setDataType("@I").setCurrentValue("" + spawnRate).setDefaultValue("" + spawnRate);
-		return this;
-	}
-
-	/**
-	 * Returns the vein size of the block.
-	 * @return Vein size
-	 */
-	public int getVeinSize() {
-		for(ConfigValue value : valuesList) {
-			if(value.getName().equals(veinSize.getName()))
-				return Integer.parseInt(value.getCurrentValue());
-		}
-		return 0;
-	}
-	
-	/**
-	 * Sets the vein size of the block.
-	 * @param veinSize Vein size
-	 * @return ConfigBlock
-	 */
-	public ConfigBlock setVeinSize(int veinSize) {
-		this.veinSize.setActive().setDataType("@I").setCurrentValue("" + veinSize).setDefaultValue("" + veinSize);
-		return this;
-	}
-
-	/**
-	 * Returns the minimum spawn height of the block.
-	 * @return Minimum spawn height
-	 */
-	public int getMinHeight() {
-		for(ConfigValue value : valuesList) {
-			if(value.getName().equals(minHeight.getName()))
-				return Integer.parseInt(value.getCurrentValue());
-		}
-		return 0;
-	}
-	
-	/**
-	 * Sets the minimum spawn height of the block.
-	 * @param minHeight Minimum spawn height
-	 * @return ConfigBlock
-	 */
-	public ConfigBlock setMinHeight(int minHeight) {
-		this.minHeight.setActive().setDataType("@I").setCurrentValue("" + minHeight).setDefaultValue("" + minHeight);
-		return this;
-	}
-
-	/**
-	 * Returns the maximum spawn height of the block.
-	 * @return Maximum spawn height
-	 */
-	public int getMaxHeight() {
-		for(ConfigValue value : valuesList) {
-			if(value.getName().equals(maxHeight.getName()))
-				return Integer.parseInt(value.getCurrentValue());
-		}
-		return 0;
-	}
-	
-	/**
-	 * Sets the maximum spawn height of the block.
-	 * @param maxHeight Maximum spawn height
-	 * @return ConfigBlock
-	 */
-	public ConfigBlock setMaxHeight(int maxHeight) {
-		this.maxHeight.setActive().setDataType("@I").setCurrentValue("" + maxHeight).setDefaultValue("" + maxHeight);
-		return this;
-	}
-	
-	/**
-	 * Returns a boolean for whether or not to drop an item.
-	 * @return Drop item boolean
-	 */
-	public boolean getDropItem() {
-		for(ConfigValue value : valuesList) {
-			if(value.getName().equals(dropItem.getName()))
-				return Boolean.parseBoolean(value.getCurrentValue());
-		}
-		return false;
-	}
-
-	/**
-	 * Sets the drop item for the block.
-	 * @param dropItem Drop Item
-	 * @return ConfigBlock
-	 */
-	public ConfigBlock setDropItem(boolean dropItem) {
-		this.dropItem.setActive().setDataType("@B").setCurrentValue("" + dropItem).setDefaultValue("" + dropItem);
-		return this;
-	}
-
-	/**
-	 * Returns the item to drop when this block is broken.
-	 * @return Item to drop
-	 */
-	public Item getItemToDrop() {
-		for(ConfigValue value : valuesList) {
-			if(value.getName().equals(itemToDrop.getName()))
-				return (Item) Item.REGISTRY.getObject(new ResourceLocation(value.getCurrentValue()));
-		}
-		return null;
-	}
-
-	/**
-	 * Sets the item to drop when this block is broken.
-	 * @param itemToDrop Item to drop
-	 * @return ConfigBlock
-	 */
-	public ConfigBlock setItemToDrop(Item itemToDrop) {
-		this.itemToDrop.setActive().setDataType("@S").setCurrentValue("" + Item.REGISTRY.getNameForObject(itemToDrop)).setDefaultValue("" + Item.REGISTRY.getNameForObject(itemToDrop));
-		return this;
-	}
-	
-	/**
-	 * Sets the item to drop when this block is broken.
-	 * This method uses the String name of the item.
-	 * Should be of the form modId:itemName, eg. simpleores:onyx_gem.
-	 * @param itemToDrop String name of the item
-	 * @return ConfigBlock
-	 */
-	public ConfigBlock setItemToDrop(String itemToDrop) {
-		this.itemToDrop.setActive().setDataType("@S").setCurrentValue(itemToDrop).setDefaultValue(itemToDrop);
-		return this;
-	}
-
-	/**
-	 * Returns the quantity to drop when this block is broken.
-	 * @return Quantity to drop
-	 */
-	public int getQuantityToDrop() {
-		for(ConfigValue value : valuesList) {
-			if(value.getName().equals(quantityToDrop.getName()))
-				return Integer.parseInt(value.getCurrentValue());
-		}
-		
-		return 0;
-	}
-	
-	/**
-	 * Sets the quantity to drop when this block is broken. 
-	 * @param quantityToDrop Quantity to drop
-	 * @return configBlock
-	 */
-	public ConfigBlock setQuantityToDrop(int quantityToDrop) {
-		this.quantityToDrop.setActive().setDataType("@I").setCurrentValue("" + quantityToDrop).setDefaultValue("" + quantityToDrop);
-		return this;
-	}
-
 
 	/**
 	 * Returns whether or not the block is unbreakable.
 	 * @return Unbreakable
 	 */
 	public boolean getUnbreakable() {
-		for(ConfigValue value : valuesList) {
-			if(value.getName().equals(unbreakable.getName()))
-				return Boolean.parseBoolean(value.getCurrentValue());
-		}
-		return false;
+		return this.unbreakable;
 	}
 
 	/**
@@ -411,79 +152,7 @@ public class ConfigBlock extends ConfigEntry
 	 * @return ConfigBlock
 	 */
 	public ConfigBlock setUnbreakable(boolean unbreakable) {
-		this.unbreakable.setActive().setDataType("@B").setCurrentValue("" + unbreakable).setDefaultValue("" + unbreakable);
-		return this;
-	}
-
-	/**
-	 * Returns whether or not the block is a fire source.
-	 * Fire source blocks can sustain fire indefinitely (eg. Netherrack).
-	 * @return Fire source
-	 */
-	public boolean getFireSource() {
-		for(ConfigValue value : valuesList) {
-			if(value.getName().equals(fireSource.getName()))
-				return Boolean.parseBoolean(value.getCurrentValue());
-		}
-		return false;
-	}
-
-	/**
-	 * Sets whether or not the block is a fire source.
-	 * Fire source blocks can sustain fire indefinitely (eg. Netherrack).
-	 * @param fireSource Fire source boolean
-	 * @return ConfigBlock
-	 */
-	public ConfigBlock setFireSource(boolean fireSource) {
-		this.fireSource.setActive().setDataType("@B").setCurrentValue("" + fireSource).setDefaultValue("" + fireSource);
-		return this;
-	}
-
-	/**
-	 * Returns whether or not the block is leaves.
-	 * Blocks that are leaves will decay after time unless near a log block.
-	 * @return  Is leaves boolean
-	 */
-	public boolean getIsLeaves() {
-		for(ConfigValue value : valuesList) {
-			if(value.getName().equals(isLeaves.getName()))
-				return Boolean.parseBoolean(value.getCurrentValue());
-		}
-		return false;
-	}
-
-	/**
-	 * Sets whether or not the block is leaves.
-	 * Blocks that are leaves will decay after time unless near a log block.
-	 * @param isLeaves Is leaves boolean
-	 * @return ConfigBlock
-	 */
-	public ConfigBlock setIsLeaves(boolean isLeaves) {
-		this.isLeaves.setActive().setDataType("@B").setCurrentValue("" + isLeaves).setDefaultValue("" + isLeaves);
-		return this;
-	}
-
-	/**
-	 * Returns whether or not the block is a wood block.
-	 * Wood blocks burn, and can also sustain leaves.
-	 * @return Is wood boolean
-	 */
-	public boolean getIsWood() {
-		for(ConfigValue value : valuesList){
-			if(value.getName().equals(isWood.getName()))
-				return Boolean.parseBoolean(value.getCurrentValue());
-		}
-		return false;
-	}
-
-	/**
-	 * Sets whether or not the block is a wood block.
-	 * Wood blocks burn, and can also sustain leaves.
-	 * @param isWood Is wood boolean
-	 * @return ConfigBlock
-	 */
-	public ConfigBlock setIsWood(boolean isWood) {
-		this.isWood.setActive().setDataType("@B").setCurrentValue("" + isWood).setDefaultValue("" + isWood);
+		this.unbreakable = unbreakable;
 		return this;
 	}
 
@@ -492,11 +161,7 @@ public class ConfigBlock extends ConfigEntry
 	 * @return Valid beacon base boolean
 	 */
 	public boolean getBeaconBase() {
-		for(ConfigValue value : valuesList) {
-			if(value.getName().equals(beaconBase.getName()))
-				return Boolean.parseBoolean(value.getCurrentValue());
-		}
-		return false;
+		return this.beaconBase;
 	}
 
 	/**
@@ -505,7 +170,8 @@ public class ConfigBlock extends ConfigEntry
 	 * @return ConfigBlock
 	 */
 	public ConfigBlock setBeaconBase(boolean beaconBase) {
-		this.beaconBase.setActive().setDataType("@B").setCurrentValue("" + beaconBase).setDefaultValue("" + beaconBase);
+		this.beaconBase = beaconBase;
 		return this;
-	}	
-}
+	}
+
+} // end class
