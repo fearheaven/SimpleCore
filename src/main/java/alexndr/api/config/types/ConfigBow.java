@@ -16,7 +16,6 @@ public class ConfigBow extends ConfigEntry
 	public ConfigBow(String name, String category) 
 	{
 		super(name, ConfigHelper.CATEGORY_BOW, true);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -36,6 +35,24 @@ public class ConfigBow extends ConfigEntry
 		}
 		zoomAmount = config.getFloat("ZoomAmount", subcategory, zoomAmount, 0.0F, 1.0F, "");
 	} // end GetConfig()
+
+	public float getKnockBackFactor() {
+		return knockBackFactor;
+	}
+
+	public ConfigBow setKnockBackFactor(float knockBackFactor) {
+		this.knockBackFactor = knockBackFactor;
+		return this;
+	}
+
+	public int getEfficiencyChance() {
+		return efficiencyChance;
+	}
+
+	public ConfigBow setEfficiencyChance(int efficiencyChance) {
+		this.efficiencyChance = efficiencyChance;
+		return this;
+	}
 
 	public float getDamageModifier() {
 		return damageModifier;
