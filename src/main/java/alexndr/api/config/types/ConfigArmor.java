@@ -33,6 +33,7 @@ public class ConfigArmor extends ConfigEntry
 	 */
 	public void GetConfig(Configuration config) 
 	{
+		super.GetConfig(config);
 		repairMaterial = config.getString("RepairMaterial", subcategory, repairMaterial, 
 										  "Either ore-dictionary name or actual item name");
 		durability = config.getInt("Durability", subcategory, durability, 1, 32000, 

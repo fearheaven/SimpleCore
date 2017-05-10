@@ -33,6 +33,7 @@ public class ConfigTool extends ConfigEntry
 	@Override
 	public void GetConfig(Configuration config) 
 	{
+		super.GetConfig(config);
 		uses = config.getInt("Uses", subcategory, uses, 1, 32000, 
 							  "number of uses this material allows. (wood = 59, stone = 131, iron = 250, diamond = 1561, gold = 32)");
 		harvestLevel = config.getInt("harvestLevel", subcategory, harvestLevel, 0, 10, 

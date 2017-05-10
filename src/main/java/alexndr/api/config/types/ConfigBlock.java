@@ -31,6 +31,7 @@ public class ConfigBlock extends ConfigEntry
 	@Override
 	public void GetConfig(Configuration config) 
 	{
+		super.GetConfig(config);
 		hardness = config.getFloat("hardness", subcategory, hardness, 0.0F, 32000.0F, 
 									"how many hits it takes to break a block");
 		resistance = config.getFloat("resistance", subcategory, resistance, 0.0F, 32000.0F, 

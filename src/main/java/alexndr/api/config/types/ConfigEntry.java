@@ -5,12 +5,13 @@ import net.minecraftforge.common.config.Configuration;
 /**
  * @author AleXndrTheGr8st
  */
-public abstract class ConfigEntry 
+public class ConfigEntry 
 {
 	protected String name;
 	protected String category;
 	protected String subcategory;
 	protected boolean has_subcategory;
+	protected boolean enabled = true;
 	
 	/**
 	 * Creates a new ConfigEntry. This is the generic Config entry.
@@ -28,6 +29,19 @@ public abstract class ConfigEntry
 			subcategory = category + Configuration.CATEGORY_SPLITTER + name;
 		}
 	} // end ConfigEntry()
+	
+	public void GetConfig(Configuration config)
+	{
+		enabled = config.getBoolean("enabled", subcategory, enabled, "Set false to disable creation");
+	} // end GetConfig()
+	
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
 
 	/**
 	 * Get full subcategory string.
@@ -59,6 +73,4 @@ public abstract class ConfigEntry
 	public String getCategory() {
 		return category;
 	}
-	
-	abstract public void GetConfig(Configuration config);
 } // end class

@@ -29,6 +29,7 @@ public class ConfigFusionRecipe extends ConfigEntry
 	@Override
 	public void GetConfig(Configuration config) 
 	{
+		super.GetConfig(config);
 		input1 = config.getString("input1", subcategory, input1, 
 								 "input1 (ore dict string or item name)");
 		input2 = config.getString("input2", subcategory, input2, 

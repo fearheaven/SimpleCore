@@ -21,6 +21,7 @@ public class ConfigBow extends ConfigEntry
 	@Override
 	public void GetConfig(Configuration config) 
 	{
+		super.GetConfig(config);
 		if (hasDamageModifier) {
 			damageModifier = config.getFloat("DamageModifier", subcategory, damageModifier, 
 											 0.0F, 32000.0F, "");

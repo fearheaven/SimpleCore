@@ -6,8 +6,7 @@ import java.util.Random;
 
 import com.google.common.collect.Lists;
 
-import alexndr.api.config.IConfigureItemHelper;
-import alexndr.api.config.types.ConfigEntry;
+import alexndr.api.config.types.ConfigBow;
 import alexndr.api.helpers.game.TooltipHelper;
 import alexndr.api.registry.ContentCategories;
 import alexndr.api.registry.ContentRegistry;
@@ -35,11 +34,11 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 /**
  * @author AleXndrTheGr8st
  */
-public class SimpleBow extends ItemBow implements IConfigureItemHelper<SimpleBow, ConfigEntry>
+public class SimpleBow extends ItemBow
 {
 	protected Plugin plugin;
 	protected ContentCategories.Item category = ContentCategories.Item.WEAPON;
-	protected ConfigEntry entry;
+	protected ConfigBow entry;
 	protected List<String> toolTipStrings = Lists.newArrayList();
 	protected HashMap<SimpleBowEffects, Object> effects = new HashMap<SimpleBowEffects, Object>();
 	protected ItemStack repairMaterial;
@@ -75,7 +74,7 @@ public class SimpleBow extends ItemBow implements IConfigureItemHelper<SimpleBow
 	 * Returns the ConfigEntry used by this tool.
 	 * @return ConfigEntry
 	 */
-	public ConfigEntry getConfigEntry() {
+	public ConfigBow getConfigEntry() {
 		return this.entry;
 	}
 	
@@ -84,7 +83,7 @@ public class SimpleBow extends ItemBow implements IConfigureItemHelper<SimpleBow
 	 * @param entry ConfigEntry
 	 * @return SimpleBow
 	 */
-	public SimpleBow setConfigEntry(ConfigEntry entry) {
+	public SimpleBow setConfigEntry(ConfigBow entry) {
 		this.entry = entry;
 		this.setAdditionalProperties();
 		return this;
@@ -342,9 +341,5 @@ public class SimpleBow extends ItemBow implements IConfigureItemHelper<SimpleBow
 	
     
 	public void setAdditionalProperties() {
-//		if(entry.getValueByName("CreativeTab") != null && entry.getValueByName("CreativeTab").isActive()) {
-//			if(ContentRegistry.doesTabExist(entry.getValueByName("CreativeTab").getCurrentValue()))
-//				this.setCreativeTab(ContentRegistry.getTab(entry.getValueByName("CreativeTab").getCurrentValue()));
-//		}
 	}
 }

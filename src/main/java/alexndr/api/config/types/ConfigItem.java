@@ -26,6 +26,7 @@ public class ConfigItem extends ConfigEntry
 	@Override
 	public void GetConfig(Configuration config) 
 	{
+		super.GetConfig(config);
 		render3D = config.getBoolean("render3D", subcategory, render3D, "render item in 3D");
 		beaconPayment = config.getBoolean("beaconPayment", subcategory, false, 
 										"whether or not the item can be used as payment for beacons");
