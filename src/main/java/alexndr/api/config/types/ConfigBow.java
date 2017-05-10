@@ -13,7 +13,7 @@ public class ConfigBow extends ConfigEntry
 	private float knockBackFactor = 2.5F;
 	private float zoomAmount = 0.0F;
 	
-	public ConfigBow(String name, String category) 
+	public ConfigBow(String name) 
 	{
 		super(name, ConfigHelper.CATEGORY_BOW, true);
 	}
