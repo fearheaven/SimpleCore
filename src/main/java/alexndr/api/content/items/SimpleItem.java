@@ -29,7 +29,8 @@ public class SimpleItem extends CompatItem implements IConfigureItemHelper<Simpl
 	 * @param plugin The plugin the item belongs to
 	 * @param category The category of the item
 	 */
-	public SimpleItem(Plugin plugin, ContentCategories.Item category) {
+	public SimpleItem(Plugin plugin, ContentCategories.Item category) 
+	{
 		this.plugin = plugin;
 		this.category = category;
 	}
