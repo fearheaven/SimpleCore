@@ -5,7 +5,7 @@ import net.minecraftforge.common.config.Configuration;
 
 public class ConfigBow extends ConfigEntry 
 {
-	private boolean hasDamageModifier = true;
+	private boolean hasDamageModifier = false;
 	private float damageModifier = 1.5F;
 	private boolean hasEfficiencyChance = false;
 	private int efficiencyChance = 0;
