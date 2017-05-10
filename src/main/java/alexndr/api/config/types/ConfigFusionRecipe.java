@@ -1,124 +1,91 @@
 package alexndr.api.config.types;
 
-import java.util.List;
-
-
-import com.google.common.collect.Lists;
+import alexndr.api.config.ConfigHelper;
+import net.minecraftforge.common.config.Configuration;
 
 public class ConfigFusionRecipe extends ConfigEntry 
 {
 	// private List<ConfigValue> valuesList = Lists.newArrayList();
 
 	// default values
-	private ConfigValue input1 = new ConfigValue("Input1").setDataType("@S")
-			.setCurrentValue("input1");
-	private ConfigValue input2 = new ConfigValue("Input2").setDataType("@S")
-			.setCurrentValue("input2");
-	private ConfigValue catalyst = new ConfigValue("Catalyst")
-			.setDataType("@S").setCurrentValue("catalyst");
-	private ConfigValue output = new ConfigValue("Output").setDataType("@S")
-			.setCurrentValue("output");
+	private String input1;
+	private String input2;
+	private String catalyst;
+	private String output;
+	protected Integer index;
 
-	public ConfigFusionRecipe(String name, String category) {
-		super(name, category);
-		this.valuesList.addAll(Lists.newArrayList(input1, input2, catalyst,
-				output));
-		super.setValuesList(valuesList);
+	public ConfigFusionRecipe(String name, String category, int number) 
+	{
+		super(name, ConfigHelper.CATEGORY_RECIPE, true);
+		this.index = new Integer(number);
+		 
+		// special subcategory:
+		subcategory = ConfigHelper.CATEGORY_RECIPE + Configuration.CATEGORY_SPLITTER 
+						+  "CustomRecipes" + Configuration.CATEGORY_SPLITTER 
+						+ "CustomRecipe#" + index.toString() 
+						+ Configuration.CATEGORY_SPLITTER + name;
 	}
 
 	@Override
-	public List<ConfigValue> getValuesList() {
-		return valuesList;
+	public void GetConfig(Configuration config) 
+	{
+		input1 = config.getString("input1", subcategory, input1, 
+								 "input1 (ore dict string or item name)");
+		input2 = config.getString("input2", subcategory, input2, 
+				 "input2 (ore dict string or item name)");
+		catalyst = config.getString("catalyst", subcategory, catalyst, 
+				 "catalyst (ore dict string or item name)");
+		output = config.getString("output", subcategory, output, 
+				 "output (ore dict string or item name)");
+	} // end GetConfig()
+
+	public String getInput1() {
+		return this.input1;
 	}
 
-	@Override
-	public void setValuesList(List<ConfigValue> valuesList) {
-		this.valuesList = valuesList;
-	}
-
-	@Override
-	public ConfigValue createNewValue(String valueName) {
-		ConfigValue value = new ConfigValue(valueName);
-		value.setActive();
-		valuesList.add(value);
-		return value;
-	}
-
-	@Override
-	public ConfigEntry createNewValue(String valueName, String dataType,
-			String currentValue, String defaultValue) {
-		ConfigValue value = new ConfigValue(valueName);
-		value.setActive();
-		value.setDataType(dataType);
-		value.setCurrentValue(currentValue);
-		value.setDefaultValue(defaultValue);
-		valuesList.add(value);
+	public ConfigFusionRecipe setInput1(String input1) 
+	{
+		this.input1 = input1;
 		return this;
 	}
 
-	@Override
-	public ConfigValue getValueByName(String valueName) {
-		for (ConfigValue value : this.valuesList) {
-			if (value.getName().equals(valueName))
-				return value;
-		}
-		return null;
-	}
-
-	public String getInput1() {
-		return this.getValueByName(input1.getName()).getCurrentValue();
-	}
-
-	public void setInput1(ConfigValue input1) 
-	{
-		this.input1.setActive().setDataType("@S")
-				.setCurrentValue(input1.getCurrentValue())
-				.setDefaultValue(input1.getDefaultValue());
-		this.getValueByName(input1.getName())
-				.setCurrentValue(input1.getCurrentValue())
-				.setDefaultValue(input1.getDefaultValue());
-	}
-
 	public String getInput2() {
-		return this.getValueByName(input2.getName()).getCurrentValue();
+		return this.input2;
 	}
 
-	public void setInput2(ConfigValue input2) 
+	public ConfigFusionRecipe setInput2(String input2) 
 	{
-		this.input2.setActive().setDataType("@S")
-				.setCurrentValue(input2.getCurrentValue())
-				.setDefaultValue(input2.getDefaultValue());
-		this.getValueByName(input2.getName())
-				.setCurrentValue(input2.getCurrentValue())
-				.setDefaultValue(input2.getDefaultValue());
+		this.input2 = input2;
+		return this;
 	}
 
 	public String getCatalyst() {
-		return this.getValueByName(catalyst.getName()).getCurrentValue();
+		return this.catalyst;
 	}
 
-	public void setCatalyst(ConfigValue catalyst) 
+	public ConfigFusionRecipe setCatalyst(String catalyst) 
 	{
-		this.catalyst.setActive().setDataType("@S")
-				.setCurrentValue(catalyst.getCurrentValue())
-				.setDefaultValue(catalyst.getDefaultValue());
-		this.getValueByName(catalyst.getName())
-				.setCurrentValue(catalyst.getCurrentValue())
-				.setDefaultValue(catalyst.getDefaultValue());
+		this.catalyst = catalyst;
+		return this;
 	}
 
 	public String getOutput() {
-		return this.getValueByName(output.getName()).getCurrentValue();
+		return this.output;
 	}
 
-	public void setOutput(ConfigValue output) 
+	public ConfigFusionRecipe setOutput(String output) 
 	{
-		this.output.setActive().setDataType("@S")
-				.setCurrentValue(output.getCurrentValue())
-				.setDefaultValue(output.getDefaultValue());
-		this.getValueByName(output.getName())
-				.setCurrentValue(output.getCurrentValue())
-				.setDefaultValue(output.getDefaultValue());
+		this.output = output;
+		return this;
 	}
+	
+	public ConfigFusionRecipe setAll(String input1, String input2, String catalyst, String output)
+	{
+		this.input1 = input1;
+		this.input2 = input2;
+		this.catalyst = catalyst;
+		this.output = output;
+		return this;
+	} 
 
 } // end class

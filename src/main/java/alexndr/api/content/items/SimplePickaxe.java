@@ -38,7 +38,8 @@ public class SimplePickaxe extends ItemPickaxe implements IConfigureItemHelper<S
 	 * @param plugin The plugin the tool belongs to
 	 * @param material The ToolMaterial of the tool
 	 */
-	public SimplePickaxe(Plugin plugin, ToolMaterial material) {
+	public SimplePickaxe(Plugin plugin, ToolMaterial material) 
+	{
 		super(material);
 		this.plugin = plugin;
 		this.material = material;

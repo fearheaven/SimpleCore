@@ -10,6 +10,7 @@ public class ConfigOre extends ConfigBlock
 	private int veinSize = 0;
 	private int minHeight = 1;
 	private int maxHeight = 255;
+	private boolean enableOreGen = true;
 	
 	public ConfigOre(String name) 
 	{
@@ -21,6 +22,8 @@ public class ConfigOre extends ConfigBlock
 	public void GetConfig(Configuration config) 
 	{
 		super.GetConfig(config);
+		enableOreGen = config.getBoolean("enableOreGen", subcategory, enableOreGen, 
+										 "Set false to disable generation of this ore");
 		spawnRate = config.getInt("spawnRate", subcategory, spawnRate, 0, 65280, 
 								  "number of generated blocks per chunk");
 		veinSize = config.getInt("veinSize", subcategory, veinSize, 0, 65280, 
@@ -102,6 +105,16 @@ public class ConfigOre extends ConfigBlock
 	public ConfigBlock setMaxHeight(int maxHeight) {
 		this.maxHeight = maxHeight;
 		return this;
+	}
+
+
+	public boolean isEnableOreGen() {
+		return enableOreGen;
+	}
+
+
+	public void setEnableOreGen(boolean enableOreGen) {
+		this.enableOreGen = enableOreGen;
 	}
 	
 
