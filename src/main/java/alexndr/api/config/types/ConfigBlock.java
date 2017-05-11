@@ -10,7 +10,7 @@ public class ConfigBlock extends ConfigEntry
 	//Primary Block Attributes
 	private float hardness = 0.0F;
 	private float resistance = 0.0F;
-	private int lightValue = 0;
+	private float lightValue = 0.0F;
 	private int harvestLevel = 0;
 	private String harvestTool;
 	
@@ -36,8 +36,8 @@ public class ConfigBlock extends ConfigEntry
 									"how many hits it takes to break a block");
 		resistance = config.getFloat("resistance", subcategory, resistance, 0.0F, 32000.0F, 
 								     "how much this block can resist explosions");
-		lightValue = config.getInt("lightValue", subcategory, lightValue, 0, 255, 
-									  "Amount of light emitted (15 is max torchlight)");
+		lightValue = config.getFloat("lightValue", subcategory, lightValue, 0.0F, 1.0F, 
+									  "Amount of light emitted (1.0F is max torchlight)");
 		harvestLevel = config.getInt("harvestLevel", subcategory, harvestLevel, 0, 8, 
 									 "level required to harvest this block (0=wood, 3=diamond)");
 		harvestTool = config.getString("harvestTool", subcategory, harvestTool, 
@@ -89,7 +89,7 @@ public class ConfigBlock extends ConfigEntry
 	 * Returns the light value of the block.
 	 * @return Light value
 	 */
-	public int getLightValue() {
+	public float getLightValue() {
 		return this.lightValue;
 	}
 	
@@ -98,7 +98,7 @@ public class ConfigBlock extends ConfigEntry
 	 * @param lightValue Light value
 	 * @return ConfigBlock
 	 */
-	public ConfigBlock setLightValue(int lightValue) {
+	public ConfigBlock setLightValue(float lightValue) {
 		this.lightValue = lightValue;
 		return this;
 	}

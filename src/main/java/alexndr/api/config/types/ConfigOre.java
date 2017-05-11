@@ -132,7 +132,7 @@ public class ConfigOre extends ConfigBlock
 
 
 	@Override
-	public ConfigOre setLightValue(int lightValue) {
+	public ConfigOre setLightValue(float lightValue) {
 		return (ConfigOre) super.setLightValue(lightValue);
 	}
 
