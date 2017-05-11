@@ -19,7 +19,6 @@ public class ConfigTool extends ConfigEntry
 	
 	//Additional tool attributes.
 	private boolean render3D = true;
-	private String repairMaterial;
 
 	/**
 	 * Creates a new ConfigTool. This is for tool material sets, eg. Copper Tools.
@@ -44,8 +43,6 @@ public class ConfigTool extends ConfigEntry
 										 "Damage versus entities");
 		enchantability = config.getInt("Enchantability", subcategory, enchantability, 1, 255,
 			    "higher = more enchantable");
-		repairMaterial = config.getString("RepairMaterial", subcategory, repairMaterial, 
-				  "Either ore-dictionary name or actual item name");
 		render3D = config.getBoolean("render3D", subcategory, render3D, "render tool in 3D");
 	}
 	
@@ -156,26 +153,5 @@ public class ConfigTool extends ConfigEntry
 		this.render3D = render3d;
 		return this;
 	}
-
-	/**
-	 * Returns the repair material of the tool(s). 
-	 * Could be full item name, or OreDictionary name.
-	 * @return Item repair material
-	 */
-	public String getRepairMaterial() {
-		return repairMaterial;
-	}
-
-	/**
-	 * Sets the repair material of the tool(s).
-	 * Can be full item name, or OreDictionary name.
-	 * @param repairMaterial Item repair material
-	 * @return ConfigTool
-	 */
-	public ConfigTool setRepairMaterial(String repairMaterial) {
-		this.repairMaterial = repairMaterial;
-		return this;
-	}
-
 
 } // end class

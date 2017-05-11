@@ -48,7 +48,7 @@ public class ConfigOre extends ConfigBlock
 	 * @param spawnRate Spawn rate
 	 * @return ConfigBlock
 	 */
-	public ConfigBlock setSpawnRate(int spawnRate) {
+	public ConfigOre setSpawnRate(int spawnRate) {
 		this.spawnRate = spawnRate;
 		return this;
 	}
@@ -66,7 +66,7 @@ public class ConfigOre extends ConfigBlock
 	 * @param veinSize Vein size
 	 * @return ConfigBlock
 	 */
-	public ConfigBlock setVeinSize(int veinSize) {
+	public ConfigOre setVeinSize(int veinSize) {
 		this.veinSize = veinSize;
 		return this;
 	}
@@ -84,7 +84,7 @@ public class ConfigOre extends ConfigBlock
 	 * @param minHeight Minimum spawn height
 	 * @return ConfigBlock
 	 */
-	public ConfigBlock setMinHeight(int minHeight) {
+	public ConfigOre setMinHeight(int minHeight) {
 		this.minHeight = minHeight;
 		return this;
 	}
@@ -102,7 +102,7 @@ public class ConfigOre extends ConfigBlock
 	 * @param maxHeight Maximum spawn height
 	 * @return ConfigBlock
 	 */
-	public ConfigBlock setMaxHeight(int maxHeight) {
+	public ConfigOre setMaxHeight(int maxHeight) {
 		this.maxHeight = maxHeight;
 		return this;
 	}
@@ -113,9 +113,51 @@ public class ConfigOre extends ConfigBlock
 	}
 
 
-	public void setEnableOreGen(boolean enableOreGen) {
+	public ConfigOre setEnableOreGen(boolean enableOreGen) {
 		this.enableOreGen = enableOreGen;
+		return this;
 	}
-	
+
+
+	@Override
+	public ConfigOre setHardness(float hardness) {
+		return (ConfigOre) super.setHardness(hardness);
+	}
+
+
+	@Override
+	public ConfigOre setResistance(float resistance) {
+		return (ConfigOre) super.setResistance(resistance);
+	}
+
+
+	@Override
+	public ConfigOre setLightValue(int lightValue) {
+		return (ConfigOre) super.setLightValue(lightValue);
+	}
+
+
+	@Override
+	public ConfigOre setHarvestLevel(int harvestLevel) {
+		return (ConfigOre) super.setHarvestLevel(harvestLevel);
+	}
+
+
+	@Override
+	public ConfigOre setHarvestTool(String harvestTool) {
+		return (ConfigOre) super.setHarvestTool(harvestTool);
+	}
+
+
+	@Override
+	public ConfigOre setUnbreakable(boolean unbreakable) {
+		return (ConfigOre) super.setUnbreakable(unbreakable);
+	}
+
+
+	@Override
+	public ConfigOre setBeaconBase(boolean beaconBase) {
+		return (ConfigOre) super.setBeaconBase(beaconBase);
+	}
 
 } // end class
