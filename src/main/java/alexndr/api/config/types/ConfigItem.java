@@ -11,7 +11,6 @@ public class ConfigItem extends ConfigEntry
 	//Additional item attributes.
 	private boolean render3D = true;
 	private float smeltingXP = 0.0F;
-	private boolean beaconPayment = false;
 	
 	/**
 	 * Creates a new ConfigItem. This is for items, eg. Adamantium Ingot.
@@ -28,8 +27,6 @@ public class ConfigItem extends ConfigEntry
 	{
 		super.GetConfig(config);
 		render3D = config.getBoolean("render3D", subcategory, render3D, "render item in 3D");
-		beaconPayment = config.getBoolean("beaconPayment", subcategory, false, 
-										"whether or not the item can be used as payment for beacons");
 		smeltingXP = config.getFloat("smeltingXP", subcategory, smeltingXP, 0.0F, 1000.0F, 
 									 "amount of XP given when this item is taken from a furnace");
 	} // end GetConfig()
@@ -71,23 +68,4 @@ public class ConfigItem extends ConfigEntry
 		this.smeltingXP = smeltingXP;
 		return this;
 	}
-
-	/**
-	 * Returns whether or not the item can be used as payment for beacons.
-	 * @return Beacon payment boolean
-	 */
-	public boolean getBeaconPayment() {
-		return beaconPayment;
-	}
-
-	/**
-	 * Sets whether or not the item can be used as payment for beacons.
-	 * @param beaconPayment Beacon payment boolean
-	 * @return ConfigItem
-	 */
-	public ConfigItem setBeaconPayment(boolean beaconPayment) {
-		this.beaconPayment = beaconPayment;
-		return this;
-	}
-
 } // end class
