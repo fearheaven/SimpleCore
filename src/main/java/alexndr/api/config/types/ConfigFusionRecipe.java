@@ -8,10 +8,10 @@ public class ConfigFusionRecipe extends ConfigEntry
 	// private List<ConfigValue> valuesList = Lists.newArrayList();
 
 	// default values
-	private String input1;
-	private String input2;
-	private String catalyst;
-	private String output;
+	private String input1 = new String();
+	private String input2 = new String();
+	private String catalyst = new String();
+	private String output = new String();
 	protected Integer index;
 
 	public ConfigFusionRecipe(String name, String category, int number) 

@@ -16,9 +16,6 @@ public class ConfigArmor extends ConfigEntry
 	protected int legsReduction;
 	protected int bootsReduction;
 	
-	//Additional armor attributes.
-	protected String repairMaterial;
-	
 	/**
 	 * Creates a ConfigArmor. This is for armor material sets, eg. Mythril Armor.
 	 * @param name Name of the ConfigArmor
@@ -34,8 +31,6 @@ public class ConfigArmor extends ConfigEntry
 	public void GetConfig(Configuration config) 
 	{
 		super.GetConfig(config);
-		repairMaterial = config.getString("RepairMaterial", subcategory, repairMaterial, 
-										  "Either ore-dictionary name or actual item name");
 		durability = config.getInt("Durability", subcategory, durability, 1, 32000, 
 								   "How many hits it can take");
 		enchantability = config.getInt("Enchantability", subcategory, enchantability, 1, 255,
@@ -161,26 +156,6 @@ public class ConfigArmor extends ConfigEntry
 	 */
 	public ConfigArmor setBootsReduction(int bootsReduction) {
 		this.bootsReduction = bootsReduction;
-		return this;
-	}
-	
-	/**
-	 * Returns the repair material of the armor.
-	 * Can be full item name, or OreDictionary name.
-	 * @return Armor repair material
-	 */
-	public String getRepairMaterial() {
-		return repairMaterial;
-	}
-	
-	/**
-	 * Sets the repair material of the armor.
-	 * Can be full item name, or OreDictionary name.
-	 * @param repairMaterial Armor repair material
-	 * @return ConfigArmor
-	 */
-	public ConfigArmor setRepairMaterial(String repairMaterial) {
-		this.repairMaterial = repairMaterial;
 		return this;
 	}
 } // end class
