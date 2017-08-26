@@ -22,7 +22,7 @@ import alexndr.api.registry.Plugin;
  */
 @Mod(modid = APIInfo.ID, name = APIInfo.NAME, version = APIInfo.VERSION,
 	dependencies=APIInfo.DEPENDENCIES, acceptedMinecraftVersions=APIInfo.ACCEPTED_VERSIONS,
-	updateJSON="https://raw.githubusercontent.com/Sinhika/SimpleCoreAPI/1.9.4/update.json")
+	updateJSON=APIInfo.VERSIONURL)
 public class SimpleCoreAPI 
 {
 	@SidedProxy(clientSide = "alexndr.api.core.ProxyClient", 
