@@ -10,7 +10,7 @@ public class ConfigBow extends ConfigEntry
 	private boolean hasEfficiencyChance = false;
 	private int efficiencyChance = 0;
 	private boolean hasKnockback = false;
-	private float knockBackFactor = 2.5F;
+	private int knockBackFactor = 2;
 	private float zoomAmount = 0.0F;
 	
 	public ConfigBow(String name) 
@@ -31,17 +31,17 @@ public class ConfigBow extends ConfigEntry
 											 0, 100, "% chance arrow will not be consumed");
 		}
 		if (hasKnockback) {
-			knockBackFactor = config.getFloat("KnockBackFactor", subcategory, knockBackFactor, 
-											   0.0F, 255.0F, "knockback multiplier");
+			knockBackFactor = config.getInt("KnockBackFactor", subcategory, knockBackFactor, 
+											   0, 255, "knockback multiplier");
 		}
 		zoomAmount = config.getFloat("ZoomAmount", subcategory, zoomAmount, 0.0F, 1.0F, "");
 	} // end GetConfig()
 
-	public float getKnockBackFactor() {
+	public int getKnockBackFactor() {
 		return knockBackFactor;
 	}
 
-	public ConfigBow setKnockBackFactor(float knockBackFactor) {
+	public ConfigBow setKnockBackFactor(int knockBackFactor) {
 		this.knockBackFactor = knockBackFactor;
 		return this;
 	}

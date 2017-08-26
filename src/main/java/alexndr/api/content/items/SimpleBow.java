@@ -150,7 +150,7 @@ public class SimpleBow extends ItemBow
 	 * Sets an effect on the bow. In this case, sets effects that require a modifier that can be an integer.
 	 * For all effects, see SimpleBowEffects, where effects are detailed and their required modifiers shown.
 	 * @param effect The effect to be put on the bow.
-	 * @param modifier The float modifier of the effect. Check SimpleBowEffects.
+	 * @param modifier The int modifier of the effect. Check SimpleBowEffects.
 	 * @return SimpleBow
 	 */
 	public SimpleBow setEffect(SimpleBowEffects effect, int modifier)
