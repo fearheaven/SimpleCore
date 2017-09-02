@@ -20,6 +20,7 @@ public class ConfigHelper
 	public static final String CATEGORY_ORE = "Ores";
 	public static final String CATEGORY_TOOL = "Tools";
 	public static final String CATEGORY_RECIPE = "Recipes";
+	public static final String CATEGORY_MACHINE = "Machines";
 	
     /**
      * Get configuration instance.

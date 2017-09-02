@@ -9,8 +9,8 @@
     "1.9.4-recommended" : "1.3.8.2",
     "1.10.2-latest" : "1.10.2-1.4.5.1",
     "1.10.2-recommended" : "1.10.2-1.4.5.1",
-    "1.11.2-latest" : "1.11.2-1.5.0.5",
-    "1.11.2-recommended" : "1.11.2-1.5.0.5"
+    "1.11.2-latest" : "1.11.2-1.5.2.1",
+    "1.11.2-recommended" : "1.11.2-1.5.2.1"
   },
   "1.7.10": {
   	"1.7.10-1.1.1.3" : "Updated update checker. Final 1.7.10 version"
@@ -29,6 +29,7 @@
   	"1.3.1.7" : "Initial port to 1.9.4"
   },
   "1.10.2": {
+  	"1.4.5.1" : "compat version in which everything works",
     "1.4.2.12" : "compat version; fixed buckets again. Fixed nether furnaces crashing.",
   	"1.3.15.1" : "Fixed basic automation of SimpleFurnace classes",
   	"1.3.14.0" : "Fixed crash when non-armor item in armor slot and getArmorSet() check done",
@@ -38,12 +39,12 @@
   	"1.3.7.0" : "Fixed duplicate Simple Machines tab & crash issue",
   	"1.3.6.40" : "Fixed NPE with SimpleBucketFluidHandler",
   	"1.3.5.38" : "Fixed ClientEventHandler NPE",
-  	"1.3.5.37" : "first release for 1.10.2; added support for Netherrocks features",
-  	"1.4.5.1" : "compat version in which everything works"
+  	"1.3.5.37" : "first release for 1.10.2; added support for Netherrocks features"
   },
   "1.11.2": {
+  	"1.5.2.1" : "fixed bow crash",
   	"1.5.0.5" : "converted back to standard JSON-like config files",
-  	"1.4.2.7" : "compat version; buckets work, nether furnaces work",
-  	"1.4.5.1" : "actual compat version; everything works"
+  	"1.4.5.1" : "actual compat version; everything works",
+  	"1.4.2.7" : "compat version; buckets work, nether furnaces work"
   }
 }

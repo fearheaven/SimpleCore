@@ -24,6 +24,8 @@ import net.minecraft.item.ItemArrow;
 import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.stats.StatList;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.text.TextFormatting;
@@ -34,6 +36,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 /**
  * @author AleXndrTheGr8st
  */
+@SuppressWarnings("deprecation")
 public class SimpleBow extends ItemBow
 {
 	protected Plugin plugin;
@@ -104,7 +107,6 @@ public class SimpleBow extends ItemBow
 	 * @param toolTip Name of the localisation entry for the tooltip, as a String. Normal format is modId.theitem.info
 	 * @return SimpleBow
 	 */
-	@SuppressWarnings("deprecation")
 	public SimpleBow addToolTip(String toolTip, TextFormatting color) {
 		TooltipHelper.addTooltipToItem(this, color + I18n.translateToLocal(toolTip));
 		return this;
@@ -185,6 +187,36 @@ public class SimpleBow extends ItemBow
 	}
 	
 	/**
+	 * What happens when player uses this item to right-click?  overrides ItemBow because the Forge
+	 * implementation is bugged.
+	 */
+	@Override
+	public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, 
+													EnumHand handIn) 
+	{
+        ItemStack itemstack = playerIn.getHeldItem(handIn);
+        boolean hasAmmo = !this.findAmmo(playerIn).isEmpty()
+        		|| EnchantmentHelper.getEnchantmentLevel(Enchantments.INFINITY, itemstack) > 0
+				|| (this.effects.containsKey(SimpleBowEffects.infiniteArrows));
+
+        ActionResult<ItemStack> ret = 
+        		net.minecraftforge.event.ForgeEventFactory.onArrowNock(itemstack, worldIn, playerIn, 
+        															   handIn, hasAmmo);
+        if (ret != null) return ret;
+
+        if (!playerIn.capabilities.isCreativeMode)
+        {
+            return hasAmmo ? new ActionResult<ItemStack>(EnumActionResult.PASS, itemstack) : 
+            			  new ActionResult<ItemStack>(EnumActionResult.FAIL, itemstack);
+        }
+        else
+        {
+            playerIn.setActiveHand(handIn);
+            return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, itemstack);
+        }
+	} // end onItemRightClick()
+
+	/**
      * Called when the player stops using an Item (stops holding the right mouse 
      * button). This override will have to be re-written everytime the base
      * ItemBow.onPlayerStoppedUsing() gets re-written.
@@ -202,11 +234,12 @@ public class SimpleBow extends ItemBow
             ItemStack itemstack = this.findAmmo(entityplayer);
 
             int i = this.getMaxItemUseDuration(stack) - timeLeft;
-			i = net.minecraftforge.event.ForgeEventFactory.onArrowLoose(stack, worldIn, (EntityPlayer) entityLiving, i,
-					ItemStackTools.isValid(itemstack) || flag);
+			i = net.minecraftforge.event.ForgeEventFactory.onArrowLoose(stack, worldIn, 
+											entityplayer, i, !itemstack.isEmpty() || flag);
+			
             if (i < 0) return;
 
-            if (ItemStackTools.isValid(itemstack) || flag)
+            if (!itemstack.isEmpty() || flag)
             {
                 if (ItemStackTools.isEmpty(itemstack))
                 {
@@ -324,7 +357,7 @@ public class SimpleBow extends ItemBow
                 }
             }
 
-            return null;
+            return ItemStack.EMPTY;
         }
     } // end ()
 
