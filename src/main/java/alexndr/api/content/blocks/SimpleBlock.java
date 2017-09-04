@@ -34,7 +34,7 @@ public class SimpleBlock extends Block implements IConfigureBlockHelper<SimpleBl
 	
 	//Additional Block Attributes
 	protected boolean dropItem = false;
-	protected String itemToDrop;
+	protected Item itemToDrop;
 	protected int quantityToDrop = 1;
 	protected boolean fireSource = false;
 	protected boolean isLeaves = false;
@@ -130,7 +130,7 @@ public class SimpleBlock extends Block implements IConfigureBlockHelper<SimpleBl
 	 * @return Item to drop
 	 */
 	public Item getItemToDrop() {
-		return (Item) Item.getByNameOrId(this.itemToDrop);
+		return this.itemToDrop;
 	}
 
 	/**
@@ -149,7 +149,7 @@ public class SimpleBlock extends Block implements IConfigureBlockHelper<SimpleBl
 	 * @return ConfigBlock
 	 */
 	public SimpleBlock setItemToDrop(Item itemToDrop) {
-		this.itemToDrop = itemToDrop.getUnlocalizedName();
+		this.itemToDrop = itemToDrop;
 		return this;
 	}
 	
@@ -157,11 +157,11 @@ public class SimpleBlock extends Block implements IConfigureBlockHelper<SimpleBl
 	 * Sets the item to drop when this block is broken.
 	 * This method uses the String name of the item.
 	 * Should be of the form modId:itemName, eg. simpleores:onyx_gem.
-	 * @param itemToDrop String name of the item
+	 * @param itemToDropName String name of the item
 	 * @return ConfigBlock
 	 */
-	public SimpleBlock setItemToDrop(String itemToDrop) {
-		this.itemToDrop = itemToDrop;
+	public SimpleBlock setItemToDrop(String itemToDropName) {
+		this.itemToDrop = Item.getByNameOrId(itemToDropName);
 		return this;
 	}
 
