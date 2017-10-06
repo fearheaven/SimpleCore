@@ -58,7 +58,7 @@ public class TooltipHelper {
 	
 	public static void notifyTooltip(ItemTooltipEvent event) {
 		int num = 0;
-		if(event.isShowAdvancedItemTooltips())
+		if(event.getFlags().isAdvanced())
 			num = 1;
 		
 		for(ToolTip tooltip : tooltipList) {

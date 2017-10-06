@@ -1,7 +1,7 @@
 package alexndr.api.helpers.game;
 
-import mcjty.lib.tools.ItemStackList;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 
 /**
  * Version-specific helper functions for Furnace code. Necessary because method signatures get 
@@ -11,7 +11,7 @@ import net.minecraft.item.ItemStack;
  */
 public class FurnaceHelper
 {
-    public static ItemStack SetInSlot(ItemStackList list, int index, ItemStack stack)
+    public static ItemStack SetInSlot(NonNullList<ItemStack> list, int index, ItemStack stack)
     {
         return list.set(index, stack);
     }

@@ -6,12 +6,12 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
-import net.minecraft.stats.Achievement;
 
 /**
  * @author AleXndrTheGr8st
  */
-public class StatTriggersHelper {
+public class StatTriggersHelper 
+{
 	private static HashMap<Item, Achievement> craftingAchievs = new HashMap<Item, Achievement>();
 	private static HashMap<Item, Achievement> smeltingAchievs = new HashMap<Item, Achievement>();
 	private static HashMap<Item, Achievement> pickupAchievs = new HashMap<Item, Achievement>();
