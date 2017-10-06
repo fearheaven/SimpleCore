@@ -5,6 +5,15 @@ import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.List;
 
+import com.google.common.collect.Lists;
+
+import alexndr.api.config.IConfigureItemHelper;
+import alexndr.api.config.types.ConfigTool;
+import alexndr.api.core.SimpleCoreAPI;
+import alexndr.api.helpers.game.TooltipHelper;
+import alexndr.api.registry.ContentCategories;
+import alexndr.api.registry.ContentRegistry;
+import alexndr.api.registry.Plugin;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemStack;
@@ -14,15 +23,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.registry.GameRegistry;
-import alexndr.api.config.IConfigureItemHelper;
-import alexndr.api.config.types.ConfigTool;
-import alexndr.api.helpers.game.TooltipHelper;
-import alexndr.api.registry.ContentCategories;
-import alexndr.api.registry.ContentRegistry;
-import alexndr.api.registry.Plugin;
-
-import com.google.common.collect.Lists;
 
 /**
  * @author AleXndrTheGr8st
@@ -35,6 +35,7 @@ public class SimpleAxe extends ItemAxe implements IConfigureItemHelper<SimpleAxe
 	private ConfigTool entry;
 	@SuppressWarnings("unused")
 	private List<String> toolTipStrings = Lists.newArrayList();
+	protected String name;
 
 	/**
 	 * Creates a simple axe, such as the Mythril Axe.
@@ -100,13 +101,18 @@ public class SimpleAxe extends ItemAxe implements IConfigureItemHelper<SimpleAxe
 	public SimpleAxe setUnlocalizedName(String axeName) 
 	{
 		super.setUnlocalizedName(axeName);
+		this.name = axeName;
         setRegistryName(this.plugin.getModId(), axeName);
-        GameRegistry.register(this);
+//        GameRegistry.register(this);
 		ContentRegistry.registerItem(this.plugin, this, axeName, this.category);
 		this.setHarvestLevel("axe", entry.getHarvestLevel());
 		return this;
 	}
 	
+	public void registerItemModel() {
+		SimpleCoreAPI.proxy.registerItemRenderer(plugin, this, 0, name);
+	}
+
 	/**
 	 * Returns the ConfigTool used by this tool.
 	 * @return ConfigTool

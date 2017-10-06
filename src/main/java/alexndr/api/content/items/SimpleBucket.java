@@ -9,12 +9,11 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.Lists;
 
+import alexndr.api.core.SimpleCoreAPI;
 import alexndr.api.helpers.game.TooltipHelper;
 import alexndr.api.registry.ContentCategories;
 import alexndr.api.registry.ContentRegistry;
 import alexndr.api.registry.Plugin;
-import mcjty.lib.compat.CompatItem;
-import mcjty.lib.tools.ItemStackTools;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.material.Material;
@@ -47,15 +46,15 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 /**
  * @author Sinhika
  *
  */
-public class SimpleBucket extends CompatItem 
+public class SimpleBucket extends Item 
 {
+	protected String name;
 	protected Plugin plugin;
 	protected ContentCategories.Item category = ContentCategories.Item.OTHER;
 	// protected ConfigItem entry; // not configurable
@@ -92,12 +91,17 @@ public class SimpleBucket extends CompatItem
 	public SimpleBucket setUnlocalizedName(String itemName) 
 	{
 		super.setUnlocalizedName(itemName);
+		this.name = itemName;
         setRegistryName(this.plugin.getModId(), itemName);
-        GameRegistry.register(this);
+//        GameRegistry.register(this);
 		ContentRegistry.registerItem(this.plugin, this, itemName, this.category);
 		return this;
 	}
 	
+	public void registerItemModel() {
+		SimpleCoreAPI.proxy.registerItemRenderer(plugin, this, 0, name);
+	}
+
 	/**
 	 * Adds a tooltip to the bucket. Must be unlocalised, so needs to be present in a localization file.
 	 * @param toolTip Name of the localisation entry for the tooltip, as a String. Normal format is modId.theitem.info
@@ -137,7 +141,7 @@ public class SimpleBucket extends CompatItem
 
         // not for us to handle, because this isn't an empty bucket.
         ItemStack emptyBucket = event.getEmptyBucket();
-        if (ItemStackTools.isEmpty(emptyBucket) ||
+        if (emptyBucket.isEmpty() ||
             !emptyBucket.isItemEqual(getEmpty()))
         {
             return;
@@ -154,13 +158,13 @@ public class SimpleBucket extends CompatItem
         BlockPos pos = target.getBlockPos();
 
         ItemStack singleBucket = emptyBucket.copy();
-        ItemStackTools.setStackSize(singleBucket, 1);
+        singleBucket.setCount(1);
         // note difference here from 1.10.2 version...
         FluidActionResult fRes = FluidUtil.tryPickUpFluid(singleBucket, event.getEntityPlayer(), 
         												  world, pos, target.sideHit);
         ItemStack filledBucket = fRes.getResult();
         // end difference
-        if (ItemStackTools.isValid(filledBucket))
+        if (!filledBucket.isEmpty())
         {
             event.setResult(Event.Result.ALLOW);
             event.setFilledBucket(filledBucket);
@@ -180,7 +184,7 @@ public class SimpleBucket extends CompatItem
 						2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
         		// see if this works...
                 event.setResult(Event.Result.ALLOW);
-                event.setFilledBucket(ItemStackTools.getEmptyStack());
+                event.setFilledBucket(ItemStack.EMPTY);
         	}
         	else {
                 // cancel event, otherwise the vanilla minecraft ItemBucket would
@@ -197,7 +201,7 @@ public class SimpleBucket extends CompatItem
     } // end onFillBucket()
 
     @Override
-    protected ActionResult<ItemStack> clOnItemRightClick(World world, EntityPlayer player, EnumHand hand)
+    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand)
     {
     	ItemStack itemstack = player.getHeldItem(hand);
         FluidStack fluidStack = getFluid(itemstack);
@@ -265,7 +269,7 @@ public class SimpleBucket extends CompatItem
                     	player.playSound(SoundEvents.BLOCK_LAVA_EXTINGUISH, 0.5F,
                     			2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
                     	// destroy it
-                    	ItemStackTools.incStackSize(itemstack, -1);
+                    	itemstack.shrink(1);
                         return ActionResult.newResult(EnumActionResult.FAIL, itemstack);
                     }
                     // no, we didn't. But do we do lava?
@@ -309,12 +313,12 @@ public class SimpleBucket extends CompatItem
             		return ActionResult.newResult(EnumActionResult.SUCCESS, itemstack);
                 }
                 else {
-                	ItemStackTools.incStackSize(itemstack, -1);
+                	itemstack.shrink(1);
                 	ItemStack emptyStack = getEmpty() != null 
                 			? getEmpty().copy() : new ItemStack(this);
 
                 	// check whether we replace the item or add the empty one to the inventory
-                	if (ItemStackTools.isEmpty(itemstack))
+                	if (itemstack.isEmpty())
                 	{
                 		return ActionResult.newResult(EnumActionResult.SUCCESS, emptyStack);
                 	}
@@ -418,7 +422,8 @@ public class SimpleBucket extends CompatItem
         {
             return emptyBuckets;
         }
-        else if (ItemStackTools.isEmpty(ItemStackTools.incStackSize(emptyBuckets, -1)))
+        emptyBuckets.shrink(1);
+        if ( emptyBuckets.isEmpty())
         {
             return new ItemStack(fullBucket);
         }

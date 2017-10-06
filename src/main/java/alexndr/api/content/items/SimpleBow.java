@@ -7,12 +7,11 @@ import java.util.Random;
 import com.google.common.collect.Lists;
 
 import alexndr.api.config.types.ConfigBow;
+import alexndr.api.core.SimpleCoreAPI;
 import alexndr.api.helpers.game.TooltipHelper;
 import alexndr.api.registry.ContentCategories;
 import alexndr.api.registry.ContentRegistry;
 import alexndr.api.registry.Plugin;
-import mcjty.lib.tools.ItemStackTools;
-import mcjty.lib.tools.WorldTools;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -31,7 +30,6 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 
 /**
  * @author AleXndrTheGr8st
@@ -39,6 +37,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 @SuppressWarnings("deprecation")
 public class SimpleBow extends ItemBow
 {
+	protected String name;
 	protected Plugin plugin;
 	protected ContentCategories.Item category = ContentCategories.Item.WEAPON;
 	protected ConfigBow entry;
@@ -63,16 +62,22 @@ public class SimpleBow extends ItemBow
 	public SimpleBow setUnlocalizedName(String bowName) 
 	{
 		super.setUnlocalizedName(bowName);
+		this.name = bowName;
 		
         setRegistryName(this.plugin.getModId(), bowName);
-        GameRegistry.register(this);
 		ContentRegistry.registerItem(this.plugin, this, bowName, this.category);
 		ContentRegistry.registerItem(this.plugin, this, bowName + "_pulling_0", this.category);
 		ContentRegistry.registerItem(this.plugin, this, bowName + "_pulling_1", this.category);
 		ContentRegistry.registerItem(this.plugin, this, bowName + "_pulling_2", this.category);
 		return this;
 	}
-	
+
+	public void registerItemModel() {
+		SimpleCoreAPI.proxy.registerItemRenderer(plugin, this, 0, name);
+        // TODO - do the extra bow animations need to be registered?
+	}
+
+
 	/**
 	 * Returns the ConfigEntry used by this tool.
 	 * @return ConfigEntry
@@ -241,7 +246,7 @@ public class SimpleBow extends ItemBow
 
             if (!itemstack.isEmpty() || flag)
             {
-                if (ItemStackTools.isEmpty(itemstack))
+                if (itemstack.isEmpty())
                 {
                     itemstack = new ItemStack(Items.ARROW);
                 }
@@ -307,7 +312,7 @@ public class SimpleBow extends ItemBow
                             entityarrow.pickupStatus = EntityArrow.PickupStatus.CREATIVE_ONLY;
                         }
 
-                        WorldTools.spawnEntity(worldIn, entityarrow);
+                        worldIn.spawnEntity(entityarrow);
                     }
 
                     worldIn.playSound((EntityPlayer)null, entityplayer.posX, 
@@ -317,8 +322,8 @@ public class SimpleBow extends ItemBow
 
                     if (!flag1 && !efficient)
                     {
-                    	ItemStackTools.incStackSize(itemstack, -1);
-                        if (ItemStackTools.isEmpty(itemstack))
+                    	itemstack.shrink(1);
+                        if (itemstack.isEmpty())
                         {
                             entityplayer.inventory.deleteStack(itemstack);
                         }

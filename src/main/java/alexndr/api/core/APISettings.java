@@ -14,9 +14,8 @@ public class APISettings
 	
 	public static void createOrLoadSettings(FMLPreInitializationEvent event) 
 	{
+		LogHelper.verbose(APIInfo.ID, "Loading API Settings...");
 		settings = ConfigHelper.GetConfig(event, "AleXndr", APIInfo.ID + ".cfg");
-		
-		LogHelper.verbose("Loading API Settings...");
 		try {
 			settings.load();
 			ConfigHelper.createHelpEntry(settings, APIInfo.URL);
@@ -29,7 +28,7 @@ public class APISettings
 												true, "Use separate creative tabs for each category"); 
 		}
 		catch(Exception e) {
-			LogHelper.info("Failed to load API settings");
+			LogHelper.warning(APIInfo.ID, "Failed to load API settings");
 			e.printStackTrace();
 		}
         finally {

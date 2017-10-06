@@ -2,14 +2,11 @@ package alexndr.api.content.blocks;
 
 import java.util.Random;
 
-import alexndr.api.config.IConfigureBlockHelper;
 import alexndr.api.config.types.ConfigBlock;
 import alexndr.api.content.tiles.TileEntitySimpleFurnace;
 import alexndr.api.helpers.game.TooltipHelper;
 import alexndr.api.registry.ContentCategories;
-import alexndr.api.registry.ContentRegistry;
 import alexndr.api.registry.Plugin;
-import mcjty.lib.compat.CompatBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
@@ -23,7 +20,6 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
@@ -34,7 +30,6 @@ import net.minecraft.util.Rotation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -44,8 +39,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * why.
  *
  */
-public abstract class SimpleFurnace extends CompatBlock 
-    implements ITileEntityProvider, IConfigureBlockHelper<SimpleFurnace>
+public abstract class SimpleFurnace extends SimpleBlock implements ITileEntityProvider
 {
 	public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
 	
@@ -54,10 +48,6 @@ public abstract class SimpleFurnace extends CompatBlock
      */
 	protected Random furnaceRand = new Random();
 	
-	protected Plugin plugin;
-	protected Material material;
-	protected ContentCategories.Block category;
-	protected ConfigBlock entry;
 	protected boolean isBurning;
 	
 	// override for custom furnace classes
@@ -80,47 +70,27 @@ public abstract class SimpleFurnace extends CompatBlock
 	protected SimpleFurnace(Plugin plugin, Material material, ContentCategories.Block category,
 							boolean isBurning) 
 	{
-		super(material);
-		this.plugin = plugin;
-		this.material = material;
-		this.category = category;
+		super(plugin, material, category);
 		this.isBurning = isBurning;
 	    this.isBlockContainer = true;
         this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
 	} // end ctor()
-	
-	@Override
-	public SimpleFurnace setUnlocalizedName(String blockName) 
-	{
-		super.setUnlocalizedName(blockName);
-        setRegistryName(this.plugin.getModId(), blockName);
-        GameRegistry.register(this);
-        GameRegistry.register(new ItemBlock(this).setRegistryName(this.getRegistryName()));
-		ContentRegistry.registerBlock(this.plugin, this, blockName, this.category);
-		return this;
-	}
-	
-	/**
-	 * Returns the ConfigBlock used by this block.
-	 * @return ConfigBlock
-	 */
-	public ConfigBlock getConfigEntry() {
-		return this.entry;
-	}
 	
 	/**
 	 * Sets the ConfigBlock to be used for this block.
 	 * @param entry ConfigBlock
 	 * @return SimpleFurnace
 	 */
+	@Override
 	public SimpleFurnace setConfigEntry(ConfigBlock entry) 
 	{
-		this.entry = entry;
-		this.setHardness(entry.getHardness());
-		this.setResistance(entry.getResistance());
-		if(this.isBurning) this.setLightLevel(entry.getLightValue());
-		this.setHarvestLevel(entry.getHarvestTool(), entry.getHarvestLevel());
-		// this.setCreativeTab(entry.getCreativeTab());
+		super.setConfigEntry(entry);
+		if(this.isBurning) {
+			this.setLightLevel(entry.getLightValue());
+		}
+		else {
+			this.setLightLevel(0.0F);
+		}
 		this.setAdditionalProperties();
 		return this;
 	}
@@ -280,7 +250,8 @@ public abstract class SimpleFurnace extends CompatBlock
      * IBlockstate. Cut & pasted from BlockFurnace.
      */
     @Override
-     public IBlockState clGetStateForPlacement(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer)
+     public IBlockState getStateForPlacement(World worldIn, BlockPos pos, EnumFacing facing,
+    		 				float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer)
     {
         return this.getDefaultState().withProperty(FACING, placer.getHorizontalFacing().getOpposite());
     }

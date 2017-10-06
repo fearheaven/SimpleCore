@@ -2,21 +2,23 @@ package alexndr.api.content.blocks;
 
 import alexndr.api.config.IConfigureBlockHelper;
 import alexndr.api.config.types.ConfigBlock;
+import alexndr.api.core.SimpleCoreAPI;
 import alexndr.api.helpers.game.TooltipHelper;
 import alexndr.api.registry.ContentCategories;
 import alexndr.api.registry.ContentRegistry;
 import alexndr.api.registry.Plugin;
 import net.minecraft.block.BlockPane;
 import net.minecraft.block.material.Material;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public class SimpleBars extends BlockPane implements IConfigureBlockHelper<SimpleBars>
 {
     protected Plugin plugin;
     protected ContentCategories.Block category;
     protected ConfigBlock entry;
-
+    protected String name;
+    
     /**
      * Creates a simple bars (pane) block.
      * @param plugin The plugin the bars belong to
@@ -33,13 +35,21 @@ public class SimpleBars extends BlockPane implements IConfigureBlockHelper<Simpl
    public SimpleBars setUnlocalizedName(String blockName) 
    {
        super.setUnlocalizedName(blockName);
+       this.name = blockName;
        setRegistryName(this.plugin.getModId(), blockName);
-       GameRegistry.register(this);
-       GameRegistry.register(new ItemBlock(this).setRegistryName(this.getRegistryName()));
+//       GameRegistry.register(this);
+//       GameRegistry.register(new ItemBlock(this).setRegistryName(this.getRegistryName()));
        ContentRegistry.registerBlock(this.plugin, this, blockName, this.category);
        return this;
    }
 
+	public void registerItemModel(Item itemBlock) {
+		SimpleCoreAPI.proxy.registerItemRenderer(plugin, itemBlock, 0, name);
+	}
+	
+	public Item createItemBlock() {
+		return new ItemBlock(this).setRegistryName(this.getRegistryName());
+	}
 
     @Override
     public ConfigBlock getConfigEntry()

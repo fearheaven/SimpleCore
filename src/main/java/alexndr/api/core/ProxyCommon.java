@@ -1,6 +1,7 @@
 package alexndr.api.core;
 
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -9,6 +10,7 @@ import alexndr.api.helpers.game.OreGenerator;
 import alexndr.api.logger.LogHelper;
 import alexndr.api.registry.ContentCategories;
 import alexndr.api.registry.ContentRegistry;
+import alexndr.api.registry.Plugin;
 
 
 /**
@@ -40,6 +42,10 @@ public class ProxyCommon
     { 
     } // end postInit()    
 
+    
+    public void registerItemRenderer(Plugin plugin, Item item, int meta, String id) {
+    }
+    
 	/**
 	 * Adds the vanilla Minecraft tabs to the ContentRegistry.
 	 */

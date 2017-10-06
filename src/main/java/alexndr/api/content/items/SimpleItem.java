@@ -6,18 +6,19 @@ import com.google.common.collect.Lists;
 
 import alexndr.api.config.IConfigureItemHelper;
 import alexndr.api.config.types.ConfigItem;
+import alexndr.api.core.SimpleCoreAPI;
 import alexndr.api.helpers.game.TooltipHelper;
 import alexndr.api.registry.ContentCategories;
 import alexndr.api.registry.ContentRegistry;
 import alexndr.api.registry.Plugin;
-import mcjty.lib.compat.CompatItem;
-import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraft.item.Item;
 
 /**
  * @author AleXndrTheGr8st
  */
-public class SimpleItem extends CompatItem implements IConfigureItemHelper<SimpleItem, ConfigItem> 
+public class SimpleItem extends Item implements IConfigureItemHelper<SimpleItem, ConfigItem> 
 {
+	protected String name;
 	private Plugin plugin;
 	private ContentCategories.Item category;
 	private ConfigItem entry;
@@ -36,14 +37,19 @@ public class SimpleItem extends CompatItem implements IConfigureItemHelper<Simpl
 	}
 	
 	@Override
-	public SimpleItem setUnlocalizedName(String itemName) {
+	public SimpleItem setUnlocalizedName(String itemName) 
+	{
 		super.setUnlocalizedName(itemName);
+		this.name = itemName;
         setRegistryName(this.plugin.getModId(), itemName);
-        GameRegistry.register(this);
 		ContentRegistry.registerItem(this.plugin, this, itemName, this.category);
 		return this;
 	}
 	
+	public void registerItemModel() {
+		SimpleCoreAPI.proxy.registerItemRenderer(plugin, this, 0, name);
+	}
+
 	/**
 	 * Returns the ConfigItem used by this item.
 	 * @return ConfigItem

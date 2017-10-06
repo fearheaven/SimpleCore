@@ -8,10 +8,6 @@ import javax.annotation.Nullable;
 import alexndr.api.content.blocks.SimpleFurnace;
 import alexndr.api.helpers.game.FurnaceHelper;
 import alexndr.api.helpers.game.SimpleItemStackHelper;
-import mcjty.lib.compat.CompatSidedInventory;
-import mcjty.lib.tools.ItemStackList;
-import mcjty.lib.tools.ItemStackTools;
-import mcjty.lib.tools.MathTools;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
@@ -21,6 +17,8 @@ import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ContainerFurnace;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.ISidedInventory;
+import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.inventory.SlotFurnaceFuel;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemHoe;
@@ -32,6 +30,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntityLockable;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.datafix.DataFixer;
 import net.minecraft.util.datafix.FixTypes;
 import net.minecraft.util.datafix.walkers.ItemStackDataLists;
@@ -44,7 +43,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  *
  */
 public class TileEntitySimpleFurnace extends TileEntityLockable implements
-		ITickable, CompatSidedInventory 
+		ITickable, ISidedInventory 
 {
     protected static final int NDX_INPUT_SLOT = 0;
     protected static final int NDX_FUEL_SLOT = 1;
@@ -55,7 +54,7 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
     protected static int[] slotsSides = new int[] {NDX_FUEL_SLOT};  // fuel
     
     /** The ItemStacks that hold the items currently being used in the furnace */
-    protected ItemStackList furnaceItemStacks;
+    protected NonNullList<ItemStack> furnaceItemStacks;
     
     /** The number of ticks that the furnace will keep burning */
     protected int furnaceBurnTime;
@@ -85,7 +84,7 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
 		this.furnaceName = tileName;
 		this.maxCookTime = max_cook_time;
 		this.furnaceGuiId = guiID;
-		this.furnaceItemStacks = ItemStackList.create(furnace_stack_count);
+		this.furnaceItemStacks = NonNullList.<ItemStack>withSize(3, ItemStack.EMPTY);;
 	}
 
 	/*------- MUCH OF THE FOLLOWING IS CUT & PASTED FROM TileEntityFurnace -------------*/
@@ -114,7 +113,7 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
 	@Override
 	public ItemStack decrStackSize(int index, int count) 
 	{
-        return SimpleItemStackHelper.getAndSplit(this.furnaceItemStacks, index, count);
+        return ItemStackHelper.getAndSplit(this.furnaceItemStacks, index, count);
 	} // end decrStackSize()
 
 	/* (non-Javadoc)
@@ -123,7 +122,7 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
 	@Override
 	public ItemStack removeStackFromSlot(int index) 
 	{
-	       return SimpleItemStackHelper.getAndRemove(this.furnaceItemStacks, index);
+	       return ItemStackHelper.getAndRemove(this.furnaceItemStacks, index);
 	}
 
 	/* (non-Javadoc)
@@ -133,13 +132,13 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
 	public void setInventorySlotContents(int index, @Nullable ItemStack stack) 
 	{
         ItemStack itemstack = (ItemStack)this.getStackInSlot(index);
-        boolean flag = ItemStackTools.isValid(stack) && stack.isItemEqual(itemstack) 
+        boolean flag = !stack.isEmpty() && stack.isItemEqual(itemstack) 
         		&& ItemStack.areItemStackTagsEqual(stack, itemstack);
         this.furnaceItemStacks.set(index, stack);
 
-        if (ItemStackTools.getStackSize(stack) > this.getInventoryStackLimit())
+        if (stack.getCount() > this.getInventoryStackLimit())
         {
-            ItemStackTools.setStackSize(stack, this.getInventoryStackLimit());
+        	stack.setCount(this.getInventoryStackLimit());
         }
 
         if (index == NDX_INPUT_SLOT && !flag)
@@ -163,7 +162,7 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
 	 * @see net.minecraft.inventory.IInventory#isUseableByPlayer(net.minecraft.entity.player.EntityPlayer)
 	 */
 	@Override
-	public boolean isUsable(EntityPlayer player) {
+	public boolean isUsableByPlayer(EntityPlayer player) {
         return this.getWorld().getTileEntity(this.pos) != this 
                  ? false 
                  : player.getDistanceSq((double)this.pos.getX() + 0.5D, 
@@ -388,10 +387,10 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
     public void readFromNBT(NBTTagCompound compound)
     {
         super.readFromNBT(compound);
-        this.furnaceItemStacks = ItemStackList.create(this.getSizeInventory());
+        this.furnaceItemStacks = NonNullList.<ItemStack>withSize(this.getSizeInventory(), ItemStack.EMPTY);
 
         // loop below replaces line below for backward compatibility
-        SimpleItemStackHelper.read_itemStackFromNBT(compound, this.furnaceItemStacks);
+        ItemStackHelper.loadAllItems(compound, this.furnaceItemStacks);
 
         this.furnaceBurnTime = compound.getInteger("BurnTime");
         this.cookTime = compound.getInteger("CookTime");
@@ -447,24 +446,23 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
      */
     protected boolean canSmelt()
     {
-        if (ItemStackTools.isEmpty(this.getStackInSlot(NDX_INPUT_SLOT)))
+        if (this.getStackInSlot(NDX_INPUT_SLOT).isEmpty())
         {
             return false;
         }
         else
         {
             ItemStack itemstack = 
-                 FurnaceRecipes.instance().getSmeltingResult(
-                		 this.getStackInSlot(NDX_INPUT_SLOT));
-            if (ItemStackTools.isEmpty(itemstack)) {
+                 FurnaceRecipes.instance().getSmeltingResult(this.getStackInSlot(NDX_INPUT_SLOT));
+            if (itemstack.isEmpty()) 
+            {
             	return false;
             }
             else {
                 ItemStack itemstack1 = (ItemStack)this.getStackInSlot(NDX_OUTPUT_SLOT);
-                if (ItemStackTools.isEmpty(itemstack1)) return true;
+                if (itemstack1.isEmpty()) return true;
                 if (!itemstack1.isItemEqual(itemstack)) return false;
-                int result = ItemStackTools.getStackSize(itemstack1) 
-                		+ ItemStackTools.getStackSize(itemstack);
+				int result = itemstack1.getCount() + itemstack.getCount();
                 return result <= getInventoryStackLimit() 
                          && result <= itemstack1.getMaxStackSize(); // Forge fix: make furnace respect stack sizes in furnace recipes
             }
@@ -483,7 +481,7 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
             ItemStack result_stack = FurnaceRecipes.instance().getSmeltingResult(instack);
             ItemStack outstack = (ItemStack)this.getStackInSlot(NDX_OUTPUT_SLOT);
 
-            if (ItemStackTools.isEmpty(outstack))
+            if (outstack.isEmpty())
             {
                FurnaceHelper.SetInSlot(furnaceItemStacks, NDX_OUTPUT_SLOT, 
                                         ItemStackTools.safeCopy(result_stack));
@@ -647,5 +645,18 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
         }
         return flag1;
 	} // end default_cooking_update()
+
+	@Override
+	public boolean isEmpty() 
+	{
+        for (ItemStack itemstack : this.furnaceItemStacks)
+        {
+            if (!itemstack.isEmpty())
+            {
+                return false;
+            }
+        }
+        return true;
+	}
 
 } // end class

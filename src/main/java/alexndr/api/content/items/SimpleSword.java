@@ -2,30 +2,24 @@ package alexndr.api.content.items;
 
 import java.util.List;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemSword;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.common.registry.GameRegistry;
+import com.google.common.collect.Lists;
+
 import alexndr.api.config.IConfigureItemHelper;
 import alexndr.api.config.types.ConfigTool;
+import alexndr.api.core.SimpleCoreAPI;
 import alexndr.api.helpers.game.TooltipHelper;
 import alexndr.api.registry.ContentCategories;
 import alexndr.api.registry.ContentRegistry;
 import alexndr.api.registry.Plugin;
-
-import com.google.common.collect.Lists;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemSword;
 
 /**
  * @author AleXndrTheGr8st
  */
 public class SimpleSword extends ItemSword implements IConfigureItemHelper<SimpleSword,ConfigTool>
 {
+	protected String name;
 	private final ToolMaterial material;
 	private Plugin plugin;
 	private ContentCategories.Item category = ContentCategories.Item.TOOL;
@@ -47,36 +41,16 @@ public class SimpleSword extends ItemSword implements IConfigureItemHelper<Simpl
 	@Override
 	public SimpleSword setUnlocalizedName(String axeName) {
 		super.setUnlocalizedName(axeName);
+		this.name = axeName;
         setRegistryName(this.plugin.getModId(), axeName);
-        GameRegistry.register(this);
 		ContentRegistry.registerItem(this.plugin, this, axeName, this.category);
 		this.setHarvestLevel("axe", entry.getHarvestLevel());
 		return this;
 	}
 	
-	/* lifted from McJty's CompatItemTool class */
-    protected ActionResult<ItemStack> clOnItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand hand) {
-        return super.onItemRightClick(worldIn, playerIn, hand);
-    }
-
-    @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand hand) {
-        return clOnItemRightClick(worldIn, playerIn, hand);
-    }
-
-    /**
-     * Called when a Block is right-clicked with this Item
-     */
-    @Override
-    public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-        return clOnItemUse(player, world, pos, hand, facing, hitX, hitY, hitZ);
-    }
-
-    protected EnumActionResult clOnItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-        return super.onItemUse(player, world, pos, hand, facing, hitX, hitY, hitZ);
-    }
-    /* end McJty */
-    
+	public void registerItemModel() {
+		SimpleCoreAPI.proxy.registerItemRenderer(plugin, this, 0, name);
+	}
 
 	/**
 	 * Returns the ConfigTool used by this tool.

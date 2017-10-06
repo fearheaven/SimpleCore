@@ -3,13 +3,14 @@ package alexndr.api.content.inventory;
 import alexndr.api.registry.ContentCategories;
 import alexndr.api.registry.ContentRegistry;
 import alexndr.api.registry.Plugin;
-import mcjty.lib.compat.CompatCreativeTabs;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 
 /**
  * @author AleXndrTheGr8st
  */
-public class SimpleTab extends CompatCreativeTabs
+public class SimpleTab extends CreativeTabs
 {
 	private Item itemForIcon;
 
@@ -36,7 +37,8 @@ public class SimpleTab extends CompatCreativeTabs
 	}
 
 	@Override
-	protected Item getItem() {
-		return itemForIcon;
+	public ItemStack getTabIconItem() {
+		// TODO Auto-generated method stub
+		return new ItemStack(itemForIcon);
 	}
 } // end class

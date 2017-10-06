@@ -2,6 +2,15 @@ package alexndr.api.content.items;
 
 import java.util.List;
 
+import com.google.common.collect.Lists;
+
+import alexndr.api.config.IConfigureItemHelper;
+import alexndr.api.config.types.ConfigArmor;
+import alexndr.api.core.SimpleCoreAPI;
+import alexndr.api.helpers.game.TooltipHelper;
+import alexndr.api.registry.ContentCategories;
+import alexndr.api.registry.ContentRegistry;
+import alexndr.api.registry.Plugin;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -9,23 +18,14 @@ import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.translation.I18n;
-import net.minecraftforge.fml.common.registry.GameRegistry;
-import alexndr.api.config.IConfigureItemHelper;
-import alexndr.api.config.types.ConfigArmor;
-import alexndr.api.helpers.game.TooltipHelper;
-import alexndr.api.registry.ContentCategories;
-import alexndr.api.registry.ContentRegistry;
-import alexndr.api.registry.Plugin;
-import mcjty.lib.compat.CompatItemArmor;
-
-import com.google.common.collect.Lists;
 
 /**
  * @author AleXndrTheGr8st
  */
 @SuppressWarnings("deprecation")
-public class SimpleArmor extends CompatItemArmor implements IConfigureItemHelper<SimpleArmor, ConfigArmor>
+public class SimpleArmor extends ItemArmor implements IConfigureItemHelper<SimpleArmor, ConfigArmor>
 {
+	protected String name;
 	// { FEET, LEGS, CHEST, HEAD }
 	protected ItemArmor[] armor = { null, null, null, null };
 
@@ -53,14 +53,20 @@ public class SimpleArmor extends CompatItemArmor implements IConfigureItemHelper
 	}
 
 	@Override
-	public SimpleArmor setUnlocalizedName(String armorName) {
+	public SimpleArmor setUnlocalizedName(String armorName) 
+	{
 		super.setUnlocalizedName(armorName);
-        setRegistryName(this.plugin.getModId(), armorName);
-        GameRegistry.register(this);
+		this.name = armorName;
+       setRegistryName(this.plugin.getModId(), armorName);
+//        GameRegistry.register(this);
 		ContentRegistry.registerItem(this.plugin, this, armorName, this.category);
 		return this;
 	}
 	
+	public void registerItemModel() {
+		SimpleCoreAPI.proxy.registerItemRenderer(plugin, this, 0, name);
+	}
+
 	/**
 	 * Returns the ConfigArmor used by this armor.
 	 * @return ConfigArmor

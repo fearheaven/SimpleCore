@@ -2,6 +2,14 @@ package alexndr.api.content.blocks;
 
 import java.util.Random;
 
+import alexndr.api.config.IConfigureBlockHelper;
+import alexndr.api.config.types.ConfigBlock;
+import alexndr.api.core.SimpleCoreAPI;
+import alexndr.api.helpers.game.TabHelper;
+import alexndr.api.helpers.game.TooltipHelper;
+import alexndr.api.registry.ContentCategories;
+import alexndr.api.registry.ContentRegistry;
+import alexndr.api.registry.Plugin;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -13,14 +21,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.registry.GameRegistry;
-import alexndr.api.config.IConfigureBlockHelper;
-import alexndr.api.config.types.ConfigBlock;
-import alexndr.api.helpers.game.TabHelper;
-import alexndr.api.helpers.game.TooltipHelper;
-import alexndr.api.registry.ContentCategories;
-import alexndr.api.registry.ContentRegistry;
-import alexndr.api.registry.Plugin;
 
 /**
  * @author AleXndrTheGr8st
@@ -31,6 +31,7 @@ public class SimpleBlock extends Block implements IConfigureBlockHelper<SimpleBl
 	protected Material material;
 	protected ContentCategories.Block category;
 	protected ConfigBlock entry;
+	protected String name;
 	
 	//Additional Block Attributes
 	protected boolean dropItem = false;
@@ -65,13 +66,23 @@ public class SimpleBlock extends Block implements IConfigureBlockHelper<SimpleBl
 	public SimpleBlock setUnlocalizedName(String blockName) 
 	{
 		super.setUnlocalizedName(blockName);
+		this.name = blockName;
         this.setRegistryName(this.plugin.getModId(), blockName);
-        GameRegistry.register(this);
-        GameRegistry.register(new ItemBlock(this).setRegistryName(this.getRegistryName()));
+//        GameRegistry.register(this);
+//        GameRegistry.register(new ItemBlock(this).setRegistryName(this.getRegistryName()));
 		ContentRegistry.registerBlock(this.plugin, this, blockName, this.category);
 		return this;
 	}
+
+	public void registerItemModel(Item itemBlock) {
+		SimpleCoreAPI.proxy.registerItemRenderer(plugin, itemBlock, 0, name);
+	}
 	
+	public Item createItemBlock() {
+		return new ItemBlock(this).setRegistryName(this.getRegistryName());
+	}
+
+
 	/**
 	 * Returns the ConfigBlock used by this block.
 	 * @return ConfigBlock

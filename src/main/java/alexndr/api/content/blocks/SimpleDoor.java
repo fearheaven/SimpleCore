@@ -9,10 +9,10 @@ import javax.annotation.Nullable;
 
 import alexndr.api.config.IConfigureBlockHelper;
 import alexndr.api.config.types.ConfigBlock;
+import alexndr.api.core.SimpleCoreAPI;
 import alexndr.api.helpers.game.TooltipHelper;
 import alexndr.api.logger.LogHelper;
 import alexndr.api.registry.ContentCategories;
-import alexndr.api.registry.ContentRegistry;
 import alexndr.api.registry.Plugin;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.block.material.Material;
@@ -22,7 +22,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 
 /**
  * @author cyhiggin
@@ -35,6 +34,7 @@ public class SimpleDoor extends BlockDoor implements IConfigureBlockHelper<Simpl
     protected ContentCategories.Block category;
     protected ConfigBlock entry;
     protected ResourceLocation ItemOfDoorResource;
+    protected String name;
 
     /**
      * @param plugin the mod class plugin field; stores the modid, among other things.
@@ -57,12 +57,17 @@ public class SimpleDoor extends BlockDoor implements IConfigureBlockHelper<Simpl
     public SimpleDoor setUnlocalizedName(String blockName) 
     {
         super.setUnlocalizedName(blockName);
+        this.name = blockName;
         setRegistryName(this.plugin.getModId(), blockName);
-        GameRegistry.register(this);
-        ContentRegistry.registerBlock(this.plugin, this, blockName, this.category);
+//        GameRegistry.register(this);
+//        ContentRegistry.registerBlock(this.plugin, this, blockName, this.category);
         return this;
     }
-    
+
+	public void registerItemModel(Item itemBlock) {
+		SimpleCoreAPI.proxy.registerItemRenderer(plugin, itemBlock, 0, name);
+	}
+	
     /**
      * Get the ItemStack for the item registered for this SimpleDoor block.
      * @return the ItemStack for one SimpleDoorItem.
