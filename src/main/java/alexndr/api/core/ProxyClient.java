@@ -36,6 +36,11 @@ public class ProxyClient extends ProxyCommon
 		MinecraftForge.EVENT_BUS.register(new ClientEventHelper());
 	} // end registerEventHandlers()
 	
+//	@SubscribeEvent
+//	public static void registerModels(ModelRegistryEvent event) 
+//	{
+//	}
+//
     @Override
     public void registerItemRenderer(Plugin plugin, Item item, int meta, String id) {
     	ModelLoader.setCustomModelResourceLocation(item, meta, 

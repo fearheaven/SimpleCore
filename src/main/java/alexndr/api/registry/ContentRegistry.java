@@ -1,6 +1,7 @@
 package alexndr.api.registry;
 
 import java.util.List;
+import java.util.ListIterator;
 
 import com.google.common.collect.Lists;
 
@@ -30,6 +31,13 @@ public class ContentRegistry
 	 */
 	public static void registerPlugin(Plugin plugin) {
 		pluginList.add(plugin);
+	}
+	
+	/**
+	 * Gets a ListIterator over the plugin list.
+	 */
+	public static ListIterator<Plugin> getPluginsIterator() {
+		return pluginList.listIterator();
 	}
 	
 	/**

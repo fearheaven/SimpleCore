@@ -1,16 +1,16 @@
 package alexndr.api.core;
 
+import alexndr.api.helpers.game.OreGenerator;
+import alexndr.api.logger.LogHelper;
+import alexndr.api.registry.ContentCategories;
+import alexndr.api.registry.ContentRegistry;
+import alexndr.api.registry.Plugin;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import alexndr.api.helpers.game.OreGenerator;
-import alexndr.api.logger.LogHelper;
-import alexndr.api.registry.ContentCategories;
-import alexndr.api.registry.ContentRegistry;
-import alexndr.api.registry.Plugin;
 
 
 /**
@@ -42,6 +42,15 @@ public class ProxyCommon
     { 
     } // end postInit()    
 
+//    @SubscribeEvent
+//    public static void registerBlocks(RegistryEvent.Register<Block> event) 
+//    {
+//    } // end registerBlocks()
+//    
+//    @SubscribeEvent
+//    public static void registerItems(RegistryEvent.Register<Item> event) 
+//    {
+//    }
     
     public void registerItemRenderer(Plugin plugin, Item item, int meta, String id) {
     }
