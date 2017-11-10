@@ -6,22 +6,20 @@ import java.util.ListIterator;
 import com.google.common.collect.Lists;
 
 import alexndr.api.core.APISettings;
-import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
 
 /**
  * @author AleXndrTheGr8st
  */
 public class ContentRegistry 
 {
-	public static Class<BlockDetails> blockDetails = BlockDetails.class;
-	public static Class<ItemDetails> itemDetails = ItemDetails.class;
+//	public static Class<BlockDetails> blockDetails = BlockDetails.class;
+//	public static Class<ItemDetails> itemDetails = ItemDetails.class;
 	public static Class<TabDetails> tabDetails = TabDetails.class;
 	
 	private static List<Plugin> pluginList = Lists.newArrayList();
-	private static List<BlockDetails> blockList = Lists.newArrayList();
-	private static List<ItemDetails> itemList = Lists.newArrayList();
+//	private static List<BlockDetails> blockList = Lists.newArrayList();
+//	private static List<ItemDetails> itemList = Lists.newArrayList();
 	private static List<TabDetails> tabList = Lists.newArrayList();
 	
 	/**
@@ -48,11 +46,11 @@ public class ContentRegistry
 	 * @param name Name of the block
 	 * @param category Category of the block
 	 */
-	public static void registerBlock(Plugin plugin, Block block, String name, ContentCategories.Block category) {
-		BlockDetails details = new BlockDetails(plugin, block, name, category);
-		blockList.add(details);
-		plugin.blocksList.add(details);
-	}
+//	public static void registerBlock(Plugin plugin, Block block, String name, ContentCategories.Block category) {
+//		BlockDetails details = new BlockDetails(plugin, block, name, category);
+//		blockList.add(details);
+//		plugin.blocksList.add(details);
+//	}
 	
 	/**
 	 * Registers an item with the ContentRegistry.
@@ -62,11 +60,11 @@ public class ContentRegistry
 	 * @param name Name of the item
 	 * @param category Category of the item
 	 */
-	public static void registerItem(Plugin plugin, Item item, String name, ContentCategories.Item category) {
-		ItemDetails details = new ItemDetails(plugin, item, name, category);
-		itemList.add(details);
-		plugin.itemsList.add(details);
-	}
+//	public static void registerItem(Plugin plugin, Item item, String name, ContentCategories.Item category) {
+//		ItemDetails details = new ItemDetails(plugin, item, name, category);
+//		itemList.add(details);
+//		plugin.itemsList.add(details);
+//	}
 	
 	/**
 	 * Registers a CreativeTab with the ContentRegistry.
@@ -114,14 +112,14 @@ public class ContentRegistry
 	 * @param pluginName modid of the plugin
 	 * @return List of blocks belonging to plugin
 	 */
-	public static List<Block> getPluginBlocks(String pluginName) {
-		List<Block> list = Lists.newArrayList();
-		Plugin plugin = getPlugin(pluginName);
-		for(BlockDetails details : plugin.blocksList) {
-			list.add(details.block);
-		}
-		return list;
-	}
+//	public static List<Block> getPluginBlocks(String pluginName) {
+//		List<Block> list = Lists.newArrayList();
+//		Plugin plugin = getPlugin(pluginName);
+//		for(BlockDetails details : plugin.blocksList) {
+//			list.add(details.block);
+//		}
+//		return list;
+//	}
 	
 	/**
 	 * Returns a list of all the blocks in the given category belonging to the plugin with the given name.
@@ -129,29 +127,29 @@ public class ContentRegistry
 	 * @param category Category of the block
 	 * @return List of blocks belonging to plugin
 	 */
-	public static List<Block> getPluginBlocks(String pluginName, ContentCategories.Block category) {
-		List<Block> list = Lists.newArrayList();
-		Plugin plugin = getPlugin(pluginName);
-		for(BlockDetails details : plugin.blocksList) {
-			if(details.category == category) 
-				list.add(details.block);
-		}
-		return list;
-	}
+//	public static List<Block> getPluginBlocks(String pluginName, ContentCategories.Block category) {
+//		List<Block> list = Lists.newArrayList();
+//		Plugin plugin = getPlugin(pluginName);
+//		for(BlockDetails details : plugin.blocksList) {
+//			if(details.category == category) 
+//				list.add(details.block);
+//		}
+//		return list;
+//	}
 	
 	/**
 	 * Returns a list of all the items belonging to the plugin with the given name.
 	 * @param pluginName modid of the plugin
 	 * @return List of items belonging to plugin
 	 */
-	public static List<Item> getPluginItems(String pluginName) {
-		List<Item> list = Lists.newArrayList();
-		Plugin plugin = getPlugin(pluginName);
-		for(ItemDetails details : plugin.itemsList) {
-			list.add(details.item);
-		}
-		return list;
-	}
+//	public static List<Item> getPluginItems(String pluginName) {
+//		List<Item> list = Lists.newArrayList();
+//		Plugin plugin = getPlugin(pluginName);
+//		for(ItemDetails details : plugin.itemsList) {
+//			list.add(details.item);
+//		}
+//		return list;
+//	}
 	
 	/**
 	 * Returns a list of all the items in the given category belonging to the plugin with the given name.
@@ -159,16 +157,16 @@ public class ContentRegistry
 	 * @param category Category of the item
 	 * @return List of items belonging to plugin
 	 */
-	public static List<Item> getPluginItems(String pluginName, ContentCategories.Item category) {
-		List<Item> list = Lists.newArrayList();
-		Plugin plugin = getPlugin(pluginName);
-		for(ItemDetails details : plugin.itemsList) {
-			if(details.category == category)
-				list.add(details.item);
-		}
-		return list;
-	}
-	
+//	public static List<Item> getPluginItems(String pluginName, ContentCategories.Item category) {
+//		List<Item> list = Lists.newArrayList();
+//		Plugin plugin = getPlugin(pluginName);
+//		for(ItemDetails details : plugin.itemsList) {
+//			if(details.category == category)
+//				list.add(details.item);
+//		}
+//		return list;
+//	}
+//	
 	/**
 	 * Returns a list of all the CreativeTabs belonging to the plugin with the given name.
 	 * @param pluginName Name of the plugin
@@ -204,13 +202,13 @@ public class ContentRegistry
 	 * @param blockName Name of the block
 	 * @return Whether the block exists in the ContentRegistry
 	 */
-	public static boolean doesBlockExist(String blockName) {
-		for(BlockDetails block : blockList)	{
-			if(block.name.equals(blockName))
-				return true;
-		}
-		return false;
-	}
+//	public static boolean doesBlockExist(String blockName) {
+//		for(BlockDetails block : blockList)	{
+//			if(block.name.equals(blockName))
+//				return true;
+//		}
+//		return false;
+//	}
 	
 	/**
 	 * Returns a block with the given name if it exists in the ContentRegistry.
@@ -218,41 +216,41 @@ public class ContentRegistry
 	 * @param blockName Name of the block
 	 * @return Block with given name
 	 */
-	public static Block getBlock(String blockName) {
-		for(BlockDetails details : blockList) {
-			if(details.name.equals(blockName))
-				return details.block;
-		}
-		return null;
-	}
+//	public static Block getBlock(String blockName) {
+//		for(BlockDetails details : blockList) {
+//			if(details.name.equals(blockName))
+//				return details.block;
+//		}
+//		return null;
+//	}
 	
 	/**
 	 * Checks if an item with the given name exists in the ContentRegistry.
 	 * @param itemName Name of the item
 	 * @return Whether the item exists in the ContentRegistry
 	 */
-	public static boolean doesItemExist(String itemName) {
-		for(ItemDetails item : itemList)	{
-			if(item.name.equals(itemName))
-				return true;
-		}
-		return false;
-	}
-	
+//	public static boolean doesItemExist(String itemName) {
+//		for(ItemDetails item : itemList)	{
+//			if(item.name.equals(itemName))
+//				return true;
+//		}
+//		return false;
+//	}
+//	
 	/**
 	 * Returns an item with the given name if it exists in the ContentRegistry.
 	 * If the item doesn't exist, returns null.
 	 * @param itemName Name of the item
 	 * @return Item with given name
 	 */
-	public static Item getItem(String itemName) {
-		for(ItemDetails details : itemList) {
-			if(details.name.equals(itemName))
-				return details.item;
-		}
-		return null;
-	}
-	
+//	public static Item getItem(String itemName) {
+//		for(ItemDetails details : itemList) {
+//			if(details.name.equals(itemName))
+//				return details.item;
+//		}
+//		return null;
+//	}
+//	
 	/**
 	 * Checks if a CreativeTab with the given name exists in the ContentRegistry.
 	 * @param tabName Name of the CreativeTab
@@ -320,50 +318,50 @@ public class ContentRegistry
 /**
  * @author AleXndrTheGr8st
  */
-class BlockDetails {
-	Plugin plugin;
-	Block block;
-	String name;
-	ContentCategories.Block category;
-	
-	/**
-	 * Creates a new BlockDetails instance.
-	 * @param plugin The plugin the block belongs to
-	 * @param block The block
-	 * @param name Name of the block
-	 * @param category Category of the block
-	 */
-	public BlockDetails(Plugin plugin, Block block, String name, ContentCategories.Block category) {
-		this.plugin = plugin;
-		this.block = block;
-		this.name = name;
-		this.category = category;
-	}
-}
+//class BlockDetails {
+//	Plugin plugin;
+//	Block block;
+//	String name;
+//	ContentCategories.Block category;
+//	
+//	/**
+//	 * Creates a new BlockDetails instance.
+//	 * @param plugin The plugin the block belongs to
+//	 * @param block The block
+//	 * @param name Name of the block
+//	 * @param category Category of the block
+//	 */
+//	public BlockDetails(Plugin plugin, Block block, String name, ContentCategories.Block category) {
+//		this.plugin = plugin;
+//		this.block = block;
+//		this.name = name;
+//		this.category = category;
+//	}
+//}
 
 /**
  * @author AleXndrTheGr8st
  */
-class ItemDetails {
-	Plugin plugin;
-	Item item;
-	String name;
-	ContentCategories.Item category;
-	
-	/**
-	 * Creates a new ItemDetails instance.
-	 * @param plugin The plugin the item belongs to
-	 * @param item The item
-	 * @param name Name of the item
-	 * @param category Category of the item
-	 */
-	public ItemDetails(Plugin plugin, Item item, String name, ContentCategories.Item category) {
-		this.plugin = plugin;
-		this.item = item;
-		this.name = name;
-		this.category = category;
-	}
-}
+//class ItemDetails {
+//	Plugin plugin;
+//	Item item;
+//	String name;
+//	ContentCategories.Item category;
+//	
+//	/**
+//	 * Creates a new ItemDetails instance.
+//	 * @param plugin The plugin the item belongs to
+//	 * @param item The item
+//	 * @param name Name of the item
+//	 * @param category Category of the item
+//	 */
+//	public ItemDetails(Plugin plugin, Item item, String name, ContentCategories.Item category) {
+//		this.plugin = plugin;
+//		this.item = item;
+//		this.name = name;
+//		this.category = category;
+//	}
+//}
 
 /**
  * @author AleXndrTheGr8st

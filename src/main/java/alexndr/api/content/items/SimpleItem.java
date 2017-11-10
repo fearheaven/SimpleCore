@@ -9,7 +9,6 @@ import alexndr.api.config.types.ConfigItem;
 import alexndr.api.core.SimpleCoreAPI;
 import alexndr.api.helpers.game.TooltipHelper;
 import alexndr.api.registry.ContentCategories;
-import alexndr.api.registry.ContentRegistry;
 import alexndr.api.registry.Plugin;
 import net.minecraft.item.Item;
 
@@ -30,20 +29,13 @@ public class SimpleItem extends Item implements IConfigureItemHelper<SimpleItem,
 	 * @param plugin The plugin the item belongs to
 	 * @param category The category of the item
 	 */
-	public SimpleItem(Plugin plugin, ContentCategories.Item category) 
+	public SimpleItem(String itemName, Plugin plugin, ContentCategories.Item category) 
 	{
+		this.name = itemName;
 		this.plugin = plugin;
 		this.category = category;
-	}
-	
-	@Override
-	public SimpleItem setUnlocalizedName(String itemName) 
-	{
-		super.setUnlocalizedName(itemName);
-		this.name = itemName;
-        setRegistryName(this.plugin.getModId(), itemName);
-		ContentRegistry.registerItem(this.plugin, this, itemName, this.category);
-		return this;
+		setUnlocalizedName(itemName);
+        setRegistryName(plugin.getModId(), itemName);
 	}
 	
 	public void registerItemModel() {

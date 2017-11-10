@@ -8,7 +8,6 @@ import alexndr.api.core.SimpleCoreAPI;
 import alexndr.api.helpers.game.TabHelper;
 import alexndr.api.helpers.game.TooltipHelper;
 import alexndr.api.registry.ContentCategories;
-import alexndr.api.registry.ContentRegistry;
 import alexndr.api.registry.Plugin;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
@@ -48,13 +47,16 @@ public class SimpleBlock extends Block implements IConfigureBlockHelper<SimpleBl
 	 * @param material The material of the block
 	 * @param category The category of the block
 	 */
-	public SimpleBlock(Plugin plugin, Material material, ContentCategories.Block category) 
+	public SimpleBlock(String name, Plugin plugin, Material material, ContentCategories.Block category) 
 	{
 		super(material);
+		this.name = name;
 		this.plugin = plugin;
 		this.material = material;
 		this.category = category;
-	}
+		setUnlocalizedName(name);
+		setRegistryName(plugin.getModId(), name);
+	} // end ctor
 	
 	public SimpleBlock setStepSound(SoundType sound)
 	{
@@ -62,18 +64,6 @@ public class SimpleBlock extends Block implements IConfigureBlockHelper<SimpleBl
 		return this;
 	} // end setStepSound
 	
-	@Override
-	public SimpleBlock setUnlocalizedName(String blockName) 
-	{
-		super.setUnlocalizedName(blockName);
-		this.name = blockName;
-        this.setRegistryName(this.plugin.getModId(), blockName);
-//        GameRegistry.register(this);
-//        GameRegistry.register(new ItemBlock(this).setRegistryName(this.getRegistryName()));
-		ContentRegistry.registerBlock(this.plugin, this, blockName, this.category);
-		return this;
-	}
-
 	public void registerItemModel(Item itemBlock) {
 		SimpleCoreAPI.proxy.registerItemRenderer(plugin, itemBlock, 0, name);
 	}
@@ -81,7 +71,6 @@ public class SimpleBlock extends Block implements IConfigureBlockHelper<SimpleBl
 	public Item createItemBlock() {
 		return new ItemBlock(this).setRegistryName(this.getRegistryName());
 	}
-
 
 	/**
 	 * Returns the ConfigBlock used by this block.

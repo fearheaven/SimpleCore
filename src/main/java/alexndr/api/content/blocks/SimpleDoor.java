@@ -43,27 +43,19 @@ public class SimpleDoor extends BlockDoor implements IConfigureBlockHelper<Simpl
      * @param itemOfBlockName the unlocalized name of the door *item*.
      * @param category a valid ContentCategory.
      */
-    public SimpleDoor(Plugin plugin, Material materialIn, String itemOfBlockName, 
+    public SimpleDoor(String name, Plugin plugin, Material materialIn, String itemOfBlockName, 
                       ContentCategories.Block category)
     {
         super(materialIn);
+		this.name = name;
         this.plugin = plugin;
         this.material = materialIn;
         this.category = category;
         this.ItemOfDoorResource = new ResourceLocation(plugin.getModId(), itemOfBlockName);
+		setUnlocalizedName(name);
+		setRegistryName(plugin.getModId(), name);
     }
     
-    @Override
-    public SimpleDoor setUnlocalizedName(String blockName) 
-    {
-        super.setUnlocalizedName(blockName);
-        this.name = blockName;
-        setRegistryName(this.plugin.getModId(), blockName);
-//        GameRegistry.register(this);
-//        ContentRegistry.registerBlock(this.plugin, this, blockName, this.category);
-        return this;
-    }
-
 	public void registerItemModel(Item itemBlock) {
 		SimpleCoreAPI.proxy.registerItemRenderer(plugin, itemBlock, 0, name);
 	}

@@ -67,10 +67,10 @@ public abstract class SimpleFurnace extends SimpleBlock implements ITileEntityPr
 	 * @param category The category of the block
 	 * @param isBurning is the furnace lit or not?
 	 */
-	protected SimpleFurnace(Plugin plugin, Material material, ContentCategories.Block category,
-							boolean isBurning) 
+	protected SimpleFurnace(String name, Plugin plugin, Material material, 
+							ContentCategories.Block category, boolean isBurning) 
 	{
-		super(plugin, material, category);
+		super(name, plugin, material, category);
 		this.isBurning = isBurning;
 	    this.isBlockContainer = true;
         this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));

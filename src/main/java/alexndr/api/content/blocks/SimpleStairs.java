@@ -5,7 +5,6 @@ import alexndr.api.config.types.ConfigBlock;
 import alexndr.api.core.SimpleCoreAPI;
 import alexndr.api.helpers.game.TooltipHelper;
 import alexndr.api.registry.ContentCategories;
-import alexndr.api.registry.ContentRegistry;
 import alexndr.api.registry.Plugin;
 import net.minecraft.block.BlockStairs;
 import net.minecraft.block.state.IBlockState;
@@ -25,27 +24,18 @@ public class SimpleStairs extends BlockStairs implements IConfigureBlockHelper<S
      * @param modelState BlockState of the block the stairs are made of.
      * @param category The category of the stairs block
      */
-    public SimpleStairs(Plugin plugin, IBlockState modelState, ContentCategories.Block category)
+    public SimpleStairs(String name, Plugin plugin, IBlockState modelState, ContentCategories.Block category)
     {
         super(modelState);
-        this.plugin = plugin;
+		this.name = name;
+		this.plugin = plugin;
         this.category = category;
         this.useNeighborBrightness = true;
+		setUnlocalizedName(name);
+		setRegistryName(plugin.getModId(), name);
     }
     
-    @Override
-    public SimpleStairs setUnlocalizedName(String blockName) 
-    {
-        super.setUnlocalizedName(blockName);
-        this.name = blockName;
-        setRegistryName(this.plugin.getModId(), blockName);
-//        GameRegistry.register(this);
-//        GameRegistry.register(new ItemBlock(this).setRegistryName(this.getRegistryName()));
-        ContentRegistry.registerBlock(this.plugin, this, blockName, this.category);
-        return this;
-    }
-
-	public void registerItemModel(Item itemBlock) {
+ 	public void registerItemModel(Item itemBlock) {
 		SimpleCoreAPI.proxy.registerItemRenderer(plugin, itemBlock, 0, name);
 	}
 	

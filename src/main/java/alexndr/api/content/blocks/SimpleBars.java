@@ -5,7 +5,6 @@ import alexndr.api.config.types.ConfigBlock;
 import alexndr.api.core.SimpleCoreAPI;
 import alexndr.api.helpers.game.TooltipHelper;
 import alexndr.api.registry.ContentCategories;
-import alexndr.api.registry.ContentRegistry;
 import alexndr.api.registry.Plugin;
 import net.minecraft.block.BlockPane;
 import net.minecraft.block.material.Material;
@@ -24,24 +23,15 @@ public class SimpleBars extends BlockPane implements IConfigureBlockHelper<Simpl
      * @param plugin The plugin the bars belong to
      * @param category The category of the bars block
      */
-   public SimpleBars(Plugin plugin, Material materialIn, boolean canDrop, ContentCategories.Block category)
+   public SimpleBars(String name, Plugin plugin, Material materialIn, boolean canDrop, ContentCategories.Block category)
     {
         super(materialIn, canDrop);
+		this.name = name;
         this.plugin = plugin;
         this.category = category;
+		setUnlocalizedName(name);
+		setRegistryName(plugin.getModId(), name);
     }
-
-   @Override
-   public SimpleBars setUnlocalizedName(String blockName) 
-   {
-       super.setUnlocalizedName(blockName);
-       this.name = blockName;
-       setRegistryName(this.plugin.getModId(), blockName);
-//       GameRegistry.register(this);
-//       GameRegistry.register(new ItemBlock(this).setRegistryName(this.getRegistryName()));
-       ContentRegistry.registerBlock(this.plugin, this, blockName, this.category);
-       return this;
-   }
 
 	public void registerItemModel(Item itemBlock) {
 		SimpleCoreAPI.proxy.registerItemRenderer(plugin, itemBlock, 0, name);
