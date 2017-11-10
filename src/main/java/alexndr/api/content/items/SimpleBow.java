@@ -209,7 +209,7 @@ public class SimpleBow extends ItemBow
         															   handIn, hasAmmo);
         if (ret != null) return ret;
 
-        if (!playerIn.capabilities.isCreativeMode)
+        if (!playerIn.capabilities.isCreativeMode && !hasAmmo)
         {
             return hasAmmo ? new ActionResult<ItemStack>(EnumActionResult.PASS, itemstack) : 
             			  new ActionResult<ItemStack>(EnumActionResult.FAIL, itemstack);

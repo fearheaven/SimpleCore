@@ -27,7 +27,7 @@ def getVersionAppendage() {
     return "DEV-" + proc.text.trim()
 }
 version = "${version_minecraft}-${version_mod}." + getVersionAppendage()
-group= "alexndr.api"
+group = "alexndr.api"
 archivesBaseName = "simplecore"
 
 minecraft {
