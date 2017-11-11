@@ -8,8 +8,6 @@ import alexndr.api.config.IConfigureItemHelper;
 import alexndr.api.config.types.ConfigTool;
 import alexndr.api.core.SimpleCoreAPI;
 import alexndr.api.helpers.game.TooltipHelper;
-import alexndr.api.registry.ContentCategories;
-import alexndr.api.registry.ContentRegistry;
 import alexndr.api.registry.Plugin;
 import net.minecraft.item.ItemSpade;
 import net.minecraft.item.ItemStack;
@@ -22,7 +20,7 @@ public class SimpleShovel extends ItemSpade implements IConfigureItemHelper<Simp
 	protected String name;
 	private final ToolMaterial material;
 	private Plugin plugin;
-	private ContentCategories.Item category = ContentCategories.Item.TOOL;
+//	private ContentCategories.Item category = ContentCategories.Item.TOOL;
 	private ConfigTool entry;
 	@SuppressWarnings("unused")
 	private List<String> toolTipStrings = Lists.newArrayList();
@@ -32,20 +30,14 @@ public class SimpleShovel extends ItemSpade implements IConfigureItemHelper<Simp
 	 * @param plugin The plugin the tool belongs to
 	 * @param material The ToolMaterial of the tool
 	 */
-	public SimpleShovel(Plugin plugin, ToolMaterial material) {
+	public SimpleShovel(String shovelName, Plugin plugin, ToolMaterial material) 
+	{
 		super(material);
+		this.name = shovelName;
 		this.plugin = plugin;
 		this.material = material;
-	}
-	
-	@Override
-	public SimpleShovel setUnlocalizedName(String shovelName) {
-		super.setUnlocalizedName(shovelName);
-		this.name = shovelName;
-        setRegistryName(this.plugin.getModId(), shovelName);
-		ContentRegistry.registerItem(this.plugin, this, shovelName, this.category);
-		this.setHarvestLevel("shovel", entry.getHarvestLevel());
-		return this;
+		setUnlocalizedName(shovelName);
+        setRegistryName(plugin.getModId(), shovelName);
 	}
 	
 	public void registerItemModel() {
@@ -67,6 +59,7 @@ public class SimpleShovel extends ItemSpade implements IConfigureItemHelper<Simp
 	 */
 	public SimpleShovel setConfigEntry(ConfigTool entry) {
 		this.entry = entry;
+		this.setHarvestLevel("shovel", entry.getHarvestLevel());
 		this.setAdditionalProperties();
 		return this;
 	}

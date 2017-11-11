@@ -9,7 +9,6 @@ import javax.annotation.Nullable;
 
 import alexndr.api.config.IConfigureBlockHelper;
 import alexndr.api.config.types.ConfigBlock;
-import alexndr.api.core.SimpleCoreAPI;
 import alexndr.api.helpers.game.TooltipHelper;
 import alexndr.api.logger.LogHelper;
 import alexndr.api.registry.ContentCategories;
@@ -56,9 +55,10 @@ public class SimpleDoor extends BlockDoor implements IConfigureBlockHelper<Simpl
 		setRegistryName(plugin.getModId(), name);
     }
     
-	public void registerItemModel(Item itemBlock) {
-		SimpleCoreAPI.proxy.registerItemRenderer(plugin, itemBlock, 0, name);
-	}
+    // we don't register the door block as an item. Instead we register the door item as itself.
+//	public void registerItemModel(Item itemBlock) {
+//		SimpleCoreAPI.proxy.registerItemRenderer(plugin, itemBlock, 0, name);
+//	}
 	
     /**
      * Get the ItemStack for the item registered for this SimpleDoor block.

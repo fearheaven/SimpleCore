@@ -11,8 +11,6 @@ import com.google.common.collect.Lists;
 
 import alexndr.api.core.SimpleCoreAPI;
 import alexndr.api.helpers.game.TooltipHelper;
-import alexndr.api.registry.ContentCategories;
-import alexndr.api.registry.ContentRegistry;
 import alexndr.api.registry.Plugin;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
@@ -56,7 +54,7 @@ public class SimpleBucket extends Item
 {
 	protected String name;
 	protected Plugin plugin;
-	protected ContentCategories.Item category = ContentCategories.Item.OTHER;
+//	protected ContentCategories.Item category = ContentCategories.Item.OTHER;
 	// protected ConfigItem entry; // not configurable
 	protected List<String> toolTipStrings = Lists.newArrayList();
     protected final int capacity;
@@ -69,10 +67,10 @@ public class SimpleBucket extends Item
 	 * @param empty empty bucket item; null if *this* is the empty bucket item.
 	 * @param type SimpleBucketType object describing this bucket.
 	 */
-	public SimpleBucket(Plugin plugin, ItemStack empty, SimpleBucketType type) 
+	public SimpleBucket(String itemName, Plugin plugin, ItemStack empty, SimpleBucketType type) 
 	{
+		this.name = itemName;
 		this.capacity = Fluid.BUCKET_VOLUME;
-		
 		this.bucketType = type;
 		this.plugin = plugin;
         this.setMaxStackSize(1);
@@ -85,19 +83,10 @@ public class SimpleBucket extends Item
         	this.empty = empty;
         	setContainerItem(empty.getItem());
         }
+		setUnlocalizedName(itemName);
+        setRegistryName(plugin.getModId(), itemName);
 	} // end ctor
 
-	@Override
-	public SimpleBucket setUnlocalizedName(String itemName) 
-	{
-		super.setUnlocalizedName(itemName);
-		this.name = itemName;
-        setRegistryName(this.plugin.getModId(), itemName);
-//        GameRegistry.register(this);
-		ContentRegistry.registerItem(this.plugin, this, itemName, this.category);
-		return this;
-	}
-	
 	public void registerItemModel() {
 		SimpleCoreAPI.proxy.registerItemRenderer(plugin, this, 0, name);
 	}

@@ -6,9 +6,8 @@ import com.google.common.collect.Lists;
 
 import alexndr.api.config.IConfigureItemHelper;
 import alexndr.api.config.types.ConfigTool;
+import alexndr.api.core.SimpleCoreAPI;
 import alexndr.api.helpers.game.TooltipHelper;
-import alexndr.api.registry.ContentCategories;
-import alexndr.api.registry.ContentRegistry;
 import alexndr.api.registry.Plugin;
 import net.minecraft.item.ItemShears;
 import net.minecraft.item.ItemStack;
@@ -21,7 +20,7 @@ public class SimpleShears extends ItemShears implements IConfigureItemHelper<Sim
 	protected String name;
 	private final ToolMaterial material;
 	private Plugin plugin;
-	private ContentCategories.Item category = ContentCategories.Item.TOOL;
+//	private ContentCategories.Item category = ContentCategories.Item.TOOL;
 	private ConfigTool entry;
 	@SuppressWarnings("unused")
 	private List<String> toolTipStrings = Lists.newArrayList();
@@ -31,22 +30,18 @@ public class SimpleShears extends ItemShears implements IConfigureItemHelper<Sim
 	 * @param plugin The plugin the shears belong to
 	 * @param material The ToolMaterial of the shears
 	 */
-	public SimpleShears(Plugin plugin, ToolMaterial material) {
+	public SimpleShears(String shearsName, Plugin plugin, ToolMaterial material) {
 		super();
+		this.name = shearsName;
 		this.plugin = plugin;
 		this.material = material;
+		setUnlocalizedName(shearsName);
+        setRegistryName(plugin.getModId(), shearsName);
 	}
 	
-	@Override
-	public SimpleShears setUnlocalizedName(String shearsName) {
-		super.setUnlocalizedName(shearsName);
-		this.name = shearsName;
-        setRegistryName(this.plugin.getModId(), shearsName);
-		ContentRegistry.registerItem(this.plugin, this, shearsName, this.category);
-		this.setMaxDamage(entry.getUses());
-		return this;
+	public void registerItemModel() {
+		SimpleCoreAPI.proxy.registerItemRenderer(plugin, this, 0, name);
 	}
-	
 
 	/**
 	 * Returns the ConfigTool used by this tool.
@@ -63,6 +58,7 @@ public class SimpleShears extends ItemShears implements IConfigureItemHelper<Sim
 	 */
 	public SimpleShears setConfigEntry(ConfigTool entry) {
 		this.entry = entry;
+		this.setMaxDamage(entry.getUses());
 		this.setAdditionalProperties();
 		return this;
 	}

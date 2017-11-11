@@ -8,8 +8,6 @@ import alexndr.api.config.IConfigureItemHelper;
 import alexndr.api.config.types.ConfigArmor;
 import alexndr.api.core.SimpleCoreAPI;
 import alexndr.api.helpers.game.TooltipHelper;
-import alexndr.api.registry.ContentCategories;
-import alexndr.api.registry.ContentRegistry;
 import alexndr.api.registry.Plugin;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -31,7 +29,7 @@ public class SimpleArmor extends ItemArmor implements IConfigureItemHelper<Simpl
 
 	private final ArmorMaterial material;
 	protected Plugin plugin;
-	protected ContentCategories.Item category = ContentCategories.Item.ARMOR;
+//	protected ContentCategories.Item category = ContentCategories.Item.ARMOR;
 	protected ConfigArmor entry;
 	protected EntityEquipmentSlot slot;
 	protected String type, texturePath;
@@ -44,25 +42,17 @@ public class SimpleArmor extends ItemArmor implements IConfigureItemHelper<Simpl
 	 * @param material The ArmorMaterial of the armor
 	 * @param slot The armor slot the piece fits
 	 */
-	public SimpleArmor(Plugin plugin, ArmorMaterial material, EntityEquipmentSlot slot) 
+	public SimpleArmor(String armorName, Plugin plugin, ArmorMaterial material, EntityEquipmentSlot slot) 
 	{
 		super(material, 1, slot);
+		this.name = armorName;
 		this.plugin = plugin;
 		this.material = material;
 		this.slot = slot;
+		setUnlocalizedName(armorName);
+		setRegistryName(plugin.getModId(), armorName);
 	}
 
-	@Override
-	public SimpleArmor setUnlocalizedName(String armorName) 
-	{
-		super.setUnlocalizedName(armorName);
-		this.name = armorName;
-       setRegistryName(this.plugin.getModId(), armorName);
-//        GameRegistry.register(this);
-		ContentRegistry.registerItem(this.plugin, this, armorName, this.category);
-		return this;
-	}
-	
 	public void registerItemModel() {
 		SimpleCoreAPI.proxy.registerItemRenderer(plugin, this, 0, name);
 	}

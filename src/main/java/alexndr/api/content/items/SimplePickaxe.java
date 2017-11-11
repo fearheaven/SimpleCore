@@ -8,8 +8,6 @@ import alexndr.api.config.IConfigureItemHelper;
 import alexndr.api.config.types.ConfigTool;
 import alexndr.api.core.SimpleCoreAPI;
 import alexndr.api.helpers.game.TooltipHelper;
-import alexndr.api.registry.ContentCategories;
-import alexndr.api.registry.ContentRegistry;
 import alexndr.api.registry.Plugin;
 import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemStack;
@@ -22,7 +20,7 @@ public class SimplePickaxe extends ItemPickaxe implements IConfigureItemHelper<S
 	protected String name;
 	private final ToolMaterial material;
 	private Plugin plugin;
-	private ContentCategories.Item category = ContentCategories.Item.TOOL;
+//	private ContentCategories.Item category = ContentCategories.Item.TOOL;
 	private ConfigTool entry;
 	@SuppressWarnings("unused")
 	private List<String> toolTipStrings = Lists.newArrayList();
@@ -32,24 +30,16 @@ public class SimplePickaxe extends ItemPickaxe implements IConfigureItemHelper<S
 	 * @param plugin The plugin the tool belongs to
 	 * @param material The ToolMaterial of the tool
 	 */
-	public SimplePickaxe(Plugin plugin, ToolMaterial material) 
+	public SimplePickaxe(String pickaxeName, Plugin plugin, ToolMaterial material) 
 	{
 		super(material);
+		this.name = pickaxeName;
 		this.plugin = plugin;
 		this.material = material;
+		setUnlocalizedName(pickaxeName);
+        setRegistryName(plugin.getModId(), pickaxeName);
 	}
 
-	@Override
-	public SimplePickaxe setUnlocalizedName(String pickaxeName) 
-	{
-		super.setUnlocalizedName(pickaxeName);
-		this.name = pickaxeName;
-        setRegistryName(this.plugin.getModId(), pickaxeName);
- 		ContentRegistry.registerItem(this.plugin, this, pickaxeName, this.category);
-		this.setHarvestLevel("pickaxe", entry.getHarvestLevel());
-		return this;
-	}
-	
 	public void registerItemModel() {
 		SimpleCoreAPI.proxy.registerItemRenderer(plugin, this, 0, name);
 	}
@@ -69,6 +59,7 @@ public class SimplePickaxe extends ItemPickaxe implements IConfigureItemHelper<S
 	 */
 	public SimplePickaxe setConfigEntry(ConfigTool entry) {
 		this.entry = entry;
+		this.setHarvestLevel("pickaxe", entry.getHarvestLevel());
 		this.setAdditionalProperties();
 		return this;
 	}

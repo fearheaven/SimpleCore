@@ -9,9 +9,9 @@ import com.google.common.collect.Lists;
 import alexndr.api.config.types.ConfigBow;
 import alexndr.api.core.SimpleCoreAPI;
 import alexndr.api.helpers.game.TooltipHelper;
-import alexndr.api.registry.ContentCategories;
-import alexndr.api.registry.ContentRegistry;
 import alexndr.api.registry.Plugin;
+import net.minecraft.client.renderer.block.model.ModelBakery;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -26,6 +26,7 @@ import net.minecraft.stats.StatList;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.translation.I18n;
@@ -39,7 +40,7 @@ public class SimpleBow extends ItemBow
 {
 	protected String name;
 	protected Plugin plugin;
-	protected ContentCategories.Item category = ContentCategories.Item.WEAPON;
+//	protected ContentCategories.Item category = ContentCategories.Item.WEAPON;
 	protected ConfigBow entry;
 	protected List<String> toolTipStrings = Lists.newArrayList();
 	protected HashMap<SimpleBowEffects, Object> effects = new HashMap<SimpleBowEffects, Object>();
@@ -51,31 +52,37 @@ public class SimpleBow extends ItemBow
 	 * @param plugin The plugin the bow belongs to
 	 * @param maxUses The max uses the bow has
 	 */
-	public SimpleBow(Plugin plugin, int maxUses) {
+	public SimpleBow(String bowName, Plugin plugin, int maxUses) {
 		super();
+		this.name = bowName;
 		this.plugin = plugin;
 		this.setMaxDamage(maxUses);
 		this.bFull3D = true;
+		setUnlocalizedName(bowName);
+        setRegistryName(plugin.getModId(), bowName);
 	}
 	
-	@Override
-	public SimpleBow setUnlocalizedName(String bowName) 
+	public void registerItemModel() 
 	{
-		super.setUnlocalizedName(bowName);
-		this.name = bowName;
+		String bowName = this.name;
 		
-        setRegistryName(this.plugin.getModId(), bowName);
-		ContentRegistry.registerItem(this.plugin, this, bowName, this.category);
-		ContentRegistry.registerItem(this.plugin, this, bowName + "_pulling_0", this.category);
-		ContentRegistry.registerItem(this.plugin, this, bowName + "_pulling_1", this.category);
-		ContentRegistry.registerItem(this.plugin, this, bowName + "_pulling_2", this.category);
-		return this;
-	}
-
-	public void registerItemModel() {
-		SimpleCoreAPI.proxy.registerItemRenderer(plugin, this, 0, name);
-        // TODO - do the extra bow animations need to be registered?
-	}
+		// the stock renderer includes the basic inventory item.
+		SimpleCoreAPI.proxy.registerItemRenderer(plugin, this, 0, bowName);
+		
+		// now register the models for the various degrees of draw.
+		bowName = name + "_pulling_0";
+		ModelBakery.registerItemVariants(this, 
+					new ModelResourceLocation(new ResourceLocation(plugin.getModId(), bowName), 
+											  "inventory"));
+		bowName = name + "_pulling_1";
+		ModelBakery.registerItemVariants(this, 
+				new ModelResourceLocation(new ResourceLocation(plugin.getModId(), bowName), 
+										  "inventory"));
+		bowName = name + "_pulling_2";
+		ModelBakery.registerItemVariants(this, 
+				new ModelResourceLocation(new ResourceLocation(plugin.getModId(), bowName), 
+										  "inventory"));
+	} // end registerItemModel()
 
 
 	/**
@@ -380,4 +387,4 @@ public class SimpleBow extends ItemBow
     
 	public void setAdditionalProperties() {
 	}
-}
+} // end class

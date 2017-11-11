@@ -8,7 +8,6 @@ import alexndr.api.config.IConfigureItemHelper;
 import alexndr.api.config.types.ConfigItem;
 import alexndr.api.core.SimpleCoreAPI;
 import alexndr.api.helpers.game.TooltipHelper;
-import alexndr.api.registry.ContentCategories;
 import alexndr.api.registry.Plugin;
 import net.minecraft.item.Item;
 
@@ -19,7 +18,7 @@ public class SimpleItem extends Item implements IConfigureItemHelper<SimpleItem,
 {
 	protected String name;
 	private Plugin plugin;
-	private ContentCategories.Item category;
+//	private ContentCategories.Item category;
 	private ConfigItem entry;
 	@SuppressWarnings("unused")
 	private List<String> toolTipStrings = Lists.newArrayList();
@@ -29,11 +28,11 @@ public class SimpleItem extends Item implements IConfigureItemHelper<SimpleItem,
 	 * @param plugin The plugin the item belongs to
 	 * @param category The category of the item
 	 */
-	public SimpleItem(String itemName, Plugin plugin, ContentCategories.Item category) 
+	public SimpleItem(String itemName, Plugin plugin) 
 	{
 		this.name = itemName;
 		this.plugin = plugin;
-		this.category = category;
+//		this.category = category;
 		setUnlocalizedName(itemName);
         setRegistryName(plugin.getModId(), itemName);
 	}

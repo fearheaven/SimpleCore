@@ -8,8 +8,6 @@ import alexndr.api.config.IConfigureItemHelper;
 import alexndr.api.config.types.ConfigTool;
 import alexndr.api.core.SimpleCoreAPI;
 import alexndr.api.helpers.game.TooltipHelper;
-import alexndr.api.registry.ContentCategories;
-import alexndr.api.registry.ContentRegistry;
 import alexndr.api.registry.Plugin;
 import net.minecraft.item.ItemHoe;
 import net.minecraft.item.ItemStack;
@@ -22,7 +20,7 @@ public class SimpleHoe extends ItemHoe implements IConfigureItemHelper<SimpleHoe
 	protected String name;
 	private final ToolMaterial material;
 	private Plugin plugin;
-	private ContentCategories.Item category = ContentCategories.Item.TOOL;
+	// private ContentCategories.Item category = ContentCategories.Item.TOOL;
 	private ConfigTool entry;
 	@SuppressWarnings("unused")
 	private List<String> toolTipStrings = Lists.newArrayList();
@@ -32,20 +30,14 @@ public class SimpleHoe extends ItemHoe implements IConfigureItemHelper<SimpleHoe
 	 * @param plugin The plugin the tool belongs to
 	 * @param material The ToolMaterial of the tool
 	 */
-	public SimpleHoe(Plugin plugin, ToolMaterial material) {
+	public SimpleHoe(String hoeName, Plugin plugin, ToolMaterial material) 
+	{
 		super(material);
+		this.name = hoeName;
 		this.plugin = plugin;
 		this.material = material;
-	}
-	
-	@Override
-	public SimpleHoe setUnlocalizedName(String hoeName) {
-		super.setUnlocalizedName(hoeName);
-		this.name = hoeName;
-        setRegistryName(this.plugin.getModId(), hoeName);
-		ContentRegistry.registerItem(this.plugin, this, hoeName, this.category);
-		this.setHarvestLevel("axe", entry.getHarvestLevel());
-		return this;
+		setUnlocalizedName(hoeName);
+        setRegistryName(plugin.getModId(), hoeName);
 	}
 	
 	public void registerItemModel() {
@@ -67,6 +59,7 @@ public class SimpleHoe extends ItemHoe implements IConfigureItemHelper<SimpleHoe
 	 */
 	public SimpleHoe setConfigEntry(ConfigTool entry) {
 		this.entry = entry;
+		this.setHarvestLevel("axe", entry.getHarvestLevel());
 		this.setAdditionalProperties();
 		return this;
 	}
