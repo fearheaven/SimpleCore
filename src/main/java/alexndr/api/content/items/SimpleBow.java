@@ -69,7 +69,7 @@ public class SimpleBow extends ItemBow
 		// the stock renderer includes the basic inventory item.
 		SimpleCoreAPI.proxy.registerItemRenderer(plugin, this, 0, bowName);
 		
-		// now register the models for the various degrees of draw.
+		// now register the variants for the various degrees of draw.
 		bowName = name + "_pulling_0";
 		ModelBakery.registerItemVariants(this, 
 					new ModelResourceLocation(new ResourceLocation(plugin.getModId(), bowName), 
