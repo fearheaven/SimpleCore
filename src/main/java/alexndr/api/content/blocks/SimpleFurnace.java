@@ -8,6 +8,7 @@ import alexndr.api.helpers.game.TooltipHelper;
 import alexndr.api.registry.ContentCategories;
 import alexndr.api.registry.Plugin;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
@@ -41,7 +42,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public abstract class SimpleFurnace extends SimpleBlock implements ITileEntityProvider
 {
-	public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
+    public static final PropertyDirection FACING = BlockHorizontal.FACING;
 	
     /**
      * Is the random generator used by furnace to drop the inventory contents in random directions.
@@ -67,13 +68,13 @@ public abstract class SimpleFurnace extends SimpleBlock implements ITileEntityPr
 	 * @param category The category of the block
 	 * @param isBurning is the furnace lit or not?
 	 */
-	protected SimpleFurnace(String name, Plugin plugin, Material material, 
+	public SimpleFurnace(String name, Plugin plugin, Material material, 
 							ContentCategories.Block category, boolean isBurning) 
 	{
-		super(name, plugin, material, category);
-		this.isBurning = isBurning;
+		super(name, plugin, material, category, false);
 	    this.isBlockContainer = true;
-        this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
+	    this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
+	    this.isBurning = isBurning;
 	} // end ctor()
 	
 	/**
@@ -387,7 +388,6 @@ public abstract class SimpleFurnace extends SimpleBlock implements ITileEntityPr
 
     /* -------------- EVERYTHING BELOW HERE MUST BE OVERRIDDEN IN CHILD CLASSES ----------- */
 	
-    @SideOnly(Side.CLIENT)
     @Override
     public abstract ItemStack getItem(World worldIn, BlockPos pos, IBlockState state);
 

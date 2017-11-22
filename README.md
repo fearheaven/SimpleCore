@@ -9,7 +9,7 @@ Roadmap of Future releases
 
 ### Soonish:
 
-- add Achievements back in as 1.12+ Advancements
+- add Achievements back in as 1.12+ Advancements - SimpleOres DONE
 - add support for config GUI to all 4
 - restructure dependencies so that alloy blocks/items can be added without
 requiring Fusion installed (because other industrial mods have alloy furnaces)

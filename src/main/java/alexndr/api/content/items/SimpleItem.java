@@ -32,7 +32,6 @@ public class SimpleItem extends Item implements IConfigureItemHelper<SimpleItem,
 	{
 		this.name = itemName;
 		this.plugin = plugin;
-//		this.category = category;
 		setUnlocalizedName(itemName);
         setRegistryName(plugin.getModId(), itemName);
 	}
