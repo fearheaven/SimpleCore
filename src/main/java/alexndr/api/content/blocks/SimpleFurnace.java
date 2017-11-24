@@ -5,6 +5,7 @@ import java.util.Random;
 import alexndr.api.config.types.ConfigBlock;
 import alexndr.api.content.tiles.TileEntitySimpleFurnace;
 import alexndr.api.helpers.game.TooltipHelper;
+import alexndr.api.logger.LogHelper;
 import alexndr.api.registry.ContentCategories;
 import alexndr.api.registry.Plugin;
 import net.minecraft.block.Block;
@@ -20,7 +21,6 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.InventoryHelper;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
@@ -44,16 +44,16 @@ public abstract class SimpleFurnace extends SimpleBlock implements ITileEntityPr
 {
     public static final PropertyDirection FACING = BlockHorizontal.FACING;
 	
-    /**
-     * Is the random generator used by furnace to drop the inventory contents in random directions.
-     */
-	protected Random furnaceRand = new Random();
+//    /**
+//     * Is the random generator used by furnace to drop the inventory contents in random directions.
+//     */
+//	protected Random furnaceRand;
 	
 	protected boolean isBurning;
 	
 	// override for custom furnace classes
-	protected static Block unlit_furnace = Blocks.LIT_FURNACE;
-	protected static Block lit_furnace = Blocks.FURNACE;
+	protected static Block unlit_furnace;
+	protected static Block lit_furnace;
 	
     /**
      * This flag is used to prevent the furnace inventory to be dropped upon block removal, is used internally when the
@@ -72,9 +72,11 @@ public abstract class SimpleFurnace extends SimpleBlock implements ITileEntityPr
 							ContentCategories.Block category, boolean isBurning) 
 	{
 		super(name, plugin, material, category, false);
-	    this.isBlockContainer = true;
+		LogHelper.verbose(plugin.getModId(), "Finished SimpleBlock ctor for " + name);
+	    this.hasTileEntity = true;
 	    this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
 	    this.isBurning = isBurning;
+//	    furnaceRand = new Random();
 	} // end ctor()
 	
 	/**
@@ -178,7 +180,7 @@ public abstract class SimpleFurnace extends SimpleBlock implements ITileEntityPr
     @Override
     public void randomDisplayTick(IBlockState stateIn, World worldIn, BlockPos pos, Random rand)
     {
-        if (this.isBurning)
+        if (worldIn.isRemote && this.isBurning)
         {
             EnumFacing enumfacing = (EnumFacing)stateIn.getValue(FACING);
             double d0 = (double)pos.getX() + 0.5D;
@@ -228,13 +230,13 @@ public abstract class SimpleFurnace extends SimpleBlock implements ITileEntityPr
 
         if (active)
         {
-            worldIn.setBlockState(pos, getLit_furnace().getDefaultState().withProperty(FACING, iblockstate.getValue(FACING)), 3);
-            worldIn.setBlockState(pos, getLit_furnace().getDefaultState().withProperty(FACING, iblockstate.getValue(FACING)), 3);
+            worldIn.setBlockState(pos, Blocks.LIT_FURNACE.getDefaultState().withProperty(FACING, iblockstate.getValue(FACING)), 3);
+            worldIn.setBlockState(pos, Blocks.LIT_FURNACE.getDefaultState().withProperty(FACING, iblockstate.getValue(FACING)), 3);
         }
         else
         {
-            worldIn.setBlockState(pos, getUnlit_furnace().getDefaultState().withProperty(FACING, iblockstate.getValue(FACING)), 3);
-            worldIn.setBlockState(pos, getUnlit_furnace().getDefaultState().withProperty(FACING, iblockstate.getValue(FACING)), 3);
+            worldIn.setBlockState(pos, Blocks.FURNACE.getDefaultState().withProperty(FACING, iblockstate.getValue(FACING)), 3);
+            worldIn.setBlockState(pos, Blocks.FURNACE.getDefaultState().withProperty(FACING, iblockstate.getValue(FACING)), 3);
         }
 
         keepInventory = false;
@@ -376,31 +378,33 @@ public abstract class SimpleFurnace extends SimpleBlock implements ITileEntityPr
     /* ----------- Special to SimpleFurnace, not cut & pasted from BlockFurnace -------- */
     /* ----------- MUST BE RE-IMPLEMENTED IN CHILD CLASSES ----------------------------- */
     
-    public static SimpleFurnace getUnlit_furnace()
+    public static Block getUnlit_furnace()
 	{
-		return (SimpleFurnace) unlit_furnace;
+		return SimpleFurnace.unlit_furnace;
 	}
 
-	public static SimpleFurnace getLit_furnace()
+	public static Block getLit_furnace()
 	{
-		return (SimpleFurnace) lit_furnace;
+		return SimpleFurnace.lit_furnace;
 	}
 
-    /* -------------- EVERYTHING BELOW HERE MUST BE OVERRIDDEN IN CHILD CLASSES ----------- */
+	public static void setUnlit_furnace(Block unlit_furnace) {
+		SimpleFurnace.unlit_furnace = unlit_furnace;
+	}
+
+	public static void setLit_furnace(Block lit_furnace) {
+		SimpleFurnace.lit_furnace = lit_furnace;
+	}
+
 	
-    @Override
-    public abstract ItemStack getItem(World worldIn, BlockPos pos, IBlockState state);
-
-    /**
-     * Get the Item that this Block should drop when harvested.
-     */
-	@Override
-    public abstract Item getItemDropped(IBlockState state, Random rand, int fortune);
+    /* -------------- EVERYTHING BELOW HERE MUST BE OVERRIDDEN IN CHILD CLASSES ----------- */
 	
     /**
      * this must be overridden by instance class...
      */
     @Override
-	public abstract TileEntity createNewTileEntity(World worldIn, int meta);
+	public TileEntity createNewTileEntity(World worldIn, int meta) {
+		return null;
+	}
 
 } // end class

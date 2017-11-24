@@ -68,7 +68,7 @@ public class SimpleAxe extends ItemAxe implements IConfigureItemHelper<SimpleAxe
 	protected static float getAttackDamage(ToolMaterial m) 
 	{
 		return 2 * (int) Math.rint(
-				0.5 * (m.getDamageVsEntity() * 0.7058823529 + 6.352941176));
+				0.5 * (m.getAttackDamage() * 0.7058823529 + 6.352941176));
 	}
 
 	/**
@@ -79,7 +79,7 @@ public class SimpleAxe extends ItemAxe implements IConfigureItemHelper<SimpleAxe
 	protected static float getAttackSpeed(ToolMaterial m) 
 	{
 		return roundToFloatDecimal(
-				(m.getHarvestLevel() + m.getEfficiencyOnProperMaterial()) * 0.02312138728 - 3.275722543,
+				(m.getHarvestLevel() + m.getEfficiency()) * 0.02312138728 - 3.275722543,
 				RoundingMode.HALF_EVEN, 1);
 	}
 
