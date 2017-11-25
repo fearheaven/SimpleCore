@@ -8,6 +8,7 @@ import javax.annotation.Nullable;
 import alexndr.api.content.blocks.SimpleFurnace;
 import alexndr.api.helpers.game.FurnaceHelper;
 import alexndr.api.helpers.game.SimpleItemStackHelper;
+import alexndr.api.logger.LogHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
@@ -83,6 +84,7 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
 	public TileEntitySimpleFurnace(String tileName, int max_cook_time,
 								   String guiID, int furnace_stack_count) 
 	{
+		LogHelper.verbose("Finished TileEntity ctor for " + tileName);
 		this.furnaceName = tileName;
 		this.maxCookTime = max_cook_time;
 		this.furnaceGuiId = guiID;

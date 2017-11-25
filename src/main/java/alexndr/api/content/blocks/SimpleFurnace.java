@@ -44,11 +44,6 @@ public abstract class SimpleFurnace extends SimpleBlock implements ITileEntityPr
 {
     public static final PropertyDirection FACING = BlockHorizontal.FACING;
 	
-//    /**
-//     * Is the random generator used by furnace to drop the inventory contents in random directions.
-//     */
-//	protected Random furnaceRand;
-	
 	protected boolean isBurning;
 	
 	// override for custom furnace classes
@@ -76,7 +71,6 @@ public abstract class SimpleFurnace extends SimpleBlock implements ITileEntityPr
 	    this.hasTileEntity = true;
 	    this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
 	    this.isBurning = isBurning;
-//	    furnaceRand = new Random();
 	} // end ctor()
 	
 	/**
