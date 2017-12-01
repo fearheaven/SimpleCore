@@ -49,7 +49,7 @@ public class SimpleBlock extends Block implements IConfigureBlockHelper<SimpleBl
 	 * @param category The category of the block
 	 * @param do_register do setRegistryName() in this constructor.
 	 */
-	public SimpleBlock(String name, Plugin plugin, Material material, ContentCategories.Block category, boolean do_register) 
+	public SimpleBlock(String name, Plugin plugin, Material material, ContentCategories.Block category) 
 	{
 		super(material);
 		LogHelper.verbose(plugin.getModId(), "Finished Block ctor for " + name);
@@ -58,15 +58,7 @@ public class SimpleBlock extends Block implements IConfigureBlockHelper<SimpleBl
 		this.material = material;
 		this.category = category;
 		setUnlocalizedName(name);
-		
-		if (do_register) {
-			setRegistryName(plugin.getModId(), name);
-		}
-	} // end ctor
-
-	public SimpleBlock(String name, Plugin plugin, Material material, ContentCategories.Block category) 
-	{
-		this(name, plugin, material, category, true);
+		setRegistryName(plugin.getModId(), name);
 	} // end ctor
 
 	public SimpleBlock setStepSound(SoundType sound)

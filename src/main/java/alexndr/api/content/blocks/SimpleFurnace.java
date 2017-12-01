@@ -3,7 +3,8 @@ package alexndr.api.content.blocks;
 import java.util.Random;
 
 import alexndr.api.config.types.ConfigBlock;
-import alexndr.api.content.tiles.TileEntitySimpleFurnace;
+import alexndr.api.content.tiles.TileEntityBaseFurnace;
+import alexndr.api.helpers.game.IItemHandlerHelper;
 import alexndr.api.helpers.game.TooltipHelper;
 import alexndr.api.logger.LogHelper;
 import alexndr.api.registry.ContentCategories;
@@ -40,7 +41,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * why.
  *
  */
-public abstract class SimpleFurnace extends SimpleBlock implements ITileEntityProvider
+public abstract class SimpleFurnace<TEF extends TileEntityBaseFurnace> extends SimpleTileEntityBlock<TEF> 
 {
     public static final PropertyDirection FACING = BlockHorizontal.FACING;
 	
@@ -66,11 +67,10 @@ public abstract class SimpleFurnace extends SimpleBlock implements ITileEntityPr
 	public SimpleFurnace(String name, Plugin plugin, Material material, 
 							ContentCategories.Block category, boolean isBurning) 
 	{
-		super(name, plugin, material, category, false);
-		LogHelper.verbose(plugin.getModId(), "Finished SimpleBlock ctor for " + name);
+		super(name, plugin, material, category);
 	    this.hasTileEntity = true;
-	    this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
 	    this.isBurning = isBurning;
+	    this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
 	} // end ctor()
 	
 	/**
@@ -79,7 +79,7 @@ public abstract class SimpleFurnace extends SimpleBlock implements ITileEntityPr
 	 * @return SimpleFurnace
 	 */
 	@Override
-	public SimpleFurnace setConfigEntry(ConfigBlock entry) 
+	public SimpleFurnace<TEF> setConfigEntry(ConfigBlock entry) 
 	{
 		super.setConfigEntry(entry);
 		if(this.isBurning) {
@@ -97,7 +97,7 @@ public abstract class SimpleFurnace extends SimpleBlock implements ITileEntityPr
 	 * @param toolTip Name of the localisation entry for the tooltip, as a String. Normal format is modId.theitem.info
 	 * @return SimpleBlock
 	 */
-	public SimpleFurnace addToolTip(String toolTip) {
+	public SimpleFurnace<TEF> addToolTip(String toolTip) {
 		TooltipHelper.addTooltipToBlock(this, toolTip);
 		return this;
 	}
@@ -110,62 +110,53 @@ public abstract class SimpleFurnace extends SimpleBlock implements ITileEntityPr
 		}
 	}
 
-	/* --- COPIED FROM BlockContainer ----- */
-    /**
-     * Called on both Client and Server when World#addBlockEvent is called. On the Server, this may perform additional
-     * changes to the world, like pistons replacing the block with an extended base. On the client, the update may
-     * involve replacing tile entities, playing sounds, or performing other visual actions to reflect the server side
-     * changes. 
-     */
-    @SuppressWarnings("deprecation")
-    public boolean eventReceived(IBlockState state, World worldIn, BlockPos pos, int id, int param)
-    {
-        super.eventReceived(state, worldIn, pos, id, param);
-        TileEntity tileentity = worldIn.getTileEntity(pos);
-        return tileentity == null ? false : tileentity.receiveClientEvent(id, param);
-    }
+//	/* --- COPIED FROM BlockContainer ----- */
+//    /**
+//     * Called on both Client and Server when World#addBlockEvent is called. On the Server, this may perform additional
+//     * changes to the world, like pistons replacing the block with an extended base. On the client, the update may
+//     * involve replacing tile entities, playing sounds, or performing other visual actions to reflect the server side
+//     * changes. 
+//     */
+//    @SuppressWarnings("deprecation")
+//    public boolean eventReceived(IBlockState state, World worldIn, BlockPos pos, int id, int param)
+//    {
+//        super.eventReceived(state, worldIn, pos, id, param);
+//        TileEntity tileentity = worldIn.getTileEntity(pos);
+//        return tileentity == null ? false : tileentity.receiveClientEvent(id, param);
+//    }
+//	
+
 	
-	/*------------- MOST OF THE FOLLOWING ARE CUT & PASTED FROM BlockFurnace ----------------------*/
-	/* If BlockFurnace changes, you will need to change these methods -- Sinhika                   */
-	/*---------------------------------------------------------------------------------------------*/
-	/* cut & pasted from BlockFurnace */
 	@Override
     public void onBlockAdded(World worldIn, BlockPos pos, IBlockState state)
     {
         this.setDefaultFacing(worldIn, pos, state);
     }
 
-	/* cut & pasted from BlockFurnace */
+	/**
+	 * Which way should the furnace block face?
+	 * @param worldIn
+	 * @param pos
+	 * @param state
+	 */
 	protected void setDefaultFacing(World worldIn, BlockPos pos, IBlockState state)
 	{
 		if (!worldIn.isRemote)
 		{
-			IBlockState iblockstate = worldIn.getBlockState(pos.north());
-			IBlockState iblockstate1 = worldIn.getBlockState(pos.south());
-			IBlockState iblockstate2 = worldIn.getBlockState(pos.west());
-			IBlockState iblockstate3 = worldIn.getBlockState(pos.east());
 			EnumFacing enumfacing = (EnumFacing)state.getValue(FACING);
-
-			if (enumfacing == EnumFacing.NORTH && iblockstate.isFullBlock() && !iblockstate1.isFullBlock())
-			{
-				enumfacing = EnumFacing.SOUTH;
+			EnumFacing otherface = enumfacing.getOpposite();
+			IBlockState iblockstate = worldIn.getBlockState(pos.offset(enumfacing));
+			IBlockState iblockstate1 = worldIn.getBlockState(pos.offset(otherface));
+			
+			if (iblockstate.isFullBlock() && !iblockstate1.isFullBlock()) {
+				worldIn.setBlockState(pos, state.withProperty(FACING, otherface), 2);
 			}
-			else if (enumfacing == EnumFacing.SOUTH && iblockstate1.isFullBlock() && !iblockstate.isFullBlock())
-			{
-				enumfacing = EnumFacing.NORTH;
+			else {
+				worldIn.setBlockState(pos, state.withProperty(FACING, enumfacing), 2);
+				
 			}
-			else if (enumfacing == EnumFacing.WEST && iblockstate2.isFullBlock() && !iblockstate3.isFullBlock())
-			{
-				enumfacing = EnumFacing.EAST;
-			}
-			else if (enumfacing == EnumFacing.EAST && iblockstate3.isFullBlock() && !iblockstate2.isFullBlock())
-			{
-				enumfacing = EnumFacing.WEST;
-			}
-
-			worldIn.setBlockState(pos, state.withProperty(FACING, enumfacing), 2);
-		}
-	}
+		} // !isRemote
+	} // end setDefaultFacing()
 	
 
 	/* cut & pasted from BlockFurnace */
@@ -206,7 +197,7 @@ public abstract class SimpleFurnace extends SimpleBlock implements ITileEntityPr
                     worldIn.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, d0 + d4, d1, d2 + d3, 0.0D, 0.0D, 0.0D, new int[0]);
                     worldIn.spawnParticle(EnumParticleTypes.FLAME, d0 + d4, d1, d2 + d3, 0.0D, 0.0D, 0.0D, new int[0]);
             }
-        }
+        } // end-if isRemote && isBurning
     } // end randomDisplayTick()
 
     /**
@@ -224,13 +215,13 @@ public abstract class SimpleFurnace extends SimpleBlock implements ITileEntityPr
 
         if (active)
         {
-            worldIn.setBlockState(pos, Blocks.LIT_FURNACE.getDefaultState().withProperty(FACING, iblockstate.getValue(FACING)), 3);
-            worldIn.setBlockState(pos, Blocks.LIT_FURNACE.getDefaultState().withProperty(FACING, iblockstate.getValue(FACING)), 3);
+            worldIn.setBlockState(pos, lit_furnace.getDefaultState().withProperty(FACING, iblockstate.getValue(FACING)), 3);
+            worldIn.setBlockState(pos, lit_furnace.getDefaultState().withProperty(FACING, iblockstate.getValue(FACING)), 3);
         }
         else
         {
-            worldIn.setBlockState(pos, Blocks.FURNACE.getDefaultState().withProperty(FACING, iblockstate.getValue(FACING)), 3);
-            worldIn.setBlockState(pos, Blocks.FURNACE.getDefaultState().withProperty(FACING, iblockstate.getValue(FACING)), 3);
+            worldIn.setBlockState(pos, unlit_furnace.getDefaultState().withProperty(FACING, iblockstate.getValue(FACING)), 3);
+            worldIn.setBlockState(pos, unlit_furnace.getDefaultState().withProperty(FACING, iblockstate.getValue(FACING)), 3);
         }
 
         keepInventory = false;
@@ -267,9 +258,9 @@ public abstract class SimpleFurnace extends SimpleBlock implements ITileEntityPr
         {
             TileEntity tileentity = worldIn.getTileEntity(pos);
 
-            if (tileentity instanceof TileEntitySimpleFurnace)
+            if (tileentity instanceof TileEntityBaseFurnace)
             {
-                ((TileEntitySimpleFurnace)tileentity).setCustomInventoryName(stack.getDisplayName());
+                ((TileEntityBaseFurnace)tileentity).setCustomInventoryName(stack.getDisplayName());
             }
         }
     } // end ()
@@ -284,9 +275,10 @@ public abstract class SimpleFurnace extends SimpleBlock implements ITileEntityPr
         {
             TileEntity tileentity = worldIn.getTileEntity(pos);
 
-            if (tileentity instanceof TileEntitySimpleFurnace)
+            if (tileentity instanceof TileEntityBaseFurnace)
             {
-                InventoryHelper.dropInventoryItems(worldIn, pos, (TileEntitySimpleFurnace)tileentity);
+                IItemHandlerHelper.dropInventoryItems(worldIn, pos, 
+                							((TileEntityBaseFurnace)tileentity).getSlotHandler());
                 worldIn.updateComparatorOutputLevel(pos, this);
             }
         }
@@ -372,33 +364,24 @@ public abstract class SimpleFurnace extends SimpleBlock implements ITileEntityPr
     /* ----------- Special to SimpleFurnace, not cut & pasted from BlockFurnace -------- */
     /* ----------- MUST BE RE-IMPLEMENTED IN CHILD CLASSES ----------------------------- */
     
-    public static Block getUnlit_furnace()
-	{
-		return SimpleFurnace.unlit_furnace;
-	}
-
-	public static Block getLit_furnace()
-	{
-		return SimpleFurnace.lit_furnace;
-	}
-
-	public static void setUnlit_furnace(Block unlit_furnace) {
-		SimpleFurnace.unlit_furnace = unlit_furnace;
-	}
-
-	public static void setLit_furnace(Block lit_furnace) {
-		SimpleFurnace.lit_furnace = lit_furnace;
-	}
-
-	
-    /* -------------- EVERYTHING BELOW HERE MUST BE OVERRIDDEN IN CHILD CLASSES ----------- */
-	
-    /**
-     * this must be overridden by instance class...
-     */
-    @Override
-	public TileEntity createNewTileEntity(World worldIn, int meta) {
-		return null;
-	}
-
+//    public static Block getUnlit_furnace()
+//	{
+//		return SimpleFurnace.unlit_furnace;
+//	}
+//
+//	public static Block getLit_furnace()
+//	{
+//		return SimpleFurnace.lit_furnace;
+//	}
+//
+//	public static void setUnlit_furnace(Block unlit_furnace) {
+//		SimpleFurnace.unlit_furnace = unlit_furnace;
+//	}
+//
+//	public static void setLit_furnace(Block lit_furnace) {
+//		SimpleFurnace.lit_furnace = lit_furnace;
+//	}
+//
+//	
+    
 } // end class

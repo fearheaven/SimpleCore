@@ -45,6 +45,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * @author Sinhika
  *
  */
+@Deprecated
 public class TileEntitySimpleFurnace extends TileEntityLockable implements
 		ITickable, ISidedInventory 
 {
