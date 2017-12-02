@@ -4,14 +4,13 @@ import java.util.Random;
 
 import alexndr.api.config.types.ConfigBlock;
 import alexndr.api.content.tiles.TileEntityBaseFurnace;
+import alexndr.api.content.tiles.TileEntityBaseInventory;
 import alexndr.api.helpers.game.IItemHandlerHelper;
 import alexndr.api.helpers.game.TooltipHelper;
-import alexndr.api.logger.LogHelper;
 import alexndr.api.registry.ContentCategories;
 import alexndr.api.registry.Plugin;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockHorizontal;
-import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyDirection;
@@ -21,7 +20,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.Container;
-import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
@@ -41,7 +39,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * why.
  *
  */
-public abstract class SimpleFurnace<TEF extends TileEntityBaseFurnace> extends SimpleTileEntityBlock<TEF> 
+public abstract class SimpleFurnace<TEF extends TileEntityBaseInventory> extends SimpleTileEntityBlock<TEF> 
 {
     public static final PropertyDirection FACING = BlockHorizontal.FACING;
 	
@@ -71,6 +69,8 @@ public abstract class SimpleFurnace<TEF extends TileEntityBaseFurnace> extends S
 	    this.hasTileEntity = true;
 	    this.isBurning = isBurning;
 	    this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
+	    setLit_furnace(Blocks.LIT_FURNACE);
+	    setUnlit_furnace(Blocks.FURNACE);
 	} // end ctor()
 	
 	/**
@@ -215,13 +215,13 @@ public abstract class SimpleFurnace<TEF extends TileEntityBaseFurnace> extends S
 
         if (active)
         {
-            worldIn.setBlockState(pos, lit_furnace.getDefaultState().withProperty(FACING, iblockstate.getValue(FACING)), 3);
-            worldIn.setBlockState(pos, lit_furnace.getDefaultState().withProperty(FACING, iblockstate.getValue(FACING)), 3);
+            worldIn.setBlockState(pos, getLit_furnace().getDefaultState().withProperty(FACING, iblockstate.getValue(FACING)), 3);
+            worldIn.setBlockState(pos, getLit_furnace().getDefaultState().withProperty(FACING, iblockstate.getValue(FACING)), 3);
         }
         else
         {
-            worldIn.setBlockState(pos, unlit_furnace.getDefaultState().withProperty(FACING, iblockstate.getValue(FACING)), 3);
-            worldIn.setBlockState(pos, unlit_furnace.getDefaultState().withProperty(FACING, iblockstate.getValue(FACING)), 3);
+            worldIn.setBlockState(pos, getUnlit_furnace().getDefaultState().withProperty(FACING, iblockstate.getValue(FACING)), 3);
+            worldIn.setBlockState(pos, getUnlit_furnace().getDefaultState().withProperty(FACING, iblockstate.getValue(FACING)), 3);
         }
 
         keepInventory = false;
@@ -278,7 +278,7 @@ public abstract class SimpleFurnace<TEF extends TileEntityBaseFurnace> extends S
             if (tileentity instanceof TileEntityBaseFurnace)
             {
                 IItemHandlerHelper.dropInventoryItems(worldIn, pos, 
-                							((TileEntityBaseFurnace)tileentity).getSlotHandler());
+                							((TileEntityBaseInventory)tileentity).getSlotHandler());
                 worldIn.updateComparatorOutputLevel(pos, this);
             }
         }
@@ -360,28 +360,21 @@ public abstract class SimpleFurnace<TEF extends TileEntityBaseFurnace> extends S
     {
         return new BlockStateContainer(this, new IProperty[] {FACING});
     }
-    
-    /* ----------- Special to SimpleFurnace, not cut & pasted from BlockFurnace -------- */
-    /* ----------- MUST BE RE-IMPLEMENTED IN CHILD CLASSES ----------------------------- */
-    
-//    public static Block getUnlit_furnace()
-//	{
-//		return SimpleFurnace.unlit_furnace;
-//	}
-//
-//	public static Block getLit_furnace()
-//	{
-//		return SimpleFurnace.lit_furnace;
-//	}
-//
-//	public static void setUnlit_furnace(Block unlit_furnace) {
-//		SimpleFurnace.unlit_furnace = unlit_furnace;
-//	}
-//
-//	public static void setLit_furnace(Block lit_furnace) {
-//		SimpleFurnace.lit_furnace = lit_furnace;
-//	}
-//
-//	
+
+	public static Block getUnlit_furnace() {
+		return unlit_furnace;
+	}
+
+	public static void setUnlit_furnace(Block unlit_furnace) {
+		SimpleFurnace.unlit_furnace = unlit_furnace;
+	}
+
+	public static Block getLit_furnace() {
+		return lit_furnace;
+	}
+
+	public static void setLit_furnace(Block lit_furnace) {
+		SimpleFurnace.lit_furnace = lit_furnace;
+	}
     
 } // end class

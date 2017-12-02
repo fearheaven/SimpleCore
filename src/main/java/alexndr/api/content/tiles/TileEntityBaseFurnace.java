@@ -15,9 +15,7 @@ import net.minecraft.item.ItemSword;
 import net.minecraft.item.ItemTool;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ITickable;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IInteractionObject;
 import net.minecraftforge.common.capabilities.Capability;
@@ -25,11 +23,16 @@ import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
-public abstract class TileEntityBaseFurnace extends TileEntity implements ITickable, IInteractionObject 
+/**
+ * Base tile entity for Simple Ores furnaces. Differs from TileEntityFurnace in using
+ * capability-based inventory.
+ * @author Sinhika
+ */
+public abstract class TileEntityBaseFurnace extends TileEntityBaseInventory implements IInteractionObject 
 {
-    protected static final int NDX_INPUT_SLOT = 0;
-    protected static final int NDX_FUEL_SLOT = 1;
-    protected static final int NDX_OUTPUT_SLOT = 2;
+    public static final int NDX_INPUT_SLOT = 0;
+    public static final int NDX_FUEL_SLOT = 1;
+    public static final int NDX_OUTPUT_SLOT = 2;
  
     /** The number of ticks that the furnace will keep burning */
     protected int furnaceBurnTime;
@@ -49,32 +52,17 @@ public abstract class TileEntityBaseFurnace extends TileEntity implements ITicka
     protected String furnaceCustomName;
     protected String furnaceName;
     protected String furnaceGuiId;
-    protected int slotCount;
     
-    /** IItemHandler-based inventory */
-    protected ItemStackHandler slotHandler;
-    
-	public TileEntityBaseFurnace(String tileName, int max_cook_time,
+    public TileEntityBaseFurnace(String tileName, int max_cook_time,
 			   				 String guiID, int furnace_stack_count) 
 	{
+		super(furnace_stack_count);
 		this.furnaceName = tileName;
 		this.maxCookTime = max_cook_time;
 		this.furnaceGuiId = guiID;
-		this.slotCount = furnace_stack_count;
-	    slotHandler = new ItemStackHandler(furnace_stack_count) {
-	        @Override
-	        protected void onContentsChanged(int slot) {
-	        	TileEntityBaseFurnace.this.markDirty();
-	        }
-	    };
 	} // end ctor
 
-	public ItemStackHandler getSlotHandler()
-	{
-		return this.slotHandler;
-	}
-	
-    /**
+	/**
      * Furnace isBurning
      */
     public boolean isBurning()
@@ -91,6 +79,12 @@ public abstract class TileEntityBaseFurnace extends TileEntity implements ITicka
     public void setCustomInventoryName(String customName)
     {
         this.furnaceCustomName = customName;
+    }
+
+    /** If we are too far away from this tile entity you cannot use it */
+    public boolean canInteractWith(EntityPlayer playerIn) 
+    {
+        return !isInvalid() && playerIn.getDistanceSq(pos.add(0.5D, 0.5D, 0.5D)) <= 64D;
     }
 
     /**
@@ -121,17 +115,17 @@ public abstract class TileEntityBaseFurnace extends TileEntity implements ITicka
     } // end canSmelt()
 
 	@Override
-	public void readFromNBT(NBTTagCompound compound) 
+	public void readSyncableNBT(NBTTagCompound compound, NBTType type) 
 	{
-		super.readFromNBT(compound);
-        this.furnaceBurnTime = compound.getInteger("BurnTime");
-        this.cookTime = compound.getInteger("CookTime");
-        this.totalCookTime = compound.getInteger("CookTimeTotal");
-        this.currentItemBurnTime = 
-        		TileEntityBaseFurnace.getItemBurnTime(
-        					slotHandler.getStackInSlot(NDX_FUEL_SLOT));
-		if (compound.hasKey("items")) {
-			slotHandler.deserializeNBT((NBTTagCompound) compound.getTag("items"));
+		super.readSyncableNBT(compound, type);
+		if (type != NBTType.SAVE_BLOCK)
+		{
+			this.furnaceBurnTime = compound.getInteger("BurnTime");
+			this.cookTime = compound.getInteger("CookTime");
+			this.totalCookTime = compound.getInteger("CookTimeTotal");
+			this.currentItemBurnTime = 
+					TileEntityBaseFurnace.getItemBurnTime(
+							slotHandler.getStackInSlot(NDX_FUEL_SLOT));
 		}
         if (compound.hasKey("CustomName", 8))
         {
@@ -141,18 +135,20 @@ public abstract class TileEntityBaseFurnace extends TileEntity implements ITicka
 
 
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound compound) 
+	public void writeSyncableNBT(NBTTagCompound compound, NBTType type) 
 	{
-        compound.setInteger("BurnTime", (short)this.furnaceBurnTime);
-        compound.setInteger("CookTime", (short)this.cookTime);
-        compound.setInteger("CookTimeTotal", (short)this.totalCookTime);
-        compound.setTag("items", slotHandler.serializeNBT());
-        if (this.hasCustomName())
-        {
-            compound.setString("CustomName", this.furnaceCustomName);
-        }
-		return super.writeToNBT(compound);
-	} // end writeFromNBT()
+		super.writeSyncableNBT(compound, type);
+	    if (type != NBTType.SAVE_BLOCK)
+	    {
+	    	compound.setInteger("BurnTime", (short)this.furnaceBurnTime);
+	    	compound.setInteger("CookTime", (short)this.cookTime);
+	    	compound.setInteger("CookTimeTotal", (short)this.totalCookTime);
+	    }
+    	if (this.hasCustomName())
+    	{
+    		compound.setString("CustomName", this.furnaceCustomName);
+    	}
+	} // end writeSyncableNBT()
 
 
 	@Override
