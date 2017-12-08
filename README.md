@@ -1,7 +1,10 @@
 SimpleCore
 ==========
 
-Repository for the SimpleCore API by AleXndrTheGr8st
+Repository for the SimpleCore API by AleXndrTheGr8st and Sinhika.
+
+Some of the base classes for implementing machines/furnaces in Minecraft/Forge 1.12.2 are
+based on base classes from Ellpeck's "Actual Additions" mod (see <https://minecraft.curseforge.com/projects/actually-additions>).
 
 
 Roadmap of Future releases
@@ -15,7 +18,7 @@ Roadmap of Future releases
 requiring Fusion installed (because other industrial mods have alloy furnaces)
 - ~~port SimpleOres2 to 1.12+~~ - DONE
 - port Fusion to 1.12+
-- port Netherrocks to 1.12+
+- port Netherrocks to 1.12+ - IN PROGRESS
 - port Aesthetics to 1.12+
 - port Machines to 1.12+
  
@@ -25,7 +28,7 @@ requiring Fusion installed (because other industrial mods have alloy furnaces)
 - port akkkamaddi's Additions (see that thread later on)
 - add optional recipes for other mods' alloy furnaces.
 - ~~re-write config system to use JSON instead of XML~~ - DONE
-- remove ISidedInventory support and wrappers and go pure capability.
+- remove ISidedInventory support and wrappers and go pure capability. - IN PROGRESS
 - re-visit SimpleBucket code and models. They probably aren't quite right.
 - ~~explore non-consumed catalyst option~~ Explored on Forum. Not popular idea.
 - ~~add a Zinc plugin (Sinhika's Simple Zinc?) with Brass alloy for use with

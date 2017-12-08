@@ -1,3 +1,14 @@
+/*
+ * This file ("TileEntityBaseInventory.java") is part of the Minecraft mod project SimpleCore. 
+ * It is created and owned by Sinhika and Skrallexxx and distributed under the Lesser GNU Public 
+ * License v3.0, a copy of which is included in the root of this source tree ("lgpl.txt") or 
+ * otherwise readable at <http://fsf.org/>.
+ * 
+ * Parts of this file are also based on Actually Additions source code by Ellpeck. See
+ * <https://minecraft.curseforge.com/projects/actually-additions> for details of that mod.
+ * 
+ * (c) 2014-2017 Sinhika and Skrallexxx (aka AleXndrTheGr8st)
+ */
 package alexndr.api.content.tiles;
 
 import net.minecraft.nbt.NBTTagCompound;
