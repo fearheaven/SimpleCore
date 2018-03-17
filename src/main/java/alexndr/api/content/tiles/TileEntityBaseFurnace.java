@@ -31,6 +31,8 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IInteractionObject;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.event.ForgeEventFactory;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 /**
@@ -365,5 +367,22 @@ public abstract class TileEntityBaseFurnace extends TileEntityBaseInventory impl
         return flag1;
 	} // end default_cooking_update()
 
+	
+	@SideOnly(Side.CLIENT)
+	public int getScaledCookProgress(int scaleFactor) 
+	{
+		return ((this.totalCookTime != 0 && this.cookTime != 0) 
+				? this.cookTime * scaleFactor / this.totalCookTime 
+				: 0);
+	} // end getScaledCookProgress()
+  
+	@SideOnly(Side.CLIENT)
+	public int getScaledBurnTime(int scaleFactor) 
+	{
+      int j = this.currentItemBurnTime;
+      if ( j == 0) 
+    	  j = 200;
+      return this.furnaceBurnTime * scaleFactor / j;
+	} // end getScaledBurnTime()
 
 } // end class
