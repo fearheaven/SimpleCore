@@ -35,7 +35,6 @@ public abstract class TileEntityBase extends TileEntity implements ITickable
 	@Override
 	public abstract void update();
     
-	
 	public void writeSyncableNBT(NBTTagCompound compound, NBTType type)
 	{
         if(type != NBTType.SAVE_BLOCK) {
