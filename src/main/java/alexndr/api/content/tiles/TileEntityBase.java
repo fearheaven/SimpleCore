@@ -11,14 +11,11 @@
  */
 package alexndr.api.content.tiles;
 
-import alexndr.api.network.MessageTileEntityServer;
-import alexndr.api.network.SimpleCorePacketHandler;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
 
 /**
  * A TileEntity class with some standard NBT and network sync handling methods added. 
@@ -86,7 +83,7 @@ public abstract class TileEntityBase extends TileEntity implements ITickable
 	{
         NBTTagCompound compound = new NBTTagCompound();
         this.writeSyncableNBT(compound, NBTType.SYNC);
-        return new SPacketUpdateTileEntity(this.pos, 1, compound);
+        return new SPacketUpdateTileEntity(this.pos, -1, compound);
 	}
 
 	@Override
@@ -108,23 +105,23 @@ public abstract class TileEntityBase extends TileEntity implements ITickable
 		 this.readSyncableNBT(tag, NBTType.SYNC);
 	}
 	
-	public final void sendUpdate() 
-	{
-		if(this.world != null && !this.world.isRemote)
-		{
-			NBTTagCompound compound = new NBTTagCompound();
-			this.writeSyncableNBT(compound, NBTType.SYNC);
-			NBTTagCompound data = new NBTTagCompound();
-			data.setTag("Data", compound);
-			data.setInteger("X", this.pos.getX());
-			data.setInteger("Y", this.pos.getY());
-			data.setInteger("Z", this.pos.getZ());
-			SimpleCorePacketHandler.INSTANCE.sendToAllAround(
-				new MessageTileEntityServer(data), 
-				new NetworkRegistry.TargetPoint(this.world.provider.getDimension(), 
-												this.getPos().getX(), this.getPos().getY(), 
-												this.getPos().getZ(), 64));
-		} // end-if !isRemote
-	} // end sendUpdate()
+//	public final void sendUpdate() 
+//	{
+//		if(this.world != null && !this.world.isRemote)
+//		{
+//			NBTTagCompound compound = new NBTTagCompound();
+//			this.writeSyncableNBT(compound, NBTType.SYNC);
+//			NBTTagCompound data = new NBTTagCompound();
+//			data.setTag("Data", compound);
+//			data.setInteger("X", this.pos.getX());
+//			data.setInteger("Y", this.pos.getY());
+//			data.setInteger("Z", this.pos.getZ());
+//			SimpleCorePacketHandler.INSTANCE.sendToAllAround(
+//				new MessageTileEntityServer(data), 
+//				new NetworkRegistry.TargetPoint(this.world.provider.getDimension(), 
+//												this.getPos().getX(), this.getPos().getY(), 
+//												this.getPos().getZ(), 64));
+//		} // end-if !isRemote
+//	} // end sendUpdate()
 	
 } // end class

@@ -31,11 +31,17 @@ public abstract class TileEntityBaseInventory extends TileEntityBase
 	    slotHandler = new ItemStackHandler(furnace_stack_count) {
 	        @Override
 	        protected void onContentsChanged(int slot) {
+//	        	TileEntityBaseInventory.this.onSlotChanged(slot);
 	        	TileEntityBaseInventory.this.markDirty();
 	        }
 	    };
 	} //ctor
 
+	/** override to handle specific interesting changes to specific slots */
+//	public void onSlotChanged(int slot) {
+//	
+//	} // end-onSlotChanged()
+	
 	public ItemStackHandler getSlotHandler() {
 		return this.slotHandler;
 	}
