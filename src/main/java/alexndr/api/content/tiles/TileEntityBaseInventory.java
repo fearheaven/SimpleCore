@@ -78,9 +78,6 @@ public abstract class TileEntityBaseInventory extends TileEntityBase
 		super.markDirty();
 		IBlockState blockstate = this.getWorld().getBlockState(this.pos);
 		this.getWorld().notifyBlockUpdate(this.pos, blockstate, blockstate, 2);
-//		if(this.shouldSyncSlots()){
-//			this.sendUpdate();
-//		}
 	} // end markDirty()
 
     @Override

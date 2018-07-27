@@ -28,6 +28,15 @@ public abstract class TileEntityBase extends TileEntity implements ITickable
         SYNC,
         SAVE_BLOCK
     }
+    protected int tileEntityType;
+    
+	public int getTileEntityType() {
+		return tileEntityType;
+	}
+
+	public void setTileEntityType(int tileEntityType) {
+		this.tileEntityType = tileEntityType;
+	}
 
 	@Override
 	public abstract void update();
@@ -83,7 +92,7 @@ public abstract class TileEntityBase extends TileEntity implements ITickable
 	{
         NBTTagCompound compound = new NBTTagCompound();
         this.writeSyncableNBT(compound, NBTType.SYNC);
-        return new SPacketUpdateTileEntity(this.pos, -1, compound);
+        return new SPacketUpdateTileEntity(this.pos, this.getTileEntityType(), compound);
 	}
 
 	@Override
@@ -97,8 +106,15 @@ public abstract class TileEntityBase extends TileEntity implements ITickable
 	@Override
 	public final void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) 
 	{
-		this.readSyncableNBT(pkt.getNbtCompound(), NBTType.SYNC);
-	}
+		if (this.getWorld().isRemote) 
+		{
+			if (this.getPos().equals(pkt.getPos()) 
+				&& pkt.getTileEntityType() == this.getTileEntityType() ) 
+			{
+				this.readSyncableNBT(pkt.getNbtCompound(), NBTType.SYNC);
+			}
+		}
+	} // end onDataPacket()
 
 	@Override
 	public final void handleUpdateTag(NBTTagCompound tag) {
