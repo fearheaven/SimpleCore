@@ -11,6 +11,7 @@
  */
 package alexndr.api.content.tiles;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
@@ -47,7 +48,8 @@ public abstract class TileEntityBaseInventory extends TileEntityBase
 	public void writeSyncableNBT(NBTTagCompound compound, NBTType type) 
 	{
 		super.writeSyncableNBT(compound, type);
-		if(type == NBTType.SAVE_TILE || (type == NBTType.SYNC && this.shouldSyncSlots())) 
+//		if(type == NBTType.SAVE_TILE || (type == NBTType.SYNC && this.shouldSyncSlots())) 
+		if(type == NBTType.SAVE_TILE || type == NBTType.SYNC) 
 		{
 	        compound.setTag("items", slotHandler.serializeNBT());
 		}
@@ -57,7 +59,8 @@ public abstract class TileEntityBaseInventory extends TileEntityBase
 	public void readSyncableNBT(NBTTagCompound compound, NBTType type) 
 	{
 		super.readSyncableNBT(compound, type);
-		if(type == NBTType.SAVE_TILE || (type == NBTType.SYNC && this.shouldSyncSlots()))
+//		if(type == NBTType.SAVE_TILE || (type == NBTType.SYNC && this.shouldSyncSlots()))
+		if(type == NBTType.SAVE_TILE || type == NBTType.SYNC)
 		{
 			slotHandler.deserializeNBT((NBTTagCompound) compound.getTag("items"));
 		}
@@ -67,9 +70,11 @@ public abstract class TileEntityBaseInventory extends TileEntityBase
 	public void markDirty()
 	{
 		super.markDirty();
-		if(this.shouldSyncSlots()){
-			this.sendUpdate();
-		}
+		IBlockState blockstate = this.getWorld().getBlockState(this.pos);
+		this.getWorld().notifyBlockUpdate(this.pos, blockstate, blockstate, 2);
+//		if(this.shouldSyncSlots()){
+//			this.sendUpdate();
+//		}
 	} // end markDirty()
 
     @Override

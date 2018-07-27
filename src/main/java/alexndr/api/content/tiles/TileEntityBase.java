@@ -86,7 +86,7 @@ public abstract class TileEntityBase extends TileEntity implements ITickable
 	{
         NBTTagCompound compound = new NBTTagCompound();
         this.writeSyncableNBT(compound, NBTType.SYNC);
-        return new SPacketUpdateTileEntity(this.pos, -1, compound);
+        return new SPacketUpdateTileEntity(this.pos, 1, compound);
 	}
 
 	@Override

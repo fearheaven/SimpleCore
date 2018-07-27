@@ -78,6 +78,7 @@ public abstract class TileEntityBaseFurnace extends TileEntityBaseInventory impl
 		this.furnaceName = tileName;
 		this.maxCookTime = max_cook_time;
 		this.furnaceGuiId = guiID;
+		this.cookTime = 0;
 	} // end ctor
 
 	/**
@@ -141,9 +142,7 @@ public abstract class TileEntityBaseFurnace extends TileEntityBaseInventory impl
 			this.furnaceBurnTime = compound.getInteger("BurnTime");
 			this.cookTime = compound.getInteger("CookTime");
 			this.totalCookTime = compound.getInteger("CookTimeTotal");
-			this.currentItemBurnTime = 
-					TileEntityBaseFurnace.getItemBurnTime(
-							slotHandler.getStackInSlot(NDX_FUEL_SLOT));
+			this.currentItemBurnTime = getItemBurnTime(slotHandler.getStackInSlot(NDX_FUEL_SLOT));
 		}
         if (compound.hasKey("CustomName", 8))
         {
@@ -168,7 +167,6 @@ public abstract class TileEntityBaseFurnace extends TileEntityBaseInventory impl
     	}
 	} // end writeSyncableNBT()
 
-
 	@Override
 	public void update() 
 	{
@@ -189,7 +187,7 @@ public abstract class TileEntityBaseFurnace extends TileEntityBaseInventory impl
                 burnTime = TileEntityBaseFurnace.getItemBurnTime(itemstack);
             }
             flag1 = default_cooking_update(flag1, itemstack, burnTime);
-           if (flag != this.isBurning())
+            if (flag != this.isBurning())
             {
                 flag1 = true;
                 SimpleFurnace.setState(this.isBurning(), this.getWorld(), this.pos);
@@ -216,7 +214,9 @@ public abstract class TileEntityBaseFurnace extends TileEntityBaseInventory impl
 
 	@Override
 	public ITextComponent getDisplayName() {
-        return (ITextComponent)(this.hasCustomName() ? new TextComponentString(this.getName()) : new TextComponentTranslation(this.getName(), new Object[0]));
+        return (ITextComponent)(this.hasCustomName() 
+        		? new TextComponentString(this.getName()) 
+        		: new TextComponentTranslation(this.getName(), new Object[0]));
 	}
 
 	@Override
@@ -322,14 +322,16 @@ public abstract class TileEntityBaseFurnace extends TileEntityBaseInventory impl
      */
 	protected boolean default_cooking_update(boolean flag1, ItemStack readonlyFuelStack, int burnTime)
 	{
-        if (this.isBurning() || !readonlyFuelStack.isEmpty() 
-            &&  ! slotHandler.getStackInSlot(NDX_INPUT_SLOT).isEmpty())
+        if (this.isBurning() || ( ! readonlyFuelStack.isEmpty() 
+        						 && ! slotHandler.getStackInSlot(NDX_INPUT_SLOT).isEmpty()))
         {
             if (!this.isBurning() && this.canSmelt())
             {
                 this.furnaceBurnTime = burnTime;
                 this.currentItemBurnTime = this.furnaceBurnTime;
-
+            	this.totalCookTime = this.getCookTime(slotHandler.getStackInSlot(NDX_INPUT_SLOT));
+            	this.cookTime = 0;
+            	
                 if (this.isBurning())
                 {
                     flag1 = true;
@@ -358,10 +360,10 @@ public abstract class TileEntityBaseFurnace extends TileEntityBaseInventory impl
             {
                 ++this.cookTime;
 
-                if (this.cookTime == this.totalCookTime)
+                if (this.cookTime >= this.totalCookTime)
                 {
                     this.cookTime = 0;
-                    this.totalCookTime = this.getCookTime(slotHandler.getStackInSlot(NDX_INPUT_SLOT));
+                    // this.totalCookTime = this.getCookTime(slotHandler.getStackInSlot(NDX_INPUT_SLOT));
                     this.smeltItem();
                     flag1 = true;
                 }
@@ -402,5 +404,6 @@ public abstract class TileEntityBaseFurnace extends TileEntityBaseInventory impl
 	{
 		return (oldState != newState && oldState.getBlock() != newState.getBlock());
 	}
+
 
 } // end class
