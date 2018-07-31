@@ -25,8 +25,7 @@ public abstract class TileEntityBase extends TileEntity implements ITickable
 {
     public enum NBTType {
         SAVE_TILE,
-        SYNC,
-        SAVE_BLOCK
+        SYNC
     }
     protected int tileEntityType;
     
@@ -43,16 +42,12 @@ public abstract class TileEntityBase extends TileEntity implements ITickable
     
 	public void writeSyncableNBT(NBTTagCompound compound, NBTType type)
 	{
-        if(type != NBTType.SAVE_BLOCK) {
-            super.writeToNBT(compound);
-        }
+		super.writeToNBT(compound);
 	} // end writeSyncableNBT()
 	
 	public void readSyncableNBT(NBTTagCompound compound, NBTType type)
 	{
-		if (type != NBTType.SAVE_BLOCK) {
-			super.readFromNBT(compound);
-		}
+		super.readFromNBT(compound);
 	}
 
 	/**

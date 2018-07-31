@@ -11,7 +11,6 @@
  */
 package alexndr.api.content.tiles;
 
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
@@ -28,13 +27,7 @@ public abstract class TileEntityBaseInventory extends TileEntityBase
 	{
 		super();
 		this.slotCount = furnace_stack_count;
-	    slotHandler = new ItemStackHandler(furnace_stack_count) {
-	        @Override
-	        protected void onContentsChanged(int slot) {
-//	        	TileEntityBaseInventory.this.onSlotChanged(slot);
-	        	TileEntityBaseInventory.this.markDirty();
-	        }
-	    };
+	    slotHandler = new TileStackHandler(furnace_stack_count);
 	} //ctor
 
 	/** override to handle specific interesting changes to specific slots */
@@ -55,10 +48,7 @@ public abstract class TileEntityBaseInventory extends TileEntityBase
 	{
 		super.writeSyncableNBT(compound, type);
 //		if(type == NBTType.SAVE_TILE || (type == NBTType.SYNC && this.shouldSyncSlots())) 
-		if(type == NBTType.SAVE_TILE || type == NBTType.SYNC) 
-		{
-	        compound.setTag("items", slotHandler.serializeNBT());
-		}
+		compound.setTag("items", slotHandler.serializeNBT());
 	} // end writeSyncableNBT()
 
 	@Override
@@ -66,18 +56,18 @@ public abstract class TileEntityBaseInventory extends TileEntityBase
 	{
 		super.readSyncableNBT(compound, type);
 //		if(type == NBTType.SAVE_TILE || (type == NBTType.SYNC && this.shouldSyncSlots()))
-		if(type == NBTType.SAVE_TILE || type == NBTType.SYNC)
-		{
-			slotHandler.deserializeNBT((NBTTagCompound) compound.getTag("items"));
-		}
+		slotHandler.deserializeNBT((NBTTagCompound) compound.getTag("items"));
 	} // end readSyncableNBT()
 
 	@Override
 	public void markDirty()
 	{
 		super.markDirty();
-		IBlockState blockstate = this.getWorld().getBlockState(this.pos);
-		this.getWorld().notifyBlockUpdate(this.pos, blockstate, blockstate, 2);
+//        if (this.world != null)
+//        {
+//        	IBlockState blockstate = this.getWorld().getBlockState(this.pos);
+//        	this.getWorld().notifyBlockUpdate(this.pos, blockstate, blockstate, 2);
+//        }
 	} // end markDirty()
 
     @Override
@@ -85,4 +75,27 @@ public abstract class TileEntityBaseInventory extends TileEntityBase
         return ItemHandlerHelper.calcRedstoneFromInventory(this.slotHandler);
     }
 	
+    /** 
+     * inner class that sub-classes ItemHandler.
+     */
+    protected class TileStackHandler extends ItemStackHandler
+    {
+
+		protected TileStackHandler(int size) {
+			super(size);
+		}
+    	
+        @Override
+        protected void onContentsChanged(int slot) {
+        	super.onContentsChanged(slot);
+        	TileEntityBaseInventory.this.markDirty();
+        }
+    };  // end inner-class TileStackHandler
+    
+    
+    
+    
+    
+    
+    
 } // end class

@@ -149,13 +149,10 @@ public abstract class TileEntityBaseFurnace extends TileEntityBaseInventory impl
 	public void readSyncableNBT(NBTTagCompound compound, NBTType type) 
 	{
 		super.readSyncableNBT(compound, type);
-		if (type != NBTType.SAVE_BLOCK)
-		{
-			this.furnaceBurnTime = compound.getInteger("BurnTime");
-			this.cookTime = compound.getInteger("CookTime");
-			this.totalCookTime = compound.getInteger("CookTimeTotal");
-			this.currentItemBurnTime = getItemBurnTime(slotHandler.getStackInSlot(NDX_FUEL_SLOT));
-		}
+		this.furnaceBurnTime = compound.getInteger("BurnTime");
+		this.cookTime = compound.getInteger("CookTime");
+		this.totalCookTime = compound.getInteger("CookTimeTotal");
+		this.currentItemBurnTime = getItemBurnTime(slotHandler.getStackInSlot(NDX_FUEL_SLOT));
         if (compound.hasKey("CustomName", 8))
         {
             this.furnaceCustomName = compound.getString("CustomName");
@@ -167,12 +164,9 @@ public abstract class TileEntityBaseFurnace extends TileEntityBaseInventory impl
 	public void writeSyncableNBT(NBTTagCompound compound, NBTType type) 
 	{
 		super.writeSyncableNBT(compound, type);
-	    if (type != NBTType.SAVE_BLOCK)
-	    {
-	    	compound.setInteger("BurnTime", (short)this.furnaceBurnTime);
-	    	compound.setInteger("CookTime", (short)this.cookTime);
-	    	compound.setInteger("CookTimeTotal", (short)this.totalCookTime);
-	    }
+		compound.setInteger("BurnTime", (short)this.furnaceBurnTime);
+		compound.setInteger("CookTime", (short)this.cookTime);
+		compound.setInteger("CookTimeTotal", (short)this.totalCookTime);
     	if (this.hasCustomName())
     	{
     		compound.setString("CustomName", this.furnaceCustomName);
