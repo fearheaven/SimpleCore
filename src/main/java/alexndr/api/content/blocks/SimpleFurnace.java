@@ -12,11 +12,11 @@ import alexndr.api.registry.Plugin;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.Container;
@@ -250,19 +250,15 @@ public abstract class SimpleFurnace<TEF extends TileEntityBaseInventory> extends
      * Mostly cut & pasted from BlockFurnace.
      */
     @Override
-    public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack)
+    public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, 
+    							EntityLivingBase placer, ItemStack stack)
     {
-        worldIn.setBlockState(pos, state.withProperty(FACING, placer.getHorizontalFacing().getOpposite()), 2);
+    	TileEntity te = worldIn.getTileEntity(pos);
 
-        if (stack.hasDisplayName())
-        {
-            TileEntity tileentity = worldIn.getTileEntity(pos);
-
-            if (tileentity instanceof TileEntityBaseFurnace)
-            {
-                ((TileEntityBaseFurnace)tileentity).setCustomInventoryName(stack.getDisplayName());
-            }
-        }
+    	if (!worldIn.isRemote && te instanceof TileEntityBaseFurnace && placer instanceof EntityPlayer)
+    	{
+    		((TileEntityBaseFurnace) te).setPlayer((EntityPlayer) placer);
+    	}
     } // end ()
 
     /**
@@ -318,14 +314,7 @@ public abstract class SimpleFurnace<TEF extends TileEntityBaseInventory> extends
     @Override
     public IBlockState getStateFromMeta(int meta)
     {
-        EnumFacing enumfacing = EnumFacing.getFront(meta);
-
-        if (enumfacing.getAxis() == EnumFacing.Axis.Y)
-        {
-            enumfacing = EnumFacing.NORTH;
-        }
-
-        return this.getDefaultState().withProperty(FACING, enumfacing);
+        return this.getDefaultState().withProperty(FACING, EnumFacing.VALUES[meta % 6]);
     }
     
     /**
@@ -334,22 +323,32 @@ public abstract class SimpleFurnace<TEF extends TileEntityBaseInventory> extends
     @Override
     public int getMetaFromState(IBlockState state)
     {
-        return ((EnumFacing)state.getValue(FACING)).getIndex();
+        return state.getValue(FACING).ordinal();
     }
+
+    @Override
+	public boolean rotateBlock(World world, BlockPos pos, EnumFacing axis) 
+    {
+		EnumFacing facing = world.getBlockState(pos).getValue(FACING);
+		EnumFacing rotated = facing.rotateAround(axis.getAxis());
+		return world.setBlockState(pos, getDefaultState().withProperty(FACING, rotated));
+	}
 
     /**
      * Returns the blockstate with the given rotation from the passed blockstate. If inapplicable, returns the passed
      * blockstate.
      */
+    @Override
     public IBlockState withRotation(IBlockState state, Rotation rot)
     {
-        return state.withProperty(FACING, rot.rotate((EnumFacing)state.getValue(FACING)));
+        return state.withProperty(FACING, rot.rotate(state.getValue(FACING)));
     }
 
     /**
      * Returns the blockstate with the given mirror of the passed blockstate. If inapplicable, returns the passed
      * blockstate.
      */
+    @Override
     public IBlockState withMirror(IBlockState state, Mirror mirrorIn)
     {
         return state.withRotation(mirrorIn.toRotation((EnumFacing)state.getValue(FACING)));
@@ -358,7 +357,7 @@ public abstract class SimpleFurnace<TEF extends TileEntityBaseInventory> extends
     @Override
     protected BlockStateContainer createBlockState()
     {
-        return new BlockStateContainer(this, new IProperty[] {FACING});
+        return new BlockStateContainer(this, FACING);
     }
 
 	public static Block getUnlit_furnace() {

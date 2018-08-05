@@ -1,0 +1,8 @@
+{
+    "parent": "block/orientable",
+    "textures": {
+        "top": "simplecore:blocks/test_furnace_top",
+        "front": "simplecore:blocks/test_furnace_front_off",
+        "side": "simplecore:blocks/test_furnace_side"
+    }
+}

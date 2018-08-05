@@ -1,0 +1,8 @@
+{
+    "variants": {
+        "facing=north": { "model": "simplecore:lit_test_furnace" },
+        "facing=south": { "model": "simplecore:lit_test_furnace", "y": 180 },
+        "facing=west":  { "model": "simplecore:lit_test_furnace", "y": 270 },
+        "facing=east":  { "model": "simplecore:lit_test_furnace", "y": 90 }
+    }
+}

@@ -2,6 +2,13 @@ package alexndr.api.core;
 
 import java.util.List;
 
+import alexndr.api.content.inventory.SimpleTab;
+import alexndr.api.helpers.events.CommonEventHelper;
+import alexndr.api.helpers.game.TabHelper;
+import alexndr.api.helpers.game.TestFurnaceGuiHandler;
+import alexndr.api.logger.LogHelper;
+import alexndr.api.registry.ContentCategories;
+import alexndr.api.registry.Plugin;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -10,12 +17,8 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import alexndr.api.content.inventory.SimpleTab;
-import alexndr.api.helpers.events.CommonEventHelper;
-import alexndr.api.helpers.game.TabHelper;
-import alexndr.api.logger.LogHelper;
-import alexndr.api.registry.ContentCategories;
-import alexndr.api.registry.Plugin;
+import net.minecraftforge.fml.common.network.IGuiHandler;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 
 /**
  * @author AleXndrTheGr8st
@@ -58,6 +61,7 @@ public class SimpleCoreAPI
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent event) 
 	{
+		NetworkRegistry.INSTANCE.registerGuiHandler(this, (IGuiHandler) new TestFurnaceGuiHandler());
 		proxy.load(event);
 	}
 	

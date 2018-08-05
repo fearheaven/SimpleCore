@@ -70,6 +70,7 @@ public abstract class TileEntityBaseFurnace extends TileEntityBaseInventory impl
     protected String furnaceCustomName;
     protected String furnaceName;
     protected String furnaceGuiId;
+    protected EntityPlayer player;
     
     public TileEntityBaseFurnace(String tileName, int max_cook_time,
 			   				 String guiID, int furnace_stack_count) 
@@ -410,6 +411,10 @@ public abstract class TileEntityBaseFurnace extends TileEntityBaseInventory impl
 								IBlockState newState) 
 	{
 		return Block.isEqualTo(newState.getBlock(), Blocks.AIR); 
+	}
+
+	public void setPlayer(EntityPlayer placer) {
+		this.player = placer;
 	}
 
 } // end class

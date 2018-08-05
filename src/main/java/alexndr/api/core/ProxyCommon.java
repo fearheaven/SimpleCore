@@ -5,11 +5,14 @@ import alexndr.api.logger.LogHelper;
 import alexndr.api.registry.ContentCategories;
 import alexndr.api.registry.ContentRegistry;
 import alexndr.api.registry.Plugin;
+import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 
@@ -29,6 +32,16 @@ public class ProxyCommon
 		{
 			addVanillaTabs();
 		}
+		
+		try {
+			ModBlocks.configureBlocks();
+		} 
+		catch (Exception e) {
+			LogHelper.severe(APIInfo.NAME,
+					"Content pre-init failed. This is a serious problem!");
+			e.printStackTrace();
+		}
+	
 	} // end preInit()
 	
     public void load(FMLInitializationEvent event)
@@ -42,15 +55,18 @@ public class ProxyCommon
     { 
     } // end postInit()    
 
-//    @SubscribeEvent
-//    public static void registerBlocks(RegistryEvent.Register<Block> event) 
-//    {
-//    } // end registerBlocks()
-//    
-//    @SubscribeEvent
-//    public static void registerItems(RegistryEvent.Register<Item> event) 
-//    {
-//    }
+	@SubscribeEvent
+	public static void registerBlocks(RegistryEvent.Register<Block> event) 
+	{
+   	 	//Registers
+		ModBlocks.register(event.getRegistry());
+	} // end registerBlocks()
+
+	@SubscribeEvent
+	public static void registerItems(RegistryEvent.Register<Item> event) 
+	{
+    	ModBlocks.registerItemBlocks(event.getRegistry());
+	}
     
     public void registerItemRenderer(Plugin plugin, Item item, int meta, String id) {
     }
