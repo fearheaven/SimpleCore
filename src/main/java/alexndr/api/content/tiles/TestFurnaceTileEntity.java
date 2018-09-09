@@ -13,7 +13,7 @@ public class TestFurnaceTileEntity extends TileEntityBaseFurnace
 	
 	public TestFurnaceTileEntity()
 	{
-		super(TestFurnaceTileEntity.tilename, 600, TestFurnaceTileEntity.guiID, 3);
+		super(TestFurnaceTileEntity.tilename, 200, TestFurnaceTileEntity.guiID, 3);
 	}
 	
 	@Override

@@ -13,7 +13,6 @@ package alexndr.api.content.tiles;
 
 import alexndr.api.content.blocks.SimpleFurnace;
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -21,10 +20,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemHoe;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemSword;
-import net.minecraft.item.ItemTool;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -54,17 +50,21 @@ public abstract class TileEntityBaseFurnace extends TileEntityBaseInventory impl
  
     /** The number of ticks that the furnace will keep burning */
     protected int furnaceBurnTime;
+    public static final int FIELD_BURN_TIME = 0;
     
     /** The number of ticks that a fresh copy of the currently-burning item would keep the furnace burning for */
     protected int currentItemBurnTime;
+    public static final int FIELD_ITEM_BURN_TIME = 1;
     
     /** number of ticks we've cooked so far. */
     protected int cookTime;
+    public static final int FIELD_COOK_TIME = 2;
     
-    /** number of ticks it takes to cook this item. */
+    /** number of ticks remaining to cook this item. */
     protected int totalCookTime;		
+    public static final int FIELD_TOTAL_COOK_TIME = 3;
     
-    /** what is this for? */
+    /** default number of ticks it takes to cook an item  */
     protected int maxCookTime;
 
     protected String furnaceCustomName;
@@ -81,6 +81,41 @@ public abstract class TileEntityBaseFurnace extends TileEntityBaseInventory impl
 		this.furnaceGuiId = guiID;
 		this.cookTime = 0;
 	} // end ctor
+
+    public int getField(int id)
+    {
+        switch (id)
+        {
+            case FIELD_BURN_TIME:
+                return this.furnaceBurnTime;
+            case FIELD_ITEM_BURN_TIME:
+                return this.currentItemBurnTime;
+            case FIELD_COOK_TIME:
+                return this.cookTime;
+            case FIELD_TOTAL_COOK_TIME:
+                return this.totalCookTime;
+            default:
+                return 0;
+        }
+    }
+
+    public void setField(int id, int value)
+    {
+        switch (id)
+        {
+            case FIELD_BURN_TIME:
+                this.furnaceBurnTime = value;
+                break;
+            case FIELD_ITEM_BURN_TIME:
+                this.currentItemBurnTime = value;
+                break;
+            case FIELD_COOK_TIME:
+                this.cookTime = value;
+                break;
+            case FIELD_TOTAL_COOK_TIME:
+                this.totalCookTime = value;
+        }
+    }
 
 //	@Override
 //	public void onSlotChanged(int slot) 
@@ -103,7 +138,7 @@ public abstract class TileEntityBaseFurnace extends TileEntityBaseInventory impl
     }
 	
     /** override this as necessary in custom furnace classes. */
-    public int getCookTime(ItemStack stack)
+    public int getTotalItemCookTime(ItemStack stack)
     {
         return maxCookTime;
     }
@@ -268,37 +303,37 @@ public abstract class TileEntityBaseFurnace extends TileEntityBaseInventory impl
         }
         else
         {
-            Item item = burnItemStack.getItem();
-
-            if (item instanceof net.minecraft.item.ItemBlock 
-            		&& ! Block.isEqualTo(Block.getBlockFromItem(item), Blocks.AIR))
-            {
-                Block block = Block.getBlockFromItem(item);
-
-                if (Block.isEqualTo(block, Blocks.WOODEN_SLAB))
-                {
-                    return 150;
-                }
-
-                if (block.getDefaultState().getMaterial() == Material.WOOD)
-                {
-                    return 300;
-                }
-
-                if (Block.isEqualTo(block, Blocks.COAL_BLOCK))
-                {
-                    return 16000;
-                }
-            }
-
-            if (item instanceof ItemTool && ((ItemTool)item).getToolMaterialName().equals("WOOD")) return 200;
-            if (item instanceof ItemSword && ((ItemSword)item).getToolMaterialName().equals("WOOD")) return 200;
-            if (item instanceof ItemHoe && ((ItemHoe)item).getMaterialName().equals("WOOD")) return 200;
-            if (item == Items.STICK) return 100;
-            if (item == Items.COAL) return 1600;
-            if (item == Items.LAVA_BUCKET) return 20000;
-            if (item == Item.getItemFromBlock(Blocks.SAPLING)) return 100;
-            if (item == Items.BLAZE_ROD) return 2400;
+//            Item item = burnItemStack.getItem();
+//
+//            if (item instanceof net.minecraft.item.ItemBlock 
+//            		&& ! Block.isEqualTo(Block.getBlockFromItem(item), Blocks.AIR))
+//            {
+//                Block block = Block.getBlockFromItem(item);
+//
+//                if (Block.isEqualTo(block, Blocks.WOODEN_SLAB))
+//                {
+//                    return 150;
+//                }
+//
+//                if (block.getDefaultState().getMaterial() == Material.WOOD)
+//                {
+//                    return 300;
+//                }
+//
+//                if (Block.isEqualTo(block, Blocks.COAL_BLOCK))
+//                {
+//                    return 16000;
+//                }
+//            }
+//
+//            if (item instanceof ItemTool && ((ItemTool)item).getToolMaterialName().equals("WOOD")) return 200;
+//            if (item instanceof ItemSword && ((ItemSword)item).getToolMaterialName().equals("WOOD")) return 200;
+//            if (item instanceof ItemHoe && ((ItemHoe)item).getMaterialName().equals("WOOD")) return 200;
+//            if (item == Items.STICK) return 100;
+//            if (item == Items.COAL) return 1600;
+//            if (item == Items.LAVA_BUCKET) return 20000;
+//            if (item == Item.getItemFromBlock(Blocks.SAPLING)) return 100;
+//            if (item == Items.BLAZE_ROD) return 2400;
             return ForgeEventFactory.getItemBurnTime(burnItemStack);
         }
     } // end getItemBurnTime()
@@ -330,7 +365,7 @@ public abstract class TileEntityBaseFurnace extends TileEntityBaseInventory impl
             {
                 this.furnaceBurnTime = burnTime;
                 this.currentItemBurnTime = this.furnaceBurnTime;
-            	this.totalCookTime = this.getCookTime(slotHandler.getStackInSlot(NDX_INPUT_SLOT));
+            	this.totalCookTime = this.getTotalItemCookTime(slotHandler.getStackInSlot(NDX_INPUT_SLOT));
             	//this.cookTime = 0;
             	
                 if (this.isBurning())
@@ -364,7 +399,7 @@ public abstract class TileEntityBaseFurnace extends TileEntityBaseInventory impl
                 if (this.cookTime >= this.totalCookTime)
                 {
                     this.cookTime = 0;
-                    this.totalCookTime = this.getCookTime(slotHandler.getStackInSlot(NDX_INPUT_SLOT));
+                    this.totalCookTime = this.getTotalItemCookTime(slotHandler.getStackInSlot(NDX_INPUT_SLOT));
                     this.smeltItem();
                     flag1 = true;
                 }
@@ -399,6 +434,7 @@ public abstract class TileEntityBaseFurnace extends TileEntityBaseInventory impl
       return this.furnaceBurnTime * scaleFactor / j;
 	} // end getScaledBurnTime()
 
+	
 	@Override
 	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, 
 								IBlockState newState) 
@@ -425,5 +461,42 @@ public abstract class TileEntityBaseFurnace extends TileEntityBaseInventory impl
 				? CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(slotHandler) 
 				: super.getCapability(capability, facing);	
 	} // end getCapability()
+
+	/** returns actual cookTime */
+	public int getCookTime() {
+		return cookTime;
+	}
+
+	/** used by Container sub-classes in detectAndSendChanges() */
+	public void setCookTime(int cookTime) {
+		this.cookTime = cookTime;
+	}
+
+	public int getFurnaceBurnTime() {
+		return furnaceBurnTime;
+	}
+
+	/** used by Container sub-classes in detectAndSendChanges() */
+	public void setFurnaceBurnTime(int furnaceBurnTime) {
+		this.furnaceBurnTime = furnaceBurnTime;
+	}
+
+	public int getCurrentItemBurnTime() {
+		return currentItemBurnTime;
+	}
+
+	/** used by Container sub-classes in detectAndSendChanges() */
+	public void setCurrentItemBurnTime(int currentItemBurnTime) {
+		this.currentItemBurnTime = currentItemBurnTime;
+	}
+
+	public int getTotalCookTime() {
+		return totalCookTime;
+	}
+
+	/** used by Container sub-classes in detectAndSendChanges() */
+	public void setTotalCookTime(int totalCookTime) {
+		this.totalCookTime = totalCookTime;
+	}
 
 } // end class

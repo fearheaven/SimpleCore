@@ -7,6 +7,7 @@ import alexndr.api.content.tiles.TileEntityBaseFurnace;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
@@ -132,6 +133,47 @@ public class TestFurnaceContainer extends Container
 				new OutputSlotItemHandler(itemhandler, TileEntityBaseFurnace.NDX_OUTPUT_SLOT, 116, 35) );
 	} // end AddOwnSlots()
 
+    /**
+     * Looks for changes made in the container, sends them to every listener.
+     */
+    public void detectAndSendChanges()
+    {
+        super.detectAndSendChanges();
+        
+        for (int i = 0; i < this.listeners.size(); ++i)
+        {
+            IContainerListener icontainerlistener = this.listeners.get(i);
+            if (tileFurnace.getCookTime() != this.tileFurnace.getField(TileEntityBaseFurnace.FIELD_COOK_TIME))
+            {
+                icontainerlistener.sendWindowProperty(this, TileEntityBaseFurnace.FIELD_COOK_TIME, 
+                									  this.tileFurnace.getField(TileEntityBaseFurnace.FIELD_COOK_TIME));
+            }
+
+            if (tileFurnace.getFurnaceBurnTime() != this.tileFurnace.getField(TileEntityBaseFurnace.FIELD_BURN_TIME))
+            {
+                icontainerlistener.sendWindowProperty(this, TileEntityBaseFurnace.FIELD_BURN_TIME, 
+                									  this.tileFurnace.getField(TileEntityBaseFurnace.FIELD_BURN_TIME));
+            }
+
+            if (tileFurnace.getCurrentItemBurnTime() != this.tileFurnace.getField(TileEntityBaseFurnace.FIELD_ITEM_BURN_TIME))
+            {
+                icontainerlistener.sendWindowProperty(this, TileEntityBaseFurnace.FIELD_ITEM_BURN_TIME, 
+                									  this.tileFurnace.getField(TileEntityBaseFurnace.FIELD_ITEM_BURN_TIME));
+            }
+
+            if (tileFurnace.getTotalCookTime() != this.tileFurnace.getField(TileEntityBaseFurnace.FIELD_TOTAL_COOK_TIME))
+            {
+                icontainerlistener.sendWindowProperty(this, TileEntityBaseFurnace.FIELD_TOTAL_COOK_TIME, 
+                		    						  this.tileFurnace.getField(TileEntityBaseFurnace.FIELD_TOTAL_COOK_TIME));
+            }
+        } // end-for
+       
+        tileFurnace.setCookTime(this.tileFurnace.getField(TileEntityBaseFurnace.FIELD_COOK_TIME));
+        tileFurnace.setFurnaceBurnTime(this.tileFurnace.getField(TileEntityBaseFurnace.FIELD_BURN_TIME));
+        tileFurnace.setCurrentItemBurnTime(this.tileFurnace.getField(TileEntityBaseFurnace.FIELD_ITEM_BURN_TIME));
+        tileFurnace.setTotalCookTime(this.tileFurnace.getField(TileEntityBaseFurnace.FIELD_TOTAL_COOK_TIME));
+    } // end detectAndSendChanges()
+	
     /** 
      * inner class that sub-classes SlotItemHandler; handles checking for validity of fuel stacks
      */
