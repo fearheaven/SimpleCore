@@ -5,7 +5,7 @@ package alexndr.api.content.blocks;
 
 import javax.annotation.Nullable;
 
-import alexndr.api.registry.ContentCategories.Block;
+import alexndr.api.registry.ContentCategories;
 import alexndr.api.registry.Plugin;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
@@ -28,7 +28,8 @@ public abstract class SimpleTileEntityBlock<TE extends TileEntity> extends Simpl
 	 * @param material
 	 * @param category
 	 */
-	public SimpleTileEntityBlock(String name, Plugin plugin, Material material, Block category) 
+	public SimpleTileEntityBlock(String name, Plugin plugin, Material material, 
+								 ContentCategories.Block category) 
 	{
 		super(name, plugin, material, category);
 		// TODO Auto-generated constructor stub

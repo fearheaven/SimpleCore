@@ -235,23 +235,6 @@ public abstract class TileEntityBaseFurnace extends TileEntityBaseInventory impl
 		return this.furnaceGuiId;
 	}
 
-
-	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing facing) 
-	{
-		return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY 
-				|| super.hasCapability(capability, facing);	
-	} // end hasCapability()
-
-
-	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing) 
-	{
-		return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY 
-				? CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(slotHandler) 
-				: super.getCapability(capability, facing);	
-	} // end getCapability()
-
     /**
      * Turn one item from the furnace source stack into the appropriate smelted item in the furnace result 
      * stack. Override for special multi-slot furnaces like the Fusion Furnace.
@@ -319,6 +302,16 @@ public abstract class TileEntityBaseFurnace extends TileEntityBaseInventory impl
             return ForgeEventFactory.getItemBurnTime(burnItemStack);
         }
     } // end getItemBurnTime()
+
+    /**
+     * check if item is valid fuel. Overridable.
+     * @param stack possible fuel item stack
+     * @return true if burnable in this furnace, false if not.
+     */
+    public boolean isItemFuel(ItemStack stack)
+    {
+        return getItemBurnTime(stack) > 0;
+    }
 
     /**
      * default cooking update.
@@ -416,5 +409,21 @@ public abstract class TileEntityBaseFurnace extends TileEntityBaseInventory impl
 	public void setPlayer(EntityPlayer placer) {
 		this.player = placer;
 	}
+
+	@Override
+	public boolean hasCapability(Capability<?> capability, EnumFacing facing) 
+	{
+		return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY 
+				|| super.hasCapability(capability, facing);	
+	} // end hasCapability()
+
+
+	@Override
+	public <T> T getCapability(Capability<T> capability, EnumFacing facing) 
+	{
+		return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY 
+				? CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(slotHandler) 
+				: super.getCapability(capability, facing);	
+	} // end getCapability()
 
 } // end class

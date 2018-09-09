@@ -4,11 +4,14 @@ import java.util.List;
 
 import alexndr.api.content.inventory.SimpleTab;
 import alexndr.api.helpers.events.CommonEventHelper;
+import alexndr.api.helpers.game.OreGenerator;
 import alexndr.api.helpers.game.TabHelper;
 import alexndr.api.helpers.game.TestFurnaceGuiHandler;
 import alexndr.api.logger.LogHelper;
 import alexndr.api.registry.ContentCategories;
+import alexndr.api.registry.ContentRegistry;
 import alexndr.api.registry.Plugin;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -19,6 +22,7 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
 /**
  * @author AleXndrTheGr8st
@@ -54,6 +58,25 @@ public class SimpleCoreAPI
 		//Register Event Stuff
 		MinecraftForge.EVENT_BUS.register(new CommonEventHelper());
 		
+		//Configuration
+		APISettings.createOrLoadSettings(event);
+		LogHelper.loggerSetup();
+		
+		//Content
+		if (false == APISettings.tabs)
+		{
+			addVanillaTabs();
+		}
+		
+		try {
+			ModBlocks.configureBlocks();
+		} 
+		catch (Exception e) {
+			LogHelper.severe(APIInfo.NAME,
+					"Content pre-init failed. This is a serious problem!");
+			e.printStackTrace();
+		}
+	
 		proxy.preInit(event);
 		// tabPreInit();  // plugin should call this, not API. 
 	} // end preInit()
@@ -62,13 +85,14 @@ public class SimpleCoreAPI
 	public void init(FMLInitializationEvent event) 
 	{
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, (IGuiHandler) new TestFurnaceGuiHandler());
-		proxy.load(event);
+		//World Generator
+		GameRegistry.registerWorldGenerator(new OreGenerator(), 1);
+ 		proxy.load(event);
 	}
 	
 	@Mod.EventHandler
 	public void postInit(FMLPostInitializationEvent event) 
 	{
-		// LogHelper.verbose("Total number of mods UpdateChecker is checking for = " + UpdateChecker.getNumberOfMods());
 		LogHelper.info("SimpleCore API Loading Complete!");
 	}
 	
@@ -124,6 +148,34 @@ public class SimpleCoreAPI
 		}
 	} // end setTabIcons()
 	
+	/**
+	 * Adds the vanilla Minecraft tabs to the ContentRegistry.
+	 */
+	private void addVanillaTabs() 
+	{
+		LogHelper.verbose("Adding vanilla tabs to ContentRegistry");
+		ContentRegistry.registerPlugin(SimpleCoreAPI.vanilla);
+		ContentRegistry.registerTab(SimpleCoreAPI.vanilla, CreativeTabs.BUILDING_BLOCKS,
+				CreativeTabs.BUILDING_BLOCKS.getTabLabel(), ContentCategories.CreativeTab.GENERAL);
+		ContentRegistry.registerTab(SimpleCoreAPI.vanilla, CreativeTabs.MISC, CreativeTabs.MISC.getTabLabel(),
+				ContentCategories.CreativeTab.OTHER);
+		ContentRegistry.registerTab(SimpleCoreAPI.vanilla, CreativeTabs.BREWING, CreativeTabs.BREWING.getTabLabel(),
+				ContentCategories.CreativeTab.OTHER);
+		ContentRegistry.registerTab(SimpleCoreAPI.vanilla, CreativeTabs.COMBAT, CreativeTabs.COMBAT.getTabLabel(),
+				ContentCategories.CreativeTab.COMBAT);
+		ContentRegistry.registerTab(SimpleCoreAPI.vanilla, CreativeTabs.DECORATIONS, CreativeTabs.DECORATIONS.getTabLabel(),
+				ContentCategories.CreativeTab.DECORATIONS);
+		ContentRegistry.registerTab(SimpleCoreAPI.vanilla, CreativeTabs.FOOD, CreativeTabs.FOOD.getTabLabel(),
+				ContentCategories.CreativeTab.OTHER);
+		ContentRegistry.registerTab(SimpleCoreAPI.vanilla, CreativeTabs.MATERIALS, CreativeTabs.MATERIALS.getTabLabel(),
+				ContentCategories.CreativeTab.MATERIALS);
+		ContentRegistry.registerTab(SimpleCoreAPI.vanilla, CreativeTabs.REDSTONE, CreativeTabs.REDSTONE.getTabLabel(),
+				ContentCategories.CreativeTab.REDSTONE);
+		ContentRegistry.registerTab(SimpleCoreAPI.vanilla, CreativeTabs.TOOLS, CreativeTabs.TOOLS.getTabLabel(),
+				ContentCategories.CreativeTab.TOOLS);
+		ContentRegistry.registerTab(SimpleCoreAPI.vanilla, CreativeTabs.TRANSPORTATION, CreativeTabs.TRANSPORTATION.getTabLabel(),
+				ContentCategories.CreativeTab.OTHER);
+	} // end addVanillaTabs()
 	
 
 } // end class

@@ -49,7 +49,8 @@ public class SimpleBlock extends Block implements IConfigureBlockHelper<SimpleBl
 	 * @param category The category of the block
 	 * @param do_register do setRegistryName() in this constructor.
 	 */
-	public SimpleBlock(String name, Plugin plugin, Material material, ContentCategories.Block category) 
+	public SimpleBlock(String name, Plugin plugin, Material material, 
+					   ContentCategories.Block category) 
 	{
 		super(material);
 		LogHelper.verbose(plugin.getModId(), "Finished Block ctor for " + name);

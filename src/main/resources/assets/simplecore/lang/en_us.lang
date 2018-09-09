@@ -8,8 +8,7 @@ itemGroup.SimpleCombat=Simple Combat
 itemGroup.SimpleMachines=Simple Machines
 
 # Blocks
-tile.test_furnace.name=Test Furnace Block
+tile.test_furnace.name=Test Furnace
+tile.lit_test_furnace.name=Test Furnace (Lit)
 
-container.test_furnace=Test Furnace Container
-
-
+container.test_furnace=Test Furnace

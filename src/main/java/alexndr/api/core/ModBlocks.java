@@ -2,9 +2,9 @@ package alexndr.api.core;
 
 import alexndr.api.content.blocks.TestFurnace;
 import alexndr.api.content.tiles.TestFurnaceTileEntity;
-import alexndr.api.helpers.game.TabHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.registries.IForgeRegistry;
@@ -15,7 +15,7 @@ public class ModBlocks
 	public static TestFurnace test_furnace = 
 			new TestFurnace("test_furnace", SimpleCoreAPI.plugin,false);
 	public static TestFurnace lit_test_furnace =
-			new TestFurnace("test_furnace", SimpleCoreAPI.plugin,true);
+			new TestFurnace("lit_test_furnace", SimpleCoreAPI.plugin,true);
 
 	/**
 	 * configure mod blocks from config settings.
@@ -25,7 +25,7 @@ public class ModBlocks
 		if (APISettings.testFurnace.isEnabled()) {
 			test_furnace.setConfigEntry(APISettings.testFurnace)
 					.setStepSound(SoundType.STONE)
-					.setCreativeTab(TabHelper.redstoneTab(SimpleCoreAPI.plugin));
+					.setCreativeTab(CreativeTabs.REDSTONE);
 			lit_test_furnace.setConfigEntry(APISettings.testFurnace)
 				.setStepSound(SoundType.STONE).setDropItem(true)
 				.setItemToDrop(test_furnace.getItemToDrop());

@@ -93,9 +93,4 @@ public abstract class TileEntityBaseInventory extends TileEntityBase
     };  // end inner-class TileStackHandler
     
     
-    
-    
-    
-    
-    
 } // end class
