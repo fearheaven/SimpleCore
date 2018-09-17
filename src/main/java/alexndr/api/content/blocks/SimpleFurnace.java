@@ -3,8 +3,8 @@ package alexndr.api.content.blocks;
 import java.util.Random;
 
 import alexndr.api.config.types.ConfigBlock;
-import alexndr.api.content.tiles.TileEntityBaseFurnace;
 import alexndr.api.content.tiles.TileEntityBaseInventory;
+import alexndr.api.content.tiles.TileEntitySimpleFurnace;
 import alexndr.api.helpers.game.IItemHandlerHelper;
 import alexndr.api.helpers.game.TooltipHelper;
 import alexndr.api.registry.ContentCategories;
@@ -12,16 +12,17 @@ import alexndr.api.registry.Plugin;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
@@ -39,7 +40,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * why.
  *
  */
-public abstract class SimpleFurnace<TEF extends TileEntityBaseInventory> extends SimpleTileEntityBlock<TEF> 
+public abstract class SimpleFurnace<TEF extends TileEntitySimpleFurnace> extends SimpleTileEntityBlock<TEF> 
 {
     public static final PropertyDirection FACING = BlockHorizontal.FACING;
 	
@@ -110,23 +111,27 @@ public abstract class SimpleFurnace<TEF extends TileEntityBaseInventory> extends
 		}
 	}
 
-//	/* --- COPIED FROM BlockContainer ----- */
-//    /**
-//     * Called on both Client and Server when World#addBlockEvent is called. On the Server, this may perform additional
-//     * changes to the world, like pistons replacing the block with an extended base. On the client, the update may
-//     * involve replacing tile entities, playing sounds, or performing other visual actions to reflect the server side
-//     * changes. 
-//     */
-//    @SuppressWarnings("deprecation")
-//    public boolean eventReceived(IBlockState state, World worldIn, BlockPos pos, int id, int param)
-//    {
-//        super.eventReceived(state, worldIn, pos, id, param);
-//        TileEntity tileentity = worldIn.getTileEntity(pos);
-//        return tileentity == null ? false : tileentity.receiveClientEvent(id, param);
-//    }
-//	
+    /**
+     * Called by ItemBlocks after a block is set in the world, to allow post-place logic
+     */
+    public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack)
+    {
+        worldIn.setBlockState(pos, state.withProperty(FACING, placer.getHorizontalFacing().getOpposite()), 2);
 
+        if (stack.hasDisplayName())
+        {
+            TileEntity tileentity = worldIn.getTileEntity(pos);
+
+            if (tileentity instanceof TileEntityFurnace)
+            {
+                ((TileEntityFurnace)tileentity).setCustomInventoryName(stack.getDisplayName());
+            }
+        }
+    }
 	
+    /**
+     * Called after the block is set in the Chunk data, but before the Tile Entity is set
+     */
 	@Override
     public void onBlockAdded(World worldIn, BlockPos pos, IBlockState state)
     {
@@ -244,23 +249,6 @@ public abstract class SimpleFurnace<TEF extends TileEntityBaseInventory> extends
         return this.getDefaultState().withProperty(FACING, placer.getHorizontalFacing().getOpposite());
     }
 
-
-    /**
-     * Called by ItemBlocks after a block is set in the world, to allow post-place logic. 
-     * Mostly cut & pasted from BlockFurnace.
-     */
-    @Override
-    public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, 
-    							EntityLivingBase placer, ItemStack stack)
-    {
-    	TileEntity te = worldIn.getTileEntity(pos);
-
-    	if (!worldIn.isRemote && te instanceof TileEntityBaseFurnace && placer instanceof EntityPlayer)
-    	{
-    		((TileEntityBaseFurnace) te).setPlayer((EntityPlayer) placer);
-    	}
-    } // end ()
-
     /**
      * cut & pasted from BlockFurnace.
      */
@@ -271,7 +259,7 @@ public abstract class SimpleFurnace<TEF extends TileEntityBaseInventory> extends
         {
             TileEntity tileentity = worldIn.getTileEntity(pos);
 
-            if (tileentity instanceof TileEntityBaseFurnace)
+            if (tileentity instanceof TileEntitySimpleFurnace)
             {
                 IItemHandlerHelper.dropInventoryItems(worldIn, pos, 
                 							((TileEntityBaseInventory)tileentity).getSlotHandler());
@@ -314,7 +302,14 @@ public abstract class SimpleFurnace<TEF extends TileEntityBaseInventory> extends
     @Override
     public IBlockState getStateFromMeta(int meta)
     {
-        return this.getDefaultState().withProperty(FACING, EnumFacing.VALUES[meta % 6]);
+        EnumFacing enumfacing = EnumFacing.getFront(meta);
+
+        if (enumfacing.getAxis() == EnumFacing.Axis.Y)
+        {
+            enumfacing = EnumFacing.NORTH;
+        }
+
+        return this.getDefaultState().withProperty(FACING, enumfacing);
     }
     
     /**
@@ -323,7 +318,7 @@ public abstract class SimpleFurnace<TEF extends TileEntityBaseInventory> extends
     @Override
     public int getMetaFromState(IBlockState state)
     {
-        return state.getValue(FACING).ordinal();
+        return ((EnumFacing)state.getValue(FACING)).getIndex();
     }
 
     @Override
@@ -357,7 +352,7 @@ public abstract class SimpleFurnace<TEF extends TileEntityBaseInventory> extends
     @Override
     protected BlockStateContainer createBlockState()
     {
-        return new BlockStateContainer(this, FACING);
+        return new BlockStateContainer(this, new IProperty[] {FACING});
     }
 
 	public static Block getUnlit_furnace() {

@@ -6,7 +6,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 
-public class TestFurnaceTileEntity extends TileEntityBaseFurnace 
+public class TestFurnaceTileEntity extends TileEntitySimpleFurnace 
 {
 	public final static String tilename = "container.test_furnace";
 	public final static String guiID = "simplecore:test_furnace_gui";
@@ -28,7 +28,7 @@ public class TestFurnaceTileEntity extends TileEntityBaseFurnace
 	@Override
     public boolean isItemFuel(ItemStack stack)
     {
-        return TileEntityBaseFurnace.getItemBurnTime(stack) > 0;
+        return TileEntitySimpleFurnace.getItemBurnTime(stack) > 0;
     }
 
 

@@ -1,6 +1,3 @@
-/**
- * 
- */
 package alexndr.api.content.tiles;
 
 import javax.annotation.Nullable;
@@ -45,13 +42,12 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * @author Sinhika
  *
  */
-@Deprecated
 public class TileEntitySimpleFurnace extends TileEntityLockable implements
 		ITickable, ISidedInventory 
 {
-    protected static final int NDX_INPUT_SLOT = 0;
-    protected static final int NDX_FUEL_SLOT = 1;
-    protected static final int NDX_OUTPUT_SLOT = 2;
+	public static final int NDX_INPUT_SLOT = 0;
+	public static final int NDX_FUEL_SLOT = 1;
+	public static final int NDX_OUTPUT_SLOT = 2;
     
     protected static int[] slotsTop = new int[] {NDX_INPUT_SLOT};  // input
     protected static int[] slotsBottom = new int[] {NDX_OUTPUT_SLOT, NDX_FUEL_SLOT};  // output, fuel
@@ -62,22 +58,27 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
     
     /** The number of ticks that the furnace will keep burning */
     protected int furnaceBurnTime;
+    public static final int FIELD_BURN_TIME = 0;
     
     /** The number of ticks that a fresh copy of the currently-burning item would keep the furnace burning for */
     protected int currentItemBurnTime;
-    
+    public static final int FIELD_ITEM_BURN_TIME = 1;
+
     /** number of ticks we've cooked so far. */
     protected int cookTime;
-    
-    /** number of ticks it takes to cook this item. */
+    public static final int FIELD_COOK_TIME = 2;
+   
+    /** number of ticks remaining to cook this item. */
     protected int totalCookTime;		
+    public static final int FIELD_TOTAL_COOK_TIME = 3;
     
-    /** what is this for? */
+    /** default number of ticks it takes to cook an item  */
     protected int maxCookTime;
     
     protected String furnaceCustomName;
     protected String furnaceName;
     protected String furnaceGuiId;
+    protected EntityPlayer player;
     
     /**
 	 * 
@@ -89,30 +90,44 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
 		this.furnaceName = tileName;
 		this.maxCookTime = max_cook_time;
 		this.furnaceGuiId = guiID;
-		this.furnaceItemStacks = NonNullList.<ItemStack>withSize(3, ItemStack.EMPTY);;
+		this.furnaceItemStacks = NonNullList.<ItemStack>withSize(furnace_stack_count, ItemStack.EMPTY);
 	}
 
 	/*------- MUCH OF THE FOLLOWING IS CUT & PASTED FROM TileEntityFurnace -------------*/
 	
-	/* (non-Javadoc)
-	 * @see net.minecraft.inventory.IInventory#getSizeInventory()
-	 */
+	@Override
+	public boolean isEmpty() 
+	{
+        for (ItemStack itemstack : this.furnaceItemStacks) {
+            if (!itemstack.isEmpty()) {
+                return false;
+            }
+        }
+        return true;
+	}
+	
+    /**
+     * Returns the number of slots in the inventory.
+     */
 	@Override
 	public int getSizeInventory() 
 	{
 		return this.furnaceItemStacks.size();
 	}
 
-	/* (non-Javadoc)
-	 * @see net.minecraft.inventory.IInventory#getStackInSlot(int)
-	 */
+    /**
+     * Returns the stack in the given slot.
+     */
 	@Override
 	public ItemStack getStackInSlot(int index) 
 	{
         return this.furnaceItemStacks.get(index);
 	}
 
-	/* (non-Javadoc)
+    /**
+	 * Removes up to a specified number of items from an inventory slot and
+	 * returns them in a new stack.
+	 * 
 	 * @see net.minecraft.inventory.IInventory#decrStackSize(int, int)
 	 */
 	@Override
@@ -121,18 +136,20 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
         return ItemStackHelper.getAndSplit(this.furnaceItemStacks, index, count);
 	} // end decrStackSize()
 
-	/* (non-Javadoc)
+    /**
+     * Removes a stack from the given slot and returns it.
 	 * @see net.minecraft.inventory.IInventory#removeStackFromSlot(int)
-	 */
+     */
 	@Override
 	public ItemStack removeStackFromSlot(int index) 
 	{
 	       return ItemStackHelper.getAndRemove(this.furnaceItemStacks, index);
 	}
 
-	/* (non-Javadoc)
+    /**
+     * Sets the given item stack to the specified slot in the inventory (can be crafting or armor sections).
 	 * @see net.minecraft.inventory.IInventory#setInventorySlotContents(int, net.minecraft.item.ItemStack)
-	 */
+     */
 	@Override
 	public void setInventorySlotContents(int index, @Nullable ItemStack stack) 
 	{
@@ -152,20 +169,30 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
             this.cookTime = 0;
             this.markDirty();
         }
-
 	} // end ()
 
-	/* (non-Javadoc)
-	 * @see net.minecraft.inventory.IInventory#getInventoryStackLimit()
+	/**
+	 * Returns the maximum stack size for a inventory slot. Seems to always be
+	 * 64, possibly will be extended.
 	 */
 	@Override
 	public int getInventoryStackLimit() {
         return 64;
 	}
 
-	/* (non-Javadoc)
-	 * @see net.minecraft.inventory.IInventory#isUseableByPlayer(net.minecraft.entity.player.EntityPlayer)
+	/**
+	 * For tile entities, ensures the chunk containing the tile entity is saved
+	 * to disk later - the game won't think it hasn't changed and skip it.
 	 */
+	@Override
+	public void markDirty() {
+		// TODO Auto-generated method stub
+		super.markDirty();
+	}
+
+    /**
+     * Don't rename this method to canInteractWith due to conflicts with Container
+     */
 	@Override
 	public boolean isUsableByPlayer(EntityPlayer player) {
         return this.getWorld().getTileEntity(this.pos) != this 
@@ -175,8 +202,9 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
                                         (double)this.pos.getZ() + 0.5D) <= 64.0D;
 	}
 
-	/* (non-Javadoc)
-	 * @see net.minecraft.inventory.IInventory#isItemValidForSlot(int, net.minecraft.item.ItemStack)
+	/**
+	 * Returns true if automation is allowed to insert the given stack (ignoring
+	 * stack size) into the given slot. For guis use Slot.isItemValid
 	 */
 	@Override
     public boolean isItemValidForSlot(int index, ItemStack stack)
@@ -212,13 +240,13 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
 	public int getField(int id) {
         switch (id)
         {
-            case 0: // number of ticks that the furnace will still keep burning
+            case FIELD_BURN_TIME: // number of ticks that the furnace will still keep burning
                 return this.furnaceBurnTime;
-            case 1: // max number of ticks we started with for current fuel item burning
+            case FIELD_ITEM_BURN_TIME: // max number of ticks we started with for current fuel item burning
                 return this.currentItemBurnTime;
-            case 2:	// number of ticks we've cooked this item
+            case FIELD_COOK_TIME:	// number of ticks we've cooked this item
                 return this.cookTime;
-            case 3:	// number of ticks total to cook this item.
+            case FIELD_TOTAL_COOK_TIME:	// number of ticks total to cook this item.
                 return this.totalCookTime;
             default:
                 return 0;
@@ -232,16 +260,16 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
 	public void setField(int id, int value) {
         switch (id)
         {
-            case 0:
+            case FIELD_BURN_TIME:
                 this.furnaceBurnTime = value;
                 break;
-            case 1:
+            case FIELD_ITEM_BURN_TIME:
                 this.currentItemBurnTime = value;
                 break;
-            case 2:
+            case FIELD_COOK_TIME:
                 this.cookTime = value;
                 break;
-            case 3:
+            case FIELD_TOTAL_COOK_TIME:
                 this.totalCookTime = value;
                 break;
         }
@@ -323,9 +351,9 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
                                        : TileEntitySimpleFurnace.slotsSides));
 	}
 
-	/* (non-Javadoc)
-	 * @see net.minecraft.inventory.ISidedInventory#canInsertItem(int, net.minecraft.item.ItemStack, net.minecraft.util.EnumFacing)
-	 */
+    /**
+     * Returns true if automation can insert the given item in the given slot from the given side.
+     */
 	@Override
 	public boolean canInsertItem(int index, ItemStack itemStackIn,
 			EnumFacing direction) 
@@ -333,9 +361,9 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
         return this.isItemValidForSlot(index, itemStackIn);
 	}
 
-	/* (non-Javadoc)
-	 * @see net.minecraft.inventory.ISidedInventory#canExtractItem(int, net.minecraft.item.ItemStack, net.minecraft.util.EnumFacing)
-	 */
+    /**
+     * Returns true if automation can extract the given item in the given slot from the given side.
+     */
 	@Override
 	public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction) 
 	{
@@ -349,7 +377,6 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
                 return false;
             }
         }
-
         return true;
 	}
 
@@ -560,7 +587,7 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
      * Returns the number of ticks that the supplied fuel item will keep the furnace burning, or 0 if the item isn't
      * fuel
      */
-    public static boolean isItemFuel(ItemStack stack)
+    public boolean isItemFuel(ItemStack stack)
     {
         return getItemBurnTime(stack) > 0;
     }
@@ -571,9 +598,12 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
 	@Override
 	public void closeInventory(EntityPlayer player) {}
 
-    net.minecraftforge.items.IItemHandler handlerTop = new net.minecraftforge.items.wrapper.SidedInvWrapper(this, net.minecraft.util.EnumFacing.UP);
-    net.minecraftforge.items.IItemHandler handlerBottom = new net.minecraftforge.items.wrapper.SidedInvWrapper(this, net.minecraft.util.EnumFacing.DOWN);
-    net.minecraftforge.items.IItemHandler handlerSide = new net.minecraftforge.items.wrapper.SidedInvWrapper(this, net.minecraft.util.EnumFacing.WEST);
+    net.minecraftforge.items.IItemHandler handlerTop = 
+    		new net.minecraftforge.items.wrapper.SidedInvWrapper(this, net.minecraft.util.EnumFacing.UP);
+    net.minecraftforge.items.IItemHandler handlerBottom = 
+    		new net.minecraftforge.items.wrapper.SidedInvWrapper(this, net.minecraft.util.EnumFacing.DOWN);
+    net.minecraftforge.items.IItemHandler handlerSide = 
+    		new net.minecraftforge.items.wrapper.SidedInvWrapper(this, net.minecraft.util.EnumFacing.WEST);
 
     @SuppressWarnings("unchecked")
 	@Override
@@ -589,16 +619,16 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
         return super.getCapability(capability, facing);
     }
 
-	public boolean func_191420_l() {
-        for (ItemStack itemstack : this.furnaceItemStacks)
-        {
-            if (!itemstack.isEmpty())
-            {
-                return false;
-            }
-        }
-        return true;
-	}
+//	public boolean func_191420_l() {
+//        for (ItemStack itemstack : this.furnaceItemStacks)
+//        {
+//            if (!itemstack.isEmpty())
+//            {
+//                return false;
+//            }
+//        }
+//        return true;
+//	}
     
 	protected boolean default_cooking_update(boolean flag1, ItemStack itemstackFuel, int burnTime)
 	{
@@ -650,17 +680,5 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
         return flag1;
 	} // end default_cooking_update()
 
-	@Override
-	public boolean isEmpty() 
-	{
-        for (ItemStack itemstack : this.furnaceItemStacks)
-        {
-            if (!itemstack.isEmpty())
-            {
-                return false;
-            }
-        }
-        return true;
-	}
 
 } // end class

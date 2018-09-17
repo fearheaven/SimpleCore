@@ -1,36 +1,47 @@
 package alexndr.api.content.inventory;
 
 import alexndr.api.content.tiles.TestFurnaceTileEntity;
-import alexndr.api.content.tiles.TileEntityBaseFurnace;
-import alexndr.api.helpers.game.FuelSlotItemHandler;
-import alexndr.api.helpers.game.FurnaceInputSlotItemHandler;
-import alexndr.api.helpers.game.OutputSlotItemHandler;
+import alexndr.api.content.tiles.TileEntitySimpleFurnace;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.Slot;
+import net.minecraft.inventory.SlotFurnaceFuel;
+import net.minecraft.inventory.SlotFurnaceOutput;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.tileentity.TileEntityFurnace;
-import net.minecraftforge.items.ItemStackHandler;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class TestFurnaceContainer extends Container 
 {
 	protected TestFurnaceTileEntity tileFurnace;
+	protected int cookTime;
+	protected int totalCookTime;
+	protected int furnaceBurnTime;
+	protected int currentItemBurnTime;
 	
 	public TestFurnaceContainer(InventoryPlayer player, TestFurnaceTileEntity tileentity) 
 	{
 		this.tileFurnace = tileentity;
-		AddOwnSlots();
+		AddOwnSlots(player);
 		AddPlayerSlots(player);
 	}
 
 	@Override
 	public boolean canInteractWith(EntityPlayer playerIn) 
 	{
-        return this.tileFurnace.canInteractWith(playerIn);
+        return this.tileFurnace.isUsableByPlayer(playerIn);
 	}
+
+	@Override
+    public void addListener(IContainerListener listener)
+    {
+        super.addListener(listener);
+        listener.sendAllWindowProperties(this, this.tileFurnace);
+    }
 
     /**
      * Handle when the stack in slot {@code index} is shift-clicked. Normally this moves the stack between the player
@@ -41,12 +52,14 @@ public class TestFurnaceContainer extends Container
     {
         ItemStack itemstack = ItemStack.EMPTY;
         Slot slot = this.inventorySlots.get(index);
+
         if (slot != null && slot.getHasStack())
         {
             ItemStack itemstack1 = slot.getStack();
             itemstack = itemstack1.copy();
 
-            if (index == TileEntityBaseFurnace.NDX_OUTPUT_SLOT)
+            // output slot?
+            if (index == TileEntitySimpleFurnace.NDX_OUTPUT_SLOT)
             {
                 if (!this.mergeItemStack(itemstack1, 3, 39, true))
                 {
@@ -55,8 +68,9 @@ public class TestFurnaceContainer extends Container
 
                 slot.onSlotChange(itemstack1, itemstack);
             }
-            else if (index != TileEntityBaseFurnace.NDX_FUEL_SLOT 
-            		&& index != TileEntityBaseFurnace.NDX_INPUT_SLOT)
+            // player inv/hotbar slot?
+            else if (index != TileEntitySimpleFurnace.NDX_FUEL_SLOT 
+            		&& index != TileEntitySimpleFurnace.NDX_OUTPUT_SLOT)
             {
                 if (!FurnaceRecipes.instance().getSmeltingResult(itemstack1).isEmpty())
                 {
@@ -88,7 +102,7 @@ public class TestFurnaceContainer extends Container
             {
                 return ItemStack.EMPTY;
             }
-            
+
             if (itemstack1.isEmpty())
             {
                 slot.putStack(ItemStack.EMPTY);
@@ -121,59 +135,61 @@ public class TestFurnaceContainer extends Container
 			this.addSlotToContainer(new Slot(player, i, 8 + i * 18, 142));
 	} // end AddPlayerSlots()
 
-	private void AddOwnSlots() 
+	private void AddOwnSlots(InventoryPlayer player) 
 	{
-		ItemStackHandler itemhandler = tileFurnace.getSlotHandler();
+		this.addSlotToContainer(new Slot(tileFurnace, TileEntitySimpleFurnace.NDX_INPUT_SLOT, 56, 17));
+		this.addSlotToContainer(new SlotFurnaceFuel(tileFurnace, TileEntitySimpleFurnace.NDX_FUEL_SLOT, 56, 53));
 		this.addSlotToContainer(
-				new FurnaceInputSlotItemHandler(itemhandler, TileEntityBaseFurnace.NDX_INPUT_SLOT, 56, 17));
-		this.addSlotToContainer(
-				new FuelSlotItemHandler(itemhandler, TileEntityBaseFurnace.NDX_FUEL_SLOT, 56, 53,
-										tileFurnace));
-		this.addSlotToContainer(
-				new OutputSlotItemHandler(itemhandler, TileEntityBaseFurnace.NDX_OUTPUT_SLOT, 116, 35) );
+				new SlotFurnaceOutput(player.player, tileFurnace, TileEntitySimpleFurnace.NDX_OUTPUT_SLOT, 116, 35));
 	} // end AddOwnSlots()
 
+	
     /**
      * Looks for changes made in the container, sends them to every listener.
      */
     public void detectAndSendChanges()
     {
         super.detectAndSendChanges();
-        
+
         for (int i = 0; i < this.listeners.size(); ++i)
         {
             IContainerListener icontainerlistener = this.listeners.get(i);
-            if (tileFurnace.getCookTime() != this.tileFurnace.getField(TileEntityBaseFurnace.FIELD_COOK_TIME))
-            {
-                icontainerlistener.sendWindowProperty(this, TileEntityBaseFurnace.FIELD_COOK_TIME, 
-                									  this.tileFurnace.getField(TileEntityBaseFurnace.FIELD_COOK_TIME));
-            }
 
-            if (tileFurnace.getFurnaceBurnTime() != this.tileFurnace.getField(TileEntityBaseFurnace.FIELD_BURN_TIME))
-            {
-                icontainerlistener.sendWindowProperty(this, TileEntityBaseFurnace.FIELD_BURN_TIME, 
-                									  this.tileFurnace.getField(TileEntityBaseFurnace.FIELD_BURN_TIME));
-            }
+			if (this.cookTime != this.tileFurnace.getField(TileEntitySimpleFurnace.FIELD_COOK_TIME)) 
+			{
+				icontainerlistener.sendWindowProperty(this, TileEntitySimpleFurnace.FIELD_COOK_TIME,
+						this.tileFurnace.getField(TileEntitySimpleFurnace.FIELD_COOK_TIME));
+			}
 
-            if (tileFurnace.getCurrentItemBurnTime() != this.tileFurnace.getField(TileEntityBaseFurnace.FIELD_ITEM_BURN_TIME))
-            {
-                icontainerlistener.sendWindowProperty(this, TileEntityBaseFurnace.FIELD_ITEM_BURN_TIME, 
-                									  this.tileFurnace.getField(TileEntityBaseFurnace.FIELD_ITEM_BURN_TIME));
-            }
+			if (this.furnaceBurnTime != this.tileFurnace.getField(TileEntitySimpleFurnace.FIELD_BURN_TIME)) 
+			{
+				icontainerlistener.sendWindowProperty(this, TileEntitySimpleFurnace.FIELD_BURN_TIME,
+						this.tileFurnace.getField(TileEntitySimpleFurnace.FIELD_BURN_TIME));
+			}
 
-            if (tileFurnace.getTotalCookTime() != this.tileFurnace.getField(TileEntityBaseFurnace.FIELD_TOTAL_COOK_TIME))
-            {
-                icontainerlistener.sendWindowProperty(this, TileEntityBaseFurnace.FIELD_TOTAL_COOK_TIME, 
-                		    						  this.tileFurnace.getField(TileEntityBaseFurnace.FIELD_TOTAL_COOK_TIME));
-            }
-        } // end-for
-       
-        tileFurnace.setCookTime(this.tileFurnace.getField(TileEntityBaseFurnace.FIELD_COOK_TIME));
-        tileFurnace.setFurnaceBurnTime(this.tileFurnace.getField(TileEntityBaseFurnace.FIELD_BURN_TIME));
-        tileFurnace.setCurrentItemBurnTime(this.tileFurnace.getField(TileEntityBaseFurnace.FIELD_ITEM_BURN_TIME));
-        tileFurnace.setTotalCookTime(this.tileFurnace.getField(TileEntityBaseFurnace.FIELD_TOTAL_COOK_TIME));
+			if (this.currentItemBurnTime != this.tileFurnace.getField(TileEntitySimpleFurnace.FIELD_ITEM_BURN_TIME)) 
+			{
+				icontainerlistener.sendWindowProperty(this, TileEntitySimpleFurnace.FIELD_ITEM_BURN_TIME,
+						this.tileFurnace.getField(TileEntitySimpleFurnace.FIELD_ITEM_BURN_TIME));
+			}
+
+			if (this.totalCookTime != this.tileFurnace.getField(TileEntitySimpleFurnace.FIELD_TOTAL_COOK_TIME)) 
+			{
+				icontainerlistener.sendWindowProperty(this, TileEntitySimpleFurnace.FIELD_TOTAL_COOK_TIME,
+						this.tileFurnace.getField(TileEntitySimpleFurnace.FIELD_TOTAL_COOK_TIME));
+			}
+        }
+
+        this.cookTime = this.tileFurnace.getField(TileEntitySimpleFurnace.FIELD_COOK_TIME);
+        this.furnaceBurnTime = this.tileFurnace.getField(TileEntitySimpleFurnace.FIELD_BURN_TIME);
+        this.currentItemBurnTime = this.tileFurnace.getField(TileEntitySimpleFurnace.FIELD_ITEM_BURN_TIME);
+        this.totalCookTime = this.tileFurnace.getField(TileEntitySimpleFurnace.FIELD_TOTAL_COOK_TIME);
     } // end detectAndSendChanges()
-	
-	
-	
+
+    @SideOnly(Side.CLIENT)
+    public void updateProgressBar(int id, int data)
+    {
+        this.tileFurnace.setField(id, data);
+    }
+
 } // end class

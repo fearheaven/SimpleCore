@@ -2,6 +2,7 @@ package alexndr.api.content.gui;
 
 import alexndr.api.content.inventory.TestFurnaceContainer;
 import alexndr.api.content.tiles.TestFurnaceTileEntity;
+import alexndr.api.content.tiles.TileEntitySimpleFurnace;
 import alexndr.api.core.APIInfo;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -46,12 +47,30 @@ public class TestFurnaceGui extends GuiContainer
 
 		if (tileFurnace.isBurning()) 
 		{
-			i1 = tileFurnace.getScaledBurnTime(13);
+			i1 = this.getBurnLeftScaled(13);
 			this.drawTexturedModalRect(k + 56, l + 36 + 12 - i1, 176, 12 - i1, 14, i1 + 1);
 		}
 
-		i1 = tileFurnace.getScaledCookProgress(24);
+		i1 = this.getCookProgressScaled(24);
 		this.drawTexturedModalRect(k + 79, l + 34, 176, 14, i1 + 1, 16);
 	}
+    
+    protected int getCookProgressScaled(int pixels)
+    {
+        int i = this.tileFurnace.getField(TileEntitySimpleFurnace.FIELD_COOK_TIME);
+        int j = this.tileFurnace.getField(TileEntitySimpleFurnace.FIELD_TOTAL_COOK_TIME);
+        return j != 0 && i != 0 ? i * pixels / j : 0;
+    }
+
+    protected int getBurnLeftScaled(int pixels)
+    {
+        int i = this.tileFurnace.getField(TileEntitySimpleFurnace.FIELD_ITEM_BURN_TIME);
+
+        if (i == 0)
+        {
+            i = this.tileFurnace.getMaxCookTime();
+        }
+        return this.tileFurnace.getField(TileEntitySimpleFurnace.FIELD_BURN_TIME) * pixels / i;
+    }
 
 } // end class
