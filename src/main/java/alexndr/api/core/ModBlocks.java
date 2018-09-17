@@ -22,7 +22,7 @@ public class ModBlocks
 	 */
 	public static void configureBlocks() 
 	{
-		if (APISettings.testFurnace.isEnabled()) {
+		if (APISettings.createTestFurnace && APISettings.testFurnace.isEnabled()) {
 			test_furnace.setConfigEntry(APISettings.testFurnace)
 					.setStepSound(SoundType.STONE)
 					.setCreativeTab(CreativeTabs.REDSTONE);
@@ -42,7 +42,7 @@ public class ModBlocks
 	 */
 	public static void register(IForgeRegistry<Block> registry) 
 	{
-		if (APISettings.testFurnace.isEnabled()) 
+		if (APISettings.createTestFurnace && APISettings.testFurnace.isEnabled()) 
 		{
 			registry.register(test_furnace);
 			registry.register(lit_test_furnace);
@@ -57,7 +57,7 @@ public class ModBlocks
 	 */
 	public static void registerItemBlocks(IForgeRegistry<Item> registry) 
 	{
-		if (APISettings.testFurnace.isEnabled()) {
+		if (APISettings.createTestFurnace && APISettings.testFurnace.isEnabled()) {
 			registry.register(test_furnace.createItemBlock());
 		}
 	} // end registerItemBlocks()
@@ -67,7 +67,7 @@ public class ModBlocks
 	 */
 	public static void registerModels() 
 	{
-		if (APISettings.testFurnace.isEnabled()) {
+		if (APISettings.createTestFurnace && APISettings.testFurnace.isEnabled()) {
 			test_furnace.registerItemModel(Item.getItemFromBlock(test_furnace));
 		}
 	} // end registerModels()
