@@ -386,7 +386,7 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
 	@Override
 	public void update() 
 	{
-        boolean flag = this.isBurning();
+        boolean was_burning_flag = this.isBurning();
         boolean flag1 = false;
         int burnTime = 0;
         
@@ -397,13 +397,14 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
 
         if (!this.getWorld().isRemote)
         {
-            ItemStack itemstack = (ItemStack)this.getStackInSlot(NDX_FUEL_SLOT);
-            if (!itemstack.isEmpty()) 
+            ItemStack fuelstack = (ItemStack)this.getStackInSlot(NDX_FUEL_SLOT);
+            if (!fuelstack.isEmpty()) 
 			{
-                burnTime = TileEntitySimpleFurnace.getItemBurnTime(itemstack);
+                burnTime = TileEntitySimpleFurnace.getItemBurnTime(fuelstack);
             }
-            flag1 = default_cooking_update(flag1, itemstack, burnTime);
-            if (flag != this.isBurning())
+            flag1 = default_cooking_update(flag1, fuelstack, burnTime);
+            
+            if (was_burning_flag != this.isBurning())
             {
                 flag1 = true;
                 SimpleFurnace.setState(this.isBurning(), this.getWorld(), this.pos);
@@ -648,7 +649,8 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
                     {
                         Item item = itemstackFuel.getItem();
                         itemstackFuel.shrink(1);
-                        if (!itemstackFuel.isEmpty()) {
+                        if (itemstackFuel.isEmpty()) 
+                        {
                             ItemStack item1 = item.getContainerItem(itemstackFuel);
                             this.furnaceItemStacks.set(NDX_FUEL_SLOT, item1);
                         }
