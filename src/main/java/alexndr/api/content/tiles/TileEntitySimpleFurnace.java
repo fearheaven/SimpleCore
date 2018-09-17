@@ -403,7 +403,7 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
                 burnTime = TileEntitySimpleFurnace.getItemBurnTime(itemstack);
             }
             flag1 = default_cooking_update(flag1, itemstack, burnTime);
-           if (flag != this.isBurning())
+            if (flag != this.isBurning())
             {
                 flag1 = true;
                 SimpleFurnace.setState(this.isBurning(), this.getWorld(), this.pos);
