@@ -11,6 +11,7 @@
  */
 package alexndr.api.content.tiles;
 
+import alexndr.api.helpers.game.TileStackHandler;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
@@ -23,11 +24,11 @@ public abstract class TileEntityBaseInventory extends TileEntityBase
 	/** IItemHandler-based inventory */
 	protected ItemStackHandler slotHandler;
 
-	public TileEntityBaseInventory(int furnace_stack_count) 
+	public TileEntityBaseInventory(int inv_stack_count) 
 	{
 		super();
-		this.slotCount = furnace_stack_count;
-	    slotHandler = new TileStackHandler(furnace_stack_count);
+		this.slotCount = inv_stack_count;
+	    slotHandler = new TileStackHandler(inv_stack_count, this);
 	} //ctor
 
 	/** override to handle specific interesting changes to specific slots */
@@ -75,22 +76,5 @@ public abstract class TileEntityBaseInventory extends TileEntityBase
         return ItemHandlerHelper.calcRedstoneFromInventory(this.slotHandler);
     }
 	
-    /** 
-     * inner class that sub-classes ItemHandler.
-     */
-    protected class TileStackHandler extends ItemStackHandler
-    {
-
-		protected TileStackHandler(int size) {
-			super(size);
-		}
-    	
-        @Override
-        protected void onContentsChanged(int slot) {
-        	super.onContentsChanged(slot);
-        	TileEntityBaseInventory.this.markDirty();
-        }
-    };  // end inner-class TileStackHandler
-    
     
 } // end class

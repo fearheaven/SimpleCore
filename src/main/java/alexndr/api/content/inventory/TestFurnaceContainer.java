@@ -1,9 +1,10 @@
 package alexndr.api.content.inventory;
 
-import javax.annotation.Nonnull;
-
 import alexndr.api.content.tiles.TestFurnaceTileEntity;
 import alexndr.api.content.tiles.TileEntityBaseFurnace;
+import alexndr.api.helpers.game.FuelSlotItemHandler;
+import alexndr.api.helpers.game.FurnaceInputSlotItemHandler;
+import alexndr.api.helpers.game.OutputSlotItemHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -12,9 +13,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.tileentity.TileEntityFurnace;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.items.SlotItemHandler;
 
 public class TestFurnaceContainer extends Container 
 {
@@ -126,9 +125,10 @@ public class TestFurnaceContainer extends Container
 	{
 		ItemStackHandler itemhandler = tileFurnace.getSlotHandler();
 		this.addSlotToContainer(
-				new InputSlotItemHandler(itemhandler, TileEntityBaseFurnace.NDX_INPUT_SLOT, 56, 17));
+				new FurnaceInputSlotItemHandler(itemhandler, TileEntityBaseFurnace.NDX_INPUT_SLOT, 56, 17));
 		this.addSlotToContainer(
-				new FuelSlotItemHandler(itemhandler, TileEntityBaseFurnace.NDX_FUEL_SLOT, 56, 53));
+				new FuelSlotItemHandler(itemhandler, TileEntityBaseFurnace.NDX_FUEL_SLOT, 56, 53,
+										tileFurnace));
 		this.addSlotToContainer(
 				new OutputSlotItemHandler(itemhandler, TileEntityBaseFurnace.NDX_OUTPUT_SLOT, 116, 35) );
 	} // end AddOwnSlots()
@@ -174,73 +174,6 @@ public class TestFurnaceContainer extends Container
         tileFurnace.setTotalCookTime(this.tileFurnace.getField(TileEntityBaseFurnace.FIELD_TOTAL_COOK_TIME));
     } // end detectAndSendChanges()
 	
-    /** 
-     * inner class that sub-classes SlotItemHandler; handles checking for validity of fuel stacks
-     */
-	protected class FuelSlotItemHandler extends SlotItemHandler
-	{
-		public FuelSlotItemHandler(IItemHandler itemHandler, int index, int xPosition, int yPosition) 
-		{
-			super(itemHandler, index, xPosition, yPosition);
-		}
-		
-	    /**
-	     * Check if the stack is allowed to be placed in this slot, used for furnace fuel.
-	     */
-	    @Override
-	    public boolean isItemValid(@Nonnull ItemStack stack)
-	    {
-	        if (stack.isEmpty())
-	            return false;
-	        if (! TestFurnaceContainer.this.tileFurnace.isItemFuel(stack))
-	    		return false;
-	    	return super.isItemValid(stack);
-	    }
-	} // end-class FuelSlotItemHandler
 	
-    /** 
-     * inner class that sub-classes SlotItemHandler; handles checking for validity of input stacks
-     */
-	protected class InputSlotItemHandler extends SlotItemHandler
-	{
-		public InputSlotItemHandler(IItemHandler itemHandler, int index, int xPosition, int yPosition) 
-		{
-			super(itemHandler, index, xPosition, yPosition);
-		}
-		
-	    /**
-	     * Check if the stack is allowed to be placed in this slot, used for smeltable items.
-	     */
-	    @Override
-	    public boolean isItemValid(@Nonnull ItemStack stack)
-	    {
-	        if (stack.isEmpty())
-	            return false;
-            ItemStack hypothetical_result = FurnaceRecipes.instance().getSmeltingResult(stack);
-            if (hypothetical_result.isEmpty()) 
-            	return false;
-	    	return super.isItemValid(stack);
-	    }
-	} // end class InputSlotItemHandler
 	
-	/**
-	 * inner class that sub-classes SlotItemHander; handles making output slot unmodifiable.
-	 */
-	protected class OutputSlotItemHandler extends SlotItemHandler
-	{
-		public OutputSlotItemHandler(IItemHandler itemHandler, int index, int xPosition, int yPosition) 
-		{
-			super(itemHandler, index, xPosition, yPosition);
-		}
-		
-	    /**
-	     * Check if the stack is allowed to be placed in this slot; used for output-only slots.
-	     */
-	    @Override
-	    public boolean isItemValid(@Nonnull ItemStack stack)
-	    {
-	    	return false;
-	    }
-		
-	} // end class OutputSlotItemHandler
 } // end class

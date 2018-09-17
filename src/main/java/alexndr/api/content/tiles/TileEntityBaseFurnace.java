@@ -12,6 +12,7 @@
 package alexndr.api.content.tiles;
 
 import alexndr.api.content.blocks.SimpleFurnace;
+import alexndr.api.helpers.game.FurnaceTileStackHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -76,6 +77,7 @@ public abstract class TileEntityBaseFurnace extends TileEntityBaseInventory impl
 			   				 String guiID, int furnace_stack_count) 
 	{
 		super(furnace_stack_count);
+	    slotHandler = new FurnaceTileStackHandler(furnace_stack_count, this);
 		this.furnaceName = tileName;
 		this.maxCookTime = max_cook_time;
 		this.furnaceGuiId = guiID;
@@ -303,37 +305,6 @@ public abstract class TileEntityBaseFurnace extends TileEntityBaseInventory impl
         }
         else
         {
-//            Item item = burnItemStack.getItem();
-//
-//            if (item instanceof net.minecraft.item.ItemBlock 
-//            		&& ! Block.isEqualTo(Block.getBlockFromItem(item), Blocks.AIR))
-//            {
-//                Block block = Block.getBlockFromItem(item);
-//
-//                if (Block.isEqualTo(block, Blocks.WOODEN_SLAB))
-//                {
-//                    return 150;
-//                }
-//
-//                if (block.getDefaultState().getMaterial() == Material.WOOD)
-//                {
-//                    return 300;
-//                }
-//
-//                if (Block.isEqualTo(block, Blocks.COAL_BLOCK))
-//                {
-//                    return 16000;
-//                }
-//            }
-//
-//            if (item instanceof ItemTool && ((ItemTool)item).getToolMaterialName().equals("WOOD")) return 200;
-//            if (item instanceof ItemSword && ((ItemSword)item).getToolMaterialName().equals("WOOD")) return 200;
-//            if (item instanceof ItemHoe && ((ItemHoe)item).getMaterialName().equals("WOOD")) return 200;
-//            if (item == Items.STICK) return 100;
-//            if (item == Items.COAL) return 1600;
-//            if (item == Items.LAVA_BUCKET) return 20000;
-//            if (item == Item.getItemFromBlock(Blocks.SAPLING)) return 100;
-//            if (item == Items.BLAZE_ROD) return 2400;
             return ForgeEventFactory.getItemBurnTime(burnItemStack);
         }
     } // end getItemBurnTime()
@@ -348,6 +319,20 @@ public abstract class TileEntityBaseFurnace extends TileEntityBaseInventory impl
         return getItemBurnTime(stack) > 0;
     }
 
+    /**
+     * check if item is smeltable/valid input. Overridable.
+     * @param stack possible smeltable item stack.
+     * @return true if smeltable, false if not.
+     */
+    public boolean isItemSmeltable(ItemStack stack)
+    {
+    	ItemStack hypothetical_result = FurnaceRecipes.instance().getSmeltingResult(stack);
+    	if (hypothetical_result.isEmpty()) {
+    		return false;
+    	}
+    	return true;
+    }
+    
     /**
      * default cooking update.
      * @param flag1
@@ -457,9 +442,11 @@ public abstract class TileEntityBaseFurnace extends TileEntityBaseInventory impl
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing) 
 	{
-		return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY 
-				? CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(slotHandler) 
-				: super.getCapability(capability, facing);	
+		if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) 
+		{
+			CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(slotHandler);
+		}
+		return super.getCapability(capability, facing);
 	} // end getCapability()
 
 	/** returns actual cookTime */
