@@ -1,5 +1,6 @@
 package alexndr.api.content.tiles;
 
+import alexndr.api.content.blocks.TestFurnace;
 import alexndr.api.content.inventory.TestFurnaceContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -30,6 +31,42 @@ public class TestFurnaceTileEntity extends TileEntitySimpleFurnace
     {
         return TileEntitySimpleFurnace.getItemBurnTime(stack) > 0;
     }
+
+	/* (non-Javadoc)
+	 * @see alexndr.api.content.tiles.TileEntitySimpleFurnace#update()
+	 */
+	@Override
+	public void update() {
+        boolean was_burning_flag = this.isBurning();
+        boolean flag1 = false;
+        int burnTime = 0;
+        
+        if (this.isBurning())
+        {
+            --this.furnaceBurnTime;
+        }
+
+        if (!this.getWorld().isRemote)
+        {
+            ItemStack fuelstack = (ItemStack)this.getStackInSlot(NDX_FUEL_SLOT);
+            if (!fuelstack.isEmpty()) 
+			{
+                burnTime = TileEntitySimpleFurnace.getItemBurnTime(fuelstack);
+            }
+            flag1 = default_cooking_update(flag1, fuelstack, burnTime);
+            
+            if (was_burning_flag != this.isBurning())
+            {
+                flag1 = true;
+                TestFurnace.setState(this.isBurning(), this.getWorld(), this.pos);
+            } // end-if
+        } // end-if
+
+        if (flag1)
+        {
+            this.markDirty();
+        }
+	}
 
 
 } // end class

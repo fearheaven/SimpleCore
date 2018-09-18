@@ -3,9 +3,7 @@ package alexndr.api.content.blocks;
 import java.util.Random;
 
 import alexndr.api.config.types.ConfigBlock;
-import alexndr.api.content.tiles.TileEntityBaseInventory;
 import alexndr.api.content.tiles.TileEntitySimpleFurnace;
-import alexndr.api.helpers.game.IItemHandlerHelper;
 import alexndr.api.helpers.game.TooltipHelper;
 import alexndr.api.registry.ContentCategories;
 import alexndr.api.registry.Plugin;
@@ -20,6 +18,8 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
@@ -46,9 +46,9 @@ public abstract class SimpleFurnace<TEF extends TileEntitySimpleFurnace> extends
 	
 	protected boolean isBurning;
 	
-	// override for custom furnace classes
-	protected static Block unlit_furnace;
-	protected static Block lit_furnace;
+	// repeat for custom furnace classes
+	private static Block unlit_furnace;
+	private static Block lit_furnace;
 	
     /**
      * This flag is used to prevent the furnace inventory to be dropped upon block removal, is used internally when the
@@ -220,13 +220,13 @@ public abstract class SimpleFurnace<TEF extends TileEntitySimpleFurnace> extends
 
         if (active)
         {
-            worldIn.setBlockState(pos, getLit_furnace().getDefaultState().withProperty(FACING, iblockstate.getValue(FACING)), 3);
-            worldIn.setBlockState(pos, getLit_furnace().getDefaultState().withProperty(FACING, iblockstate.getValue(FACING)), 3);
+            worldIn.setBlockState(pos, SimpleFurnace.lit_furnace.getDefaultState().withProperty(FACING, iblockstate.getValue(FACING)), 3);
+            worldIn.setBlockState(pos, SimpleFurnace.lit_furnace.getDefaultState().withProperty(FACING, iblockstate.getValue(FACING)), 3);
         }
         else
         {
-            worldIn.setBlockState(pos, getUnlit_furnace().getDefaultState().withProperty(FACING, iblockstate.getValue(FACING)), 3);
-            worldIn.setBlockState(pos, getUnlit_furnace().getDefaultState().withProperty(FACING, iblockstate.getValue(FACING)), 3);
+            worldIn.setBlockState(pos, SimpleFurnace.unlit_furnace.getDefaultState().withProperty(FACING, iblockstate.getValue(FACING)), 3);
+            worldIn.setBlockState(pos, SimpleFurnace.unlit_furnace.getDefaultState().withProperty(FACING, iblockstate.getValue(FACING)), 3);
         }
 
         keepInventory = false;
@@ -261,8 +261,7 @@ public abstract class SimpleFurnace<TEF extends TileEntitySimpleFurnace> extends
 
             if (tileentity instanceof TileEntitySimpleFurnace)
             {
-                IItemHandlerHelper.dropInventoryItems(worldIn, pos, 
-                							((TileEntityBaseInventory)tileentity).getSlotHandler());
+            	InventoryHelper.dropInventoryItems(worldIn, pos, (IInventory) tileentity);
                 worldIn.updateComparatorOutputLevel(pos, this);
             }
         }
@@ -356,7 +355,7 @@ public abstract class SimpleFurnace<TEF extends TileEntitySimpleFurnace> extends
     }
 
 	public static Block getUnlit_furnace() {
-		return unlit_furnace;
+		return SimpleFurnace.unlit_furnace;
 	}
 
 	public static void setUnlit_furnace(Block unlit_furnace) {
@@ -364,7 +363,7 @@ public abstract class SimpleFurnace<TEF extends TileEntitySimpleFurnace> extends
 	}
 
 	public static Block getLit_furnace() {
-		return lit_furnace;
+		return SimpleFurnace.lit_furnace;
 	}
 
 	public static void setLit_furnace(Block lit_furnace) {

@@ -91,7 +91,7 @@ public class SimpleFurnaceContainer extends Container
             }
             // player inv/hotbar slot?
             else if (index != TileEntitySimpleFurnace.NDX_FUEL_SLOT 
-            		&& index != TileEntitySimpleFurnace.NDX_OUTPUT_SLOT)
+            		&& index != TileEntitySimpleFurnace.NDX_INPUT_SLOT)
             {
                 if (!FurnaceRecipes.instance().getSmeltingResult(itemstack1).isEmpty())
                 {
