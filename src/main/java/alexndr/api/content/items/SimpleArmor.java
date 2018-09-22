@@ -8,6 +8,7 @@ import alexndr.api.config.IConfigureItemHelper;
 import alexndr.api.config.types.ConfigArmor;
 import alexndr.api.core.SimpleCoreAPI;
 import alexndr.api.helpers.game.TooltipHelper;
+import alexndr.api.helpers.game.Translator;
 import alexndr.api.registry.Plugin;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -15,12 +16,10 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.translation.I18n;
 
 /**
  * @author AleXndrTheGr8st
  */
-@SuppressWarnings("deprecation")
 public class SimpleArmor extends ItemArmor implements IConfigureItemHelper<SimpleArmor, ConfigArmor>
 {
 	protected String name;
@@ -104,14 +103,14 @@ public class SimpleArmor extends ItemArmor implements IConfigureItemHelper<Simpl
 	 * @return SimpleArmor
 	 */
 	public SimpleArmor addToolTip(String toolTip, TextFormatting color) {
-		TooltipHelper.addTooltipToItem(this, color + I18n.translateToLocal(toolTip));
+		TooltipHelper.addTooltipToItem(this, color + Translator.translateToLocal(toolTip));
 		return this;
 	}
 	
 	@Override
 	public boolean getIsRepairable(ItemStack toRepair, ItemStack repair) 
 	{
-		return this.material.getRepairItem() == repair.getItem() 
+		return ItemStack.areItemsEqual(this.material.getRepairItemStack(), repair) 
 				? true 
 				: super.getIsRepairable(toRepair, repair);
 	}

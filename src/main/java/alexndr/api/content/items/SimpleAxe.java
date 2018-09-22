@@ -120,7 +120,7 @@ public class SimpleAxe extends ItemAxe implements IConfigureItemHelper<SimpleAxe
 	}
 	
 	/**
-	 * Adds a tooltip to the tool. Must be unlocalised, so needs to be present in a localization file.
+	 * Adds a tooltip to the tool. Must be localised, so needs to be present in a localization file.
 	 * @param toolTip Name of the localisation entry for the tooltip, as a String. Normal format is modId.theitem.info
 	 * @return SimpleAxe
 	 */
@@ -131,7 +131,8 @@ public class SimpleAxe extends ItemAxe implements IConfigureItemHelper<SimpleAxe
 	
 	@Override
 	public boolean getIsRepairable(ItemStack toRepair, ItemStack repair) {
-		return this.material.getRepairItemStack().getItem() == repair.getItem() ? true : super.getIsRepairable(toRepair, repair);
+		return ItemStack.areItemStacksEqual(this.material.getRepairItemStack(),repair) 
+				? true : super.getIsRepairable(toRepair, repair);
 	}
 	
 	public void setAdditionalProperties() {
