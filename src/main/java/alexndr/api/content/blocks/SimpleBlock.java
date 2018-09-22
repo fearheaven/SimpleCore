@@ -7,7 +7,6 @@ import alexndr.api.config.types.ConfigBlock;
 import alexndr.api.core.SimpleCoreAPI;
 import alexndr.api.helpers.game.TabHelper;
 import alexndr.api.helpers.game.TooltipHelper;
-import alexndr.api.logger.LogHelper;
 import alexndr.api.registry.ContentCategories;
 import alexndr.api.registry.Plugin;
 import net.minecraft.block.Block;
@@ -53,7 +52,7 @@ public class SimpleBlock extends Block implements IConfigureBlockHelper<SimpleBl
 					   ContentCategories.Block category) 
 	{
 		super(material);
-		LogHelper.verbose(plugin.getModId(), "Finished Block ctor for " + name);
+		//LogHelper.verbose(plugin.getModId(), "Finished Block ctor for " + name);
 		this.name = name;
 		this.plugin = plugin;
 		this.material = material;
