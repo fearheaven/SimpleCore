@@ -64,7 +64,7 @@ public class SimpleFurnaceContainer extends Container
         return this.tileFurnace.isUsableByPlayer(playerIn);
 	}
 
-	   /**
+   /**
      * Handle when the stack in slot {@code index} is shift-clicked. Normally this moves the stack between the player
      * inventory and the other inventory(s).
      */

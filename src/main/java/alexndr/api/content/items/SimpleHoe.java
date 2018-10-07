@@ -59,7 +59,7 @@ public class SimpleHoe extends ItemHoe implements IConfigureItemHelper<SimpleHoe
 	 */
 	public SimpleHoe setConfigEntry(ConfigTool entry) {
 		this.entry = entry;
-		this.setHarvestLevel("axe", entry.getHarvestLevel());
+		this.setHarvestLevel("hoe", entry.getHarvestLevel());
 		this.setAdditionalProperties();
 		return this;
 	}

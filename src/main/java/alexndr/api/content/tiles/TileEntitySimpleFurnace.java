@@ -186,7 +186,6 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
 	 */
 	@Override
 	public void markDirty() {
-		// TODO Auto-generated method stub
 		super.markDirty();
 	}
 
@@ -631,6 +630,14 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
 //        return true;
 //	}
     
+    /**
+     * Guts of furnace cooking update. Must sort out cooking and smelting, and return a flag
+     * that indicates whether something changed.
+     * @param flag1 Flag to be set if changed.
+     * @param itemstackFuel stack of fuel items being burned.
+     * @param burnTime current burnTime of itemstackFuel
+     * @return true if state has changed, false if not.
+     */
 	protected boolean default_cooking_update(boolean flag1, ItemStack itemstackFuel, int burnTime)
 	{
         if (this.isBurning() || !itemstackFuel.isEmpty() 
