@@ -86,7 +86,7 @@ public class TileEntitySimpleFurnace extends TileEntityLockable implements
 	public TileEntitySimpleFurnace(String tileName, int max_cook_time,
 								   String guiID, int furnace_stack_count) 
 	{
-		LogHelper.verbose("Finished TileEntity ctor for " + tileName);
+		//LogHelper.verbose("Finished TileEntity ctor for " + tileName);
 		this.furnaceName = tileName;
 		this.maxCookTime = max_cook_time;
 		this.furnaceGuiId = guiID;
