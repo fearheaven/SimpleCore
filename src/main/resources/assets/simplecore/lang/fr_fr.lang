@@ -1,7 +1,14 @@
-//Tab Names
+
+# Tabs
 itemGroup.SimpleBlocks=Blocs Simple
 itemGroup.SimpleDecorations=Décorations Simple
 itemGroup.SimpleTools=Outils Simple
 itemGroup.simpleOresCombat=Combat Simple
 itemGroup.SimpleCombat=Matériaux Simple
 itemGroup.SimpleMachines=Simple Machines
+
+# Blocks
+tile.test_furnace.name=Four test
+tile.lit_test_furnace.name=Four test (allumé)
+
+container.test_furnace=Four test
